@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { HERO_SLIDES } from '../data/schoolData';
+import g16Fallback from '../assets/g16.jpg';
 
 interface HeroSectionProps {
   onOpenAdmissions?: () => void;
@@ -70,7 +71,11 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                 referrerPolicy="no-referrer"
                 onError={(e) => {
                   if (activeSlide.id === 'slide-3') {
-                    (e.target as HTMLImageElement).src = '/g16.jpg';
+                    const target = e.target as HTMLImageElement;
+                    if (!target.dataset.fallback) {
+                      target.dataset.fallback = 'true';
+                      target.src = g16Fallback;
+                    }
                   }
                 }}
                 className="w-full h-full object-contain sm:object-cover object-center"

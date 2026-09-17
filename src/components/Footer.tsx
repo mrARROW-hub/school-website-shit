@@ -1,5 +1,6 @@
 import React from 'react';
 import { GraduationCap, ArrowUp } from 'lucide-react';
+import logoUrl from '../assets/logo.png';
 
 interface FooterProps {
   onOpenAdmissions: () => void;
@@ -143,9 +144,16 @@ export const Footer: React.FC<FooterProps> = ({ onOpenAdmissions }) => {
         <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center gap-3">
             <img
-              src="/logo.png"
+              src={logoUrl}
               alt="IS Dev Samaj Senior Secondary School Emblem"
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.dataset.fallback) {
+                  target.dataset.fallback = 'true';
+                  target.src = `${import.meta.env.BASE_URL}logo.png`;
+                }
+              }}
               className="w-8 h-8 rounded-full bg-white p-0.5 object-contain shrink-0"
             />
             <span className="font-semibold text-slate-200">

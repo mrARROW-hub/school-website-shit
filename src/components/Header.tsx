@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import logoUrl from '../assets/logo.png';
 import {
   Menu,
   X,
@@ -211,9 +212,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
           {/* Logo & School Name (Official IS Dev Samaj Emblem) */}
           <a href="#hero" className="flex items-center gap-3 shrink-0 group">
             <img
-              src="/logo.png"
+              src={logoUrl}
               alt="IS Dev Samaj Senior Secondary School Emblem"
               referrerPolicy="no-referrer"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                if (!target.dataset.fallback) {
+                  target.dataset.fallback = 'true';
+                  target.src = `${import.meta.env.BASE_URL}logo.png`;
+                }
+              }}
               className="w-10 h-10 sm:w-12 sm:h-12 object-contain shrink-0 group-hover:scale-105 transition-transform drop-shadow-sm"
             />
             <div className="text-left">
