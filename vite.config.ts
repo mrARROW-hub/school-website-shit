@@ -5,10 +5,8 @@ import {defineConfig} from 'vite';
 
 export default defineConfig(() => {
   return {
-    // For GitHub Pages deployment: reads repository name from GITHUB_REPOSITORY (e.g. "owner/repo" -> "/repo/") or fallback
-    base: process.env.GITHUB_REPOSITORY
-      ? `/${process.env.GITHUB_REPOSITORY.split('/')[1]}/`
-      : process.env.VITE_BASE_PATH || './',
+    // Universal relative base for GitHub Pages (works for repo subpaths, custom domains, or local builds)
+    base: process.env.VITE_BASE_PATH || './',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
