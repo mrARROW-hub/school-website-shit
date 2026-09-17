@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapPin, Navigation, ExternalLink, Phone, Mail, Clock } from 'lucide-react';
+import React, { useRef, useEffect, useState } from 'react';
+import { MapPin, Navigation, ExternalLink, Phone, Mail, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   ISBShape,
   ISBWordBadge,
@@ -11,6 +11,286 @@ import {
 } from './DecorativeShapes';
 import { ShadyHighlight } from './ShadyHighlight';
 import { ScrollPopSection, ScrollPopBox } from './ScrollPopSection';
+import { BeyondDevSamajReviews } from './BeyondDevSamajReviews';
+import { WeMoveSection } from './WeMoveSection';
+
+interface CampusFacility {
+  tag: string;
+  title: string;
+  desc: string;
+}
+
+const CampusFacilitiesCarousel: React.FC<{ facilities: CampusFacility[] }> = ({ facilities }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragInfo = useRef({
+    isDown: false,
+    startX: 0,
+    scrollLeft: 0,
+  });
+
+  // Enable mouse wheel to scroll horizontally on small screens without showing scrollbar
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      // Only handle if content overflows horizontally (small screens)
+      if (el.scrollWidth <= el.clientWidth) return;
+
+      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (Math.abs(delta) > 0) {
+        const atStart = el.scrollLeft <= 0 && delta < 0;
+        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 && delta > 0;
+
+        if (!atStart && !atEnd) {
+          e.preventDefault();
+          el.scrollLeft += delta;
+        }
+      }
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+
+  // Mouse Drag handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const el = scrollRef.current;
+    if (!el || el.scrollWidth <= el.clientWidth) return;
+    dragInfo.current.isDown = true;
+    dragInfo.current.startX = e.pageX - el.offsetLeft;
+    dragInfo.current.scrollLeft = el.scrollLeft;
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!dragInfo.current.isDown) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - dragInfo.current.startX) * 1.4;
+    el.scrollLeft = dragInfo.current.scrollLeft - walk;
+  };
+
+  const handleMouseUpOrLeave = () => {
+    if (dragInfo.current.isDown) {
+      dragInfo.current.isDown = false;
+      setIsDragging(false);
+    }
+  };
+
+  const scrollByAmount = (direction: 'left' | 'right') => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const step = Math.min(el.clientWidth * 0.85, 320);
+    el.scrollBy({
+      left: direction === 'left' ? -step : step,
+      behavior: 'smooth',
+    });
+  };
+
+  return (
+    <div className="relative">
+      {/* Mobile/Small-screen simple navigation arrows */}
+      <div className="flex md:hidden items-center justify-between mb-2 px-1">
+        <span className="text-[11px] font-medium text-[#777]">
+          Drag or scroll with mouse
+        </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => scrollByAmount('left')}
+            aria-label="Previous facility"
+            className="p-1.5 rounded-full border border-[#ccc] bg-white text-[#555] hover:bg-[#f5f5f5] hover:text-black transition-colors cursor-pointer"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByAmount('right')}
+            aria-label="Next facility"
+            className="p-1.5 rounded-full border border-[#ccc] bg-white text-[#555] hover:bg-[#f5f5f5] hover:text-black transition-colors cursor-pointer"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Facility Cards: Horizontal scroll on small screens (< md), 3-column grid on desktop (md+) */}
+      <div
+        ref={scrollRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
+        className={`flex md:grid md:grid-cols-3 gap-4 md:gap-6 overflow-x-auto md:overflow-visible no-scrollbar pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 select-none ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab md:cursor-default'
+        } ${!isDragging ? 'snap-x snap-mandatory md:snap-none' : ''}`}
+      >
+        {facilities.map((facility, idx) => (
+          <div
+            key={idx}
+            className="w-[82vw] max-w-[320px] sm:w-[320px] md:w-auto shrink-0 md:shrink snap-center h-full"
+          >
+            <div className="border border-[#ccc] rounded overflow-hidden bg-white h-full flex flex-col hover:border-[#888] hover:shadow-xs transition-all select-none">
+              <div className="wf-img-placeholder h-44 shrink-0 font-medium select-none" draggable={false}>
+                {facility.tag}
+              </div>
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                <div>
+                  <h4 className="font-bold text-sm text-[#222] mb-1">{facility.title}</h4>
+                  <p className="text-xs text-[#666] leading-relaxed">{facility.desc}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+interface FacultyMember {
+  tag: string;
+  name: string;
+  role: string;
+  bio: string;
+}
+
+const FacultyCarousel: React.FC<{ faculty: FacultyMember[] }> = ({ faculty }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragInfo = useRef({
+    isDown: false,
+    startX: 0,
+    scrollLeft: 0,
+  });
+
+  // Enable mouse wheel to scroll horizontally on small screens without showing scrollbar
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      // Only handle if content overflows horizontally (small screens)
+      if (el.scrollWidth <= el.clientWidth) return;
+
+      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (Math.abs(delta) > 0) {
+        const atStart = el.scrollLeft <= 0 && delta < 0;
+        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 && delta > 0;
+
+        if (!atStart && !atEnd) {
+          e.preventDefault();
+          el.scrollLeft += delta;
+        }
+      }
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+
+  // Mouse Drag handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const el = scrollRef.current;
+    if (!el || el.scrollWidth <= el.clientWidth) return;
+    dragInfo.current.isDown = true;
+    dragInfo.current.startX = e.pageX - el.offsetLeft;
+    dragInfo.current.scrollLeft = el.scrollLeft;
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!dragInfo.current.isDown) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - dragInfo.current.startX) * 1.4;
+    el.scrollLeft = dragInfo.current.scrollLeft - walk;
+  };
+
+  const handleMouseUpOrLeave = () => {
+    if (dragInfo.current.isDown) {
+      dragInfo.current.isDown = false;
+      setIsDragging(false);
+    }
+  };
+
+  const scrollByAmount = (direction: 'left' | 'right') => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const step = Math.min(el.clientWidth * 0.85, 280);
+    el.scrollBy({
+      left: direction === 'left' ? -step : step,
+      behavior: 'smooth',
+    });
+  };
+
+  return (
+    <div className="relative mt-8">
+      {/* Mobile/Small-screen simple navigation arrows */}
+      <div className="flex md:hidden items-center justify-between mb-2 px-1">
+        <span className="text-[11px] font-medium text-[#777]">
+          Drag or scroll with mouse
+        </span>
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={() => scrollByAmount('left')}
+            aria-label="Previous educator"
+            className="p-1.5 rounded-full border border-[#ccc] bg-white text-[#555] hover:bg-[#f5f5f5] hover:text-black transition-colors cursor-pointer"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByAmount('right')}
+            aria-label="Next educator"
+            className="p-1.5 rounded-full border border-[#ccc] bg-white text-[#555] hover:bg-[#f5f5f5] hover:text-black transition-colors cursor-pointer"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Faculty Cards: Horizontal scroll on small screens (< md), 4-column grid on desktop (md+) */}
+      <div
+        ref={scrollRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
+        className={`flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-visible no-scrollbar pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 select-none ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab md:cursor-default'
+        } ${!isDragging ? 'snap-x snap-mandatory md:snap-none' : ''}`}
+      >
+        {faculty.map((member, idx) => (
+          <div
+            key={idx}
+            className="w-[78vw] max-w-[280px] sm:w-[260px] md:w-auto shrink-0 md:shrink snap-center h-full"
+          >
+            <div className="border border-[#ccc] rounded overflow-hidden text-center bg-white h-full flex flex-col hover:border-[#888] hover:shadow-xs transition-all select-none">
+              <div className="wf-img-placeholder h-56 shrink-0 font-medium select-none" draggable={false}>
+                {member.tag}
+              </div>
+              <div className="p-4 flex-1 flex flex-col justify-between">
+                <div>
+                  <h4 className="font-bold text-sm text-[#222]">{member.name}</h4>
+                  <div className="text-xs text-[#888] mb-2">{member.role}</div>
+                  <p className="text-xs text-[#666] leading-relaxed">{member.bio}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export const WireframeSections: React.FC = () => {
   const brandPillars: { type: ISBShapeType; name: string; desc: string; color: string }[] = [
@@ -22,40 +302,108 @@ export const WireframeSections: React.FC = () => {
     { type: 'red-triangle', name: 'Empowerment', desc: 'Courage, leadership, & forward drive', color: '#FF3D37' },
   ];
 
+  const campusFacilities = [
+    {
+      tag: 'LIBRARY PHOTO',
+      title: 'Library & Resource Centre',
+      desc: 'Over 25,000 volumes, digital research pods, quiet study carrels, and periodical archives.',
+    },
+    {
+      tag: 'LABORATORIES PHOTO',
+      title: 'Science & Computer Labs',
+      desc: 'Dedicated Physics, Chemistry, Biology, and AI-enabled computer stations built to CBSE specifications.',
+    },
+    {
+      tag: 'SPORTS COMPLEX PHOTO',
+      title: 'Sports & Play Arena',
+      desc: 'Multi-sport turf, athletics track, basketball court, indoor badminton hall, and yoga pavilion.',
+    },
+    {
+      tag: 'SMART SUITES PHOTO',
+      title: 'Smart Classrooms & Audio-Visual',
+      desc: 'Interactive smart panels, multimedia lecture capture, and air-conditioned ergonomic learning spaces.',
+    },
+    {
+      tag: 'CREATIVE ARTS PHOTO',
+      title: 'Arts & Cultural Studio',
+      desc: 'Dedicated vocal & instrumental acoustic rooms, fine arts studio, and classical dance auditorium.',
+    },
+    {
+      tag: 'INNOVATION HUB PHOTO',
+      title: 'Robotics & STEM Tinkering Lab',
+      desc: 'Hands-on experiential tinkering lab with 3D modeling kits, coding stations, and electronics testbeds.',
+    },
+  ];
+
+  const facultyMembers: FacultyMember[] = [
+    {
+      tag: 'FACULTY PHOTO',
+      name: 'Dr. S. Sharma',
+      role: 'Principal • Ph.D., M.Ed.',
+      bio: '25+ years in educational leadership, pedagogy reform, and character-centred schooling.',
+    },
+    {
+      tag: 'FACULTY PHOTO',
+      name: 'Mrs. R. Kaur',
+      role: 'Vice Principal • M.Sc., B.Ed.',
+      bio: 'Spearheading academic rigor, student welfare, and CBSE compliance for over two decades.',
+    },
+    {
+      tag: 'FACULTY PHOTO',
+      name: 'Mr. A. Verma',
+      role: 'Head of Sciences • M.Sc. Physics',
+      bio: 'Inspiring future engineers and researchers with inquiry-led laboratory instruction.',
+    },
+    {
+      tag: 'FACULTY PHOTO',
+      name: 'Mrs. P. Gupta',
+      role: 'Head of Humanities • M.A., M.Phil.',
+      bio: 'Fostering critical thought, historical consciousness, and articulate prose in every student.',
+    },
+  ];
+
   return (
     <>
       {/* =========================================================================
           ISB-INSPIRED VALUES & DECORATIVE SHAPES RIBBON
           Replicating the iconic visual language from isb.be
           ========================================================================= */}
-      <section className="border-b border-[#e5e5e5] bg-[#fafafa]/90 py-5 transition-colors overflow-hidden">
+      <section className="border-b border-[#e5e5e5] bg-[#fafafa]/95 py-2 sm:py-3 md:py-3.5 transition-colors overflow-hidden" aria-label="School Pillars and Visual Language">
         <ScrollPopSection direction="left">
-          <div className="wireframe-container flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex flex-col sm:flex-row items-center gap-2.5 text-center md:text-left">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#444] bg-white px-3 py-1 rounded-full border border-[#ddd] shadow-xs">
-                Visual Language &amp; Pillars
-              </span>
-              <span className="text-xs text-[#666]">
-                Decorative shapes inspired by international school branding
-              </span>
-            </div>
+          <div className="wireframe-container">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4">
+              {/* Desktop / Tablet Heading */}
+              <div className="hidden md:flex items-center gap-2.5 text-left shrink-0">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#444] bg-white px-3 py-1 rounded-full border border-[#ddd] shadow-xs">
+                  Visual Language &amp; Pillars
+                </span>
+                <span className="text-xs text-[#666]">
+                  Decorative shapes inspired by international school branding
+                </span>
+              </div>
 
-            <div className="flex items-center gap-3 sm:gap-5 flex-wrap justify-center">
-              {brandPillars.map((item, idx) => (
-                <ScrollPopBox key={idx} direction={idx % 2 === 0 ? 'left' : 'right'}>
+              {/* Wrapped Shapes Ribbon for Mobile & Desktop (natural word wrapping in lines, no scrolling) */}
+              <div className="w-full md:w-auto flex flex-wrap items-center justify-center md:justify-end gap-1.5 sm:gap-2 py-0.5">
+                {/* Compact label inline on mobile */}
+                <span className="md:hidden text-[10px] font-bold uppercase tracking-wider text-[#555] bg-white px-2.5 py-1 rounded-full border border-[#ddd] shadow-2xs whitespace-nowrap">
+                  Pillars
+                </span>
+
+                {brandPillars.map((item, idx) => (
                   <div
-                    className="group flex items-center gap-2 px-2.5 py-1 rounded-lg hover:bg-white hover:shadow-xs transition-all cursor-default"
+                    key={idx}
+                    className="group flex items-center gap-1.5 px-2.5 py-1 sm:py-1.5 rounded-full bg-white border border-[#e5e5e5] hover:border-[#bbb] hover:shadow-xs transition-all cursor-default"
                     title={`${item.name}: ${item.desc}`}
                   >
-                    <div className="transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6">
-                      <ISBShape type={item.type} size={22} />
+                    <div className="transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6 shrink-0">
+                      <ISBShape type={item.type} size={16} />
                     </div>
-                    <span className="text-xs font-semibold text-[#333] hidden sm:inline group-hover:text-black transition-colors">
+                    <span className="text-[11px] sm:text-xs font-semibold text-[#333] whitespace-nowrap group-hover:text-black transition-colors">
                       {item.name}
                     </span>
                   </div>
-                </ScrollPopBox>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         </ScrollPopSection>
@@ -335,35 +683,8 @@ export const WireframeSections: React.FC = () => {
                 MAIN CAMPUS AERIAL / PANORAMA PHOTO
               </div>
             </ScrollPopBox>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <ScrollPopBox direction="left" className="h-full">
-                <div className="border border-[#ccc] rounded overflow-hidden bg-white h-full">
-                  <div className="wf-img-placeholder h-44">LIBRARY PHOTO</div>
-                  <div className="p-4">
-                    <h4 className="font-bold text-sm text-[#222] mb-1">Library &amp; Resource Centre</h4>
-                    <p className="text-xs text-[#666]">Over 25,000 volumes, digital research pods, quiet study carrels, and periodical archives.</p>
-                  </div>
-                </div>
-              </ScrollPopBox>
-              <ScrollPopBox direction="right" className="h-full">
-                <div className="border border-[#ccc] rounded overflow-hidden bg-white h-full">
-                  <div className="wf-img-placeholder h-44">LABORATORIES PHOTO</div>
-                  <div className="p-4">
-                    <h4 className="font-bold text-sm text-[#222] mb-1">Science &amp; Computer Labs</h4>
-                    <p className="text-xs text-[#666]">Dedicated Physics, Chemistry, Biology, and AI-enabled computer stations built to CBSE specifications.</p>
-                  </div>
-                </div>
-              </ScrollPopBox>
-              <ScrollPopBox direction="left" className="h-full">
-                <div className="border border-[#ccc] rounded overflow-hidden bg-white h-full">
-                  <div className="wf-img-placeholder h-44">SPORTS COMPLEX PHOTO</div>
-                  <div className="p-4">
-                    <h4 className="font-bold text-sm text-[#222] mb-1">Sports &amp; Play Arena</h4>
-                    <p className="text-xs text-[#666]">Multi-sport turf, athletics track, basketball court, indoor badminton hall, and yoga pavilion.</p>
-                  </div>
-                </div>
-              </ScrollPopBox>
-            </div>
+            {/* Facility Cards: Horizontal scroll with mouse support on small screens (< md), 3-column grid on desktop (md+) */}
+            <CampusFacilitiesCarousel facilities={campusFacilities} />
           </div>
         </ScrollPopSection>
       </section>
@@ -729,112 +1050,21 @@ export const WireframeSections: React.FC = () => {
             >
               The People Behind <ShadyHighlight color="turquoise">the Learning</ShadyHighlight>
             </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-              <ScrollPopBox direction="left" className="h-full">
-                <div className="border border-[#ccc] rounded overflow-hidden text-center bg-white h-full">
-                  <div className="wf-img-placeholder h-56">FACULTY PHOTO</div>
-                  <div className="p-4">
-                    <h4 className="font-bold text-sm text-[#222]">Dr. S. Sharma</h4>
-                    <div className="text-xs text-[#888] mb-2">Principal &bull; Ph.D., M.Ed.</div>
-                    <p className="text-xs text-[#666]">25+ years in educational leadership, pedagogy reform, and character-centred schooling.</p>
-                  </div>
-                </div>
-              </ScrollPopBox>
-
-              <ScrollPopBox direction="right" className="h-full">
-                <div className="border border-[#ccc] rounded overflow-hidden text-center bg-white h-full">
-                  <div className="wf-img-placeholder h-56">FACULTY PHOTO</div>
-                  <div className="p-4">
-                    <h4 className="font-bold text-sm text-[#222]">Mrs. R. Kaur</h4>
-                    <div className="text-xs text-[#888] mb-2">Vice Principal &bull; M.Sc., B.Ed.</div>
-                    <p className="text-xs text-[#666]">Spearheading academic rigor, student welfare, and CBSE compliance for over two decades.</p>
-                  </div>
-                </div>
-              </ScrollPopBox>
-
-              <ScrollPopBox direction="left" className="h-full">
-                <div className="border border-[#ccc] rounded overflow-hidden text-center bg-white h-full">
-                  <div className="wf-img-placeholder h-56">FACULTY PHOTO</div>
-                  <div className="p-4">
-                    <h4 className="font-bold text-sm text-[#222]">Mr. A. Verma</h4>
-                    <div className="text-xs text-[#888] mb-2">Head of Sciences &bull; M.Sc. Physics</div>
-                    <p className="text-xs text-[#666]">Inspiring future engineers and researchers with inquiry-led laboratory instruction.</p>
-                  </div>
-                </div>
-              </ScrollPopBox>
-
-              <ScrollPopBox direction="right" className="h-full">
-                <div className="border border-[#ccc] rounded overflow-hidden text-center bg-white h-full">
-                  <div className="wf-img-placeholder h-56">FACULTY PHOTO</div>
-                  <div className="p-4">
-                    <h4 className="font-bold text-sm text-[#222]">Mrs. P. Gupta</h4>
-                    <div className="text-xs text-[#888] mb-2">Head of Humanities &bull; M.A., M.Phil.</div>
-                    <p className="text-xs text-[#666]">Fostering critical thought, historical consciousness, and articulate prose in every student.</p>
-                  </div>
-                </div>
-              </ScrollPopBox>
-            </div>
+            {/* Faculty Cards: Horizontal scroll with mouse support on small screens (< md), 4-column grid on desktop (md+) */}
+            <FacultyCarousel faculty={facultyMembers} />
           </div>
         </ScrollPopSection>
       </section>
 
       {/* =========================================================================
-          11. BEYOND DEV SAMAJ — Community & Alumni
+          11. BEYOND DEV SAMAJ — Community & Alumni (OpenClaw-style Reviews Slider)
           ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="community">
-        {/* Scroll-triggered edge pop shape in empty margin space */}
-        <ISBScrollPopEdgeShape shape="pink-circle" align="left" topPosition="top-24 sm:top-28" />
-        <ScrollPopSection direction="left">
-          <div className="wireframe-container relative z-10">
-            <div className="wf-label text-center flex items-center justify-center gap-2">
-              <ISBShape type="pink-circle" size={15} />
-              <span>Community</span>
-            </div>
-          <h2
-            className="wf-heading !text-[36px] font-poppins font-bold text-[#222] leading-tight text-center break-words"
-            style={{ fontFamily: "'Poppins', sans-serif", fontSize: '36px' }}
-          >
-            Beyond <ShadyHighlight color="turquoise">Dev Samaj</ShadyHighlight>
-          </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-            <ScrollPopBox direction="left" className="lg:col-span-2">
-              <div className="border border-[#ccc] rounded overflow-hidden bg-white h-full">
-                <div className="wf-img-placeholder h-64">ALUMNI SPOTLIGHT PHOTO</div>
-                <div className="p-6">
-                  <blockquote className="italic text-base text-[#444] mb-3 leading-relaxed">
-                    &ldquo;Dev Samaj did not just prepare me for board exams; it taught me how to think with integrity. That moral compass has guided me through medical school and every patient I have ever treated.&rdquo;
-                  </blockquote>
-                  <div className="text-xs text-[#666]">
-                    &mdash; <strong>Dr. Ananya Sen</strong>, Class of 2012 &bull; Chief Resident, All India Institute of Medical Sciences
-                  </div>
-                </div>
-              </div>
-            </ScrollPopBox>
+      <BeyondDevSamajReviews />
 
-            <div className="flex flex-col gap-4">
-              <ScrollPopBox direction="right">
-                <div className="p-4 border border-[#ccc] rounded bg-white">
-                  <h4 className="font-bold text-sm text-[#222] mb-1">Parent Council</h4>
-                  <p className="text-xs text-[#666]">Active collaboration through regular dialogue, volunteer initiatives, and school policy feedback.</p>
-                </div>
-              </ScrollPopBox>
-              <ScrollPopBox direction="left">
-                <div className="p-4 border border-[#ccc] rounded bg-white">
-                  <h4 className="font-bold text-sm text-[#222] mb-1">Alumni Network</h4>
-                  <p className="text-xs text-[#666]">A global fraternity of 15,000+ graduates across medicine, civil services, tech, entrepreneurship, and the arts.</p>
-                </div>
-              </ScrollPopBox>
-              <ScrollPopBox direction="right">
-                <div className="p-4 border border-[#ccc] rounded bg-white">
-                  <h4 className="font-bold text-sm text-[#222] mb-1">Community Outreach</h4>
-                  <p className="text-xs text-[#666]">Students actively participate in literacy drives, environmental clean-ups, and elder care visits.</p>
-                </div>
-              </ScrollPopBox>
-            </div>
-          </div>
-        </div>
-        </ScrollPopSection>
-      </section>
+      {/* =========================================================================
+          11B. WE MOVE WITH THE WORLD — Shady Side Academy Signature Values Section
+          ========================================================================= */}
+      <WeMoveSection />
 
       {/* =========================================================================
           12. ADMISSIONS — Take the First Step

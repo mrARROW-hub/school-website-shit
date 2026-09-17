@@ -111,9 +111,11 @@ export const ScrollPopBox: React.FC<ScrollPopBoxProps> = ({
     return <div className={className}>{children}</div>;
   }
 
+  const widthClass = className.includes('w-') ? '' : 'w-full';
+
   return (
     <motion.div
-      className={`w-full will-change-transform ${className}`}
+      className={`${widthClass} will-change-transform ${className}`.trim()}
       initial={{
         opacity: 0,
         x: isLeft ? -45 : 45,

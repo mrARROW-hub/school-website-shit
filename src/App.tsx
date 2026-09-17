@@ -8,11 +8,11 @@ export default function App() {
   const [admissionsModalOpen, setAdmissionsModalOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white text-[#222] flex flex-col font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-white text-[#222] flex flex-col font-sans">
       {/* Navigation Bar at the top (modeled after BDCS structure, size, and buttons) */}
       <Header onOpenAdmissions={() => setAdmissionsModalOpen(true)} />
 
-      <main className="flex-grow overflow-x-hidden">
+      <main className="flex-grow">
         {/* 1. HERO — Compact banner with transition images */}
         <HeroSection />
 
