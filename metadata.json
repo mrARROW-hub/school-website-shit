@@ -1,0 +1,7 @@
+{
+  "name": "IS Dev Samaj Senior Secondary School",
+  "description": "Official portal for I.S. Dev Samaj Senior Secondary School, Sector 21-C, Chandigarh. Dedicated to value-based holistic education with campus highlights, academics, and admissions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+

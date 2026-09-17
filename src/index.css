@@ -1,0 +1,219 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'DK Crayon Crumble';
+  src: url('/fonts/DK-Crayon-Crumble.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --font-sans: 'Poppins', sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+  --font-anton: 'Anton', sans-serif;
+  --font-fraunces: 'Fraunces', serif;
+  --font-crayon: 'DK Crayon Crumble', 'Cabin Sketch', cursive, sans-serif;
+}
+
+@layer utilities {
+  .font-display {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  }
+  .font-anton {
+    font-family: 'Anton', sans-serif;
+  }
+  .font-poppins {
+    font-family: 'Poppins', sans-serif;
+  }
+  .font-fraunces {
+    font-family: 'Fraunces', serif;
+  }
+  .font-crayon, .font-dk-crayon {
+    font-family: 'DK Crayon Crumble', 'Cabin Sketch', cursive, sans-serif;
+  }
+}
+
+/* Base typography: All general text defaults to Poppins, sans-serif */
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  scroll-behavior: smooth;
+}
+
+html,
+body,
+button,
+input,
+textarea,
+select {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ============================================
+   LOW-FIDELITY WIREFRAME — STRUCTURAL ONLY
+   No colors, no arbitrary assets
+   ============================================ */
+:root {
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-5: 48px;
+  --space-6: 64px;
+  --space-7: 96px;
+  --container: 1200px;
+  --border: 1px solid #ccc;
+  --placeholder-bg: #e0e0e0;
+  --label-color: #888;
+  --text-muted: #666;
+}
+
+/* Wireframe Layout & Placeholders */
+.wireframe-container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+.wireframe-section {
+  width: 100%;
+  position: relative;
+  border-bottom: var(--border);
+  padding: var(--space-7) 0;
+  background-color: #ffffff;
+  color: #222222;
+}
+
+.wf-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--label-color);
+  margin-bottom: var(--space-1);
+  text-align: center;
+}
+
+.wf-heading {
+  font-family: 'Poppins', sans-serif;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: var(--space-3);
+  color: #222222;
+  text-align: center;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  text-wrap: balance;
+}
+
+.wf-placeholder {
+  background: var(--placeholder-bg);
+  border: 1px dashed #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.wf-img-placeholder {
+  background: var(--placeholder-bg);
+  border: 1px dashed #bbb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 0.8rem;
+}
+
+.wf-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #222;
+  padding: 0.75rem 1.75rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  min-height: 48px;
+  text-decoration: none;
+  color: #222;
+  margin-top: var(--space-4);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  background: #ffffff;
+}
+
+.wf-cta:hover,
+.wf-cta:active {
+  background: #222;
+  color: #fff;
+}
+
+.wf-cta-secondary {
+  background: transparent;
+  border: 1px solid #222;
+}
+
+.wf-cta-secondary:hover,
+.wf-cta-secondary:active {
+  background: #222;
+  color: #fff;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* =========================================================================
+   SHADY SIDE ACADEMY (https://www.shadysideacademy.org/) HIGHLIGHT EFFECT
+   =========================================================================
+   Replicating the signature highlighter marker effect and colors from the site:
+   - Turquoise: #11FEEE (Signature fluorescent turquoise seen across their story and headlines)
+   - Green:     #1FFF01 (Fluorescent neon green)
+   - Yellow:    #FFFF01 (Fluorescent yellow)
+   - Pink:      #FF1CA5 (Fluorescent pink)
+   - Amber:     #FFB81C (Warm gold/amber secondary color)
+   ========================================================================= */
+.highlighted-text-fluorescent-turquoise,
+.highlighted-text-fluorescent-green,
+.highlighted-text-fluorescent-yellow,
+.highlighted-text-fluorescent-pink,
+.highlighted-text-yellow {
+  position: relative;
+  z-index: 0;
+  display: inline;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0 0.18em;
+  border-radius: 2px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 100%;
+}
+
+.highlighted-text-fluorescent-turquoise {
+  background-image: linear-gradient(to top, #11FEEE 0%, #11FEEE 42%, transparent 42%);
+}
+
+.highlighted-text-fluorescent-green {
+  background-image: linear-gradient(to top, #1FFF01 0%, #1FFF01 42%, transparent 42%);
+}
+
+.highlighted-text-fluorescent-yellow {
+  background-image: linear-gradient(to top, #FFFF01 0%, #FFFF01 42%, transparent 42%);
+}
+
+.highlighted-text-fluorescent-pink {
+  background-image: linear-gradient(to top, #FF1CA5 0%, #FF1CA5 42%, transparent 42%);
+}
+
+.highlighted-text-yellow {
+  background-image: linear-gradient(to top, #FFB81C 0%, #FFB81C 42%, transparent 42%);
+}
+
