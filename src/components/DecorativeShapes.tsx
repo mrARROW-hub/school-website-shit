@@ -193,6 +193,39 @@ export const ShapeCyanWave: React.FC<ShapeProps> = ({
   </svg>
 );
 
+/**
+ * ISB Signature Red Gemstone / Faceted Diamond Corner Accent
+ * Replicates the exact top-right corner decorative design from https://www.isb.be/
+ * in the "Discover & Experience" section (.hp-highlights:before).
+ * Uses ISB's signature coral red #FF3D37 and 4-facet geometric motif.
+ */
+export const ISBRedCornerAccent: React.FC<{
+  className?: string;
+  size?: number | string;
+  color?: string;
+}> = ({
+  className = '',
+  size = 76,
+  color = '#FF3D37',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 1024 1024"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`inline-block select-none pointer-events-none transition-transform duration-300 ${className}`}
+    aria-hidden="true"
+  >
+    <g transform="matrix(1 0 0 -1 0 960)">
+      <path
+        d="M512 448.003v-256.015l-255.982-255.988h-256.018v255.988l256.018 256.015h255.982zM512 960v-256.018l-255.982-255.982h-256.018v255.982l256.018 256.018h255.982zM1024 448.003v-256.015l-255.982-255.988h-256.018v255.988l256.018 256.015h255.982zM1024 960v-256.018l-255.982-255.982h-256.018v255.982l256.018 256.018h255.982z"
+        fill={color}
+      />
+    </g>
+  </svg>
+);
+
 export type ISBShapeType =
   | 'purple-stairs'
   | 'pink-circle'

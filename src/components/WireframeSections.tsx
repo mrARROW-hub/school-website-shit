@@ -8,11 +8,14 @@ import {
   ISBShapeType,
   ISBCornerDesign,
   ISBCornerCard,
+  ISBRedCornerAccent,
 } from './DecorativeShapes';
 import { ShadyHighlight } from './ShadyHighlight';
 import { ScrollPopSection, ScrollPopBox } from './ScrollPopSection';
+import { motion } from 'motion/react';
 import { BeyondDevSamajReviews } from './BeyondDevSamajReviews';
 import { WeMoveSection } from './WeMoveSection';
+import campusPhoto from '../assets/campus1-1.webp';
 
 interface CampusFacility {
   tag: string;
@@ -293,6 +296,22 @@ const FacultyCarousel: React.FC<{ faculty: FacultyMember[] }> = ({ faculty }) =>
 };
 
 export const WireframeSections: React.FC = () => {
+  const [isMobileOrTablet, setIsMobileOrTablet] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 1024;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mq = window.matchMedia('(max-width: 1023px)');
+    const update = () => setIsMobileOrTablet(mq.matches);
+    update();
+    mq.addEventListener?.('change', update);
+    return () => mq.removeEventListener?.('change', update);
+  }, []);
+
   const brandPillars: { type: ISBShapeType; name: string; desc: string; color: string }[] = [
     { type: 'purple-stairs', name: 'Progress', desc: 'Pre-K through Class XII continuum', color: '#861fce' },
     { type: 'pink-circle', name: 'Community', desc: 'Inclusivity, empathy, & belonging', color: '#fe76b4' },
@@ -415,7 +434,7 @@ export const WireframeSections: React.FC = () => {
       <section className="wireframe-section relative overflow-hidden" id="story">
         {/* Scroll-triggered edge pop shape (half pops out from right edge, 0 extra vertical space) */}
         <ISBScrollPopEdgeShape shape="purple-stairs" align="right" topPosition="top-28 sm:top-36" />
-        <ScrollPopSection direction="right">
+        <ScrollPopSection direction="left">
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">
               <ISBShape type="pink-circle" size={14} />
@@ -468,65 +487,137 @@ export const WireframeSections: React.FC = () => {
               </div>
             </ScrollPopBox>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div>
-                <p className="text-base text-[#666] leading-relaxed mb-6">
-                  Rooted in the educational philosophy of Dev Samaj, we believe true schooling shapes both intellect and conscience. For decades, our classrooms have been incubators of curiosity, resilience, and compassion.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                  <ScrollPopBox direction="left" className="h-full">
-                    <div className="p-4 border border-[#ccc] rounded bg-white hover:border-[#861fce] transition-colors group h-full">
-                      <div className="mb-2">
-                        <ISBShape type="pink-circle" size={18} />
+            {/* Responsive Background inspired by ISB's "Discover & Experience" section:
+                - On small screens: background & red top-right design sit behind the image only and slide in from the left.
+                - On large screens: background & red top-right design sit behind the heritage card and slide in from the left to its original place. */}
+            <motion.div
+              initial={!isMobileOrTablet ? { opacity: 0, x: -140, scale: 0.98 } : false}
+              whileInView={!isMobileOrTablet ? { opacity: 1, x: 0, scale: 1 } : undefined}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{
+                type: 'spring',
+                stiffness: 75,
+                damping: 18,
+                mass: 0.85,
+              }}
+              className="relative rounded-3xl lg:bg-[#f5f5f5] lg:border lg:border-neutral-200/90 lg:p-12 xl:p-14 lg:shadow-sm mt-8"
+            >
+              {/* Red coloured design at top-right corner for large screens (enlarged for prominence) */}
+              <div className="hidden lg:block absolute -top-7 -right-4 xl:-top-8 xl:-right-5 z-20 pointer-events-none select-none">
+                <ISBRedCornerAccent size={112} />
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
+                <div>
+                  {/* Reduced text on small screens (outside any box/background); full text on large screens */}
+                  <p className="block lg:hidden text-base text-[#003366] leading-relaxed mb-6 font-medium">
+                    Rooted in Dev Samaj philosophy, shaping intellect and character with purpose.
+                  </p>
+                  <p className="hidden lg:block text-base text-[#003366] leading-relaxed mb-6">
+                    Rooted in the educational philosophy of Dev Samaj, we believe true schooling shapes both intellect and conscience. For decades, our classrooms have been incubators of curiosity, resilience, and compassion.
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
+                    <ScrollPopBox direction="left" className="h-full">
+                      <div className="p-4 border border-[#ccc] rounded-xl bg-white hover:border-[#861fce] transition-colors group h-full shadow-xs">
+                        <div className="mb-2">
+                          <ISBShape type="pink-circle" size={18} />
+                        </div>
+                        <h4 className="font-semibold text-sm mb-1 text-[#222]">Moral Grounding</h4>
+                        <p className="text-xs text-[#666] leading-relaxed">Ethical foundations before academic ambition.</p>
                       </div>
-                      <h4 className="font-semibold text-sm mb-1 text-[#222]">Moral Grounding</h4>
-                      <p className="text-xs text-[#666] leading-relaxed">Ethical foundations before academic ambition.</p>
-                    </div>
-                  </ScrollPopBox>
-                  <ScrollPopBox direction="right" className="h-full">
-                    <div className="p-4 border border-[#ccc] rounded bg-white hover:border-[#0064ec] transition-colors group h-full">
-                      <div className="mb-2">
-                        <ISBShape type="blue-hourglass" size={18} />
+                    </ScrollPopBox>
+                    <ScrollPopBox direction="right" className="h-full">
+                      <div className="p-4 border border-[#ccc] rounded-xl bg-white hover:border-[#0064ec] transition-colors group h-full shadow-xs">
+                        <div className="mb-2">
+                          <ISBShape type="blue-hourglass" size={18} />
+                        </div>
+                        <h4 className="font-semibold text-sm mb-1 text-[#222]">Intellectual Depth</h4>
+                        <p className="text-xs text-[#666] leading-relaxed">Curiosity over rote learning, mastery over memorization.</p>
                       </div>
-                      <h4 className="font-semibold text-sm mb-1 text-[#222]">Intellectual Depth</h4>
-                      <p className="text-xs text-[#666] leading-relaxed">Curiosity over rote learning, mastery over memorization.</p>
-                    </div>
-                  </ScrollPopBox>
-                  <ScrollPopBox direction="left" className="h-full">
-                    <div className="p-4 border border-[#ccc] rounded bg-white hover:border-[#FF3D37] transition-colors group h-full">
-                      <div className="mb-2">
-                        <ISBShape type="yellow-bars" size={18} />
+                    </ScrollPopBox>
+                    <ScrollPopBox direction="left" className="h-full">
+                      <div className="p-4 border border-[#ccc] rounded-xl bg-white hover:border-[#FF3D37] transition-colors group h-full shadow-xs">
+                        <div className="mb-2">
+                          <ISBShape type="yellow-bars" size={18} />
+                        </div>
+                        <h4 className="font-semibold text-sm mb-1 text-[#222]">Self-Reliance</h4>
+                        <p className="text-xs text-[#666] leading-relaxed">Equipping students to navigate a changing world independently.</p>
                       </div>
-                      <h4 className="font-semibold text-sm mb-1 text-[#222]">Self-Reliance</h4>
-                      <p className="text-xs text-[#666] leading-relaxed">Equipping students to navigate a changing world independently.</p>
+                    </ScrollPopBox>
+                  </div>
+                  <ScrollPopBox direction="right" className="mt-8">
+                    <div className="flex flex-wrap gap-8">
+                      <div>
+                        <div className="text-3xl font-bold text-[#222]">2,400+</div>
+                        <div className="text-xs text-[#666]">Students</div>
+                      </div>
+                      <div>
+                        <div className="text-3xl font-bold text-[#222]">180+</div>
+                        <div className="text-xs text-[#666]">Faculty Members</div>
+                      </div>
+                      <div>
+                        <div className="text-3xl font-bold text-[#222]">98%</div>
+                        <div className="text-xs text-[#666]">Board Distinction</div>
+                      </div>
                     </div>
                   </ScrollPopBox>
                 </div>
-                <ScrollPopBox direction="right" className="mt-8">
-                  <div className="flex flex-wrap gap-8">
-                    <div>
-                      <div className="text-3xl font-bold text-[#222]">2,400+</div>
-                      <div className="text-xs text-[#666]">Students</div>
+
+                <div>
+                  {/* Small screens wrapper:
+                      - The background touches the left edge completely (half out of screen feel).
+                      - The background is expanded and visibly framed around the image.
+                      - The image itself is NOT cut, keeping its full rounded corners and borders intact.
+                      - The entire unit smoothly pops out of the left side. */}
+                  <motion.div
+                    initial={isMobileOrTablet ? { opacity: 0, x: -110, scale: 0.95 } : false}
+                    whileInView={isMobileOrTablet ? { opacity: 1, x: 0, scale: 1 } : undefined}
+                    viewport={{ once: true, amount: 0.12 }}
+                    transition={{
+                      type: 'spring',
+                      stiffness: 85,
+                      damping: 17,
+                      mass: 0.85,
+                    }}
+                    className="relative rounded-r-3xl rounded-l-none bg-[#f5f5f5] border-y border-r border-l-0 border-neutral-200/90 shadow-md
+                      -ml-[var(--space-4,32px)] w-[calc(100%+var(--space-4,32px))]
+                      p-6 sm:p-8 pt-8 sm:pt-10 pb-8 sm:pb-10 pl-6 sm:pl-8 pr-6 sm:pr-8
+                      lg:ml-0 lg:w-full lg:rounded-3xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
+                  >
+                    {/* Red coloured design at top-right corner for small screens (enlarged for prominence) */}
+                    <div className="block lg:hidden absolute -top-5 right-3 sm:-top-6 sm:right-4 z-20 pointer-events-none select-none">
+                      <ISBRedCornerAccent size={88} />
                     </div>
-                    <div>
-                      <div className="text-3xl font-bold text-[#222]">180+</div>
-                      <div className="text-xs text-[#666]">Faculty Members</div>
+
+                    {/* Uncut campus photo with complete rounded corners and slate depth gradient */}
+                    <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] lg:aspect-[16/11] min-h-[230px] sm:min-h-[300px] md:min-h-[360px] rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/25 border border-slate-200/90 bg-slate-900 group">
+                      <img
+                        src={campusPhoto}
+                        alt="I.S. Dev Samaj School Iconic Heritage Campus, Sector 21-C, Chandigarh"
+                        loading="lazy"
+                        decoding="async"
+                        className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700 ease-out"
+                      />
+                      {/* Dark slate depth gradient along the bottom */}
+                      <div className="absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent pointer-events-none" />
+
+                      {/* Bottom-left CAMPUS label with white color and Poppins sans-serif typography */}
+                      <div
+                        id="campus-image-label"
+                        className="absolute bottom-3 left-4 sm:bottom-5 sm:left-6 z-10 select-none pointer-events-none flex items-center"
+                      >
+                        <span
+                          className="text-white text-xl sm:text-2xl md:text-3xl font-bold tracking-wider sm:tracking-widest uppercase drop-shadow-[0_3px_8px_rgba(0,0,0,0.85)]"
+                          style={{ fontFamily: "'Poppins', sans-serif" }}
+                        >
+                          CAMPUS
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <div className="text-3xl font-bold text-[#222]">98%</div>
-                      <div className="text-xs text-[#666]">Board Distinction</div>
-                    </div>
-                  </div>
-                </ScrollPopBox>
+                  </motion.div>
+                </div>
               </div>
-              <div>
-                <ScrollPopBox direction="left">
-                  <div className="wf-img-placeholder min-h-[400px]">
-                    CAMPUS / HERITAGE PHOTO
-                  </div>
-                </ScrollPopBox>
-              </div>
-            </div>
+            </motion.div>
           </div>
         </ScrollPopSection>
       </section>
