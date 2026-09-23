@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { MapPin, Navigation, ExternalLink, Phone, Mail, Clock, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MapPin, Navigation, ExternalLink, Phone, Mail, Clock, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import {
   ISBShape,
   ISBWordBadge,
@@ -17,6 +17,7 @@ import { BeyondDevSamajReviews } from './BeyondDevSamajReviews';
 import { WeMoveSection } from './WeMoveSection';
 import campusPhoto from '../assets/campus1-1.webp';
 import g16Fallback from '../assets/g16.jpg';
+import moralGroundingImg from '../assets/images/moral_grounding_1790149720413.jpg';
 
 interface CampusFacility {
   tag: string;
@@ -299,6 +300,8 @@ const FacultyCarousel: React.FC<{ faculty: FacultyMember[] }> = ({ faculty }) =>
 const OurStoryPillarsCarousel: React.FC = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [activePillarMobile, setActivePillarMobile] = useState<string | null>(null);
+  const hasDragged = useRef(false);
   const dragInfo = useRef({
     isDown: false,
     startX: 0,
@@ -333,6 +336,7 @@ const OurStoryPillarsCarousel: React.FC = () => {
     dragInfo.current.isDown = true;
     dragInfo.current.startX = e.pageX - el.offsetLeft;
     dragInfo.current.scrollLeft = el.scrollLeft;
+    hasDragged.current = false;
     setIsDragging(true);
   };
 
@@ -343,6 +347,9 @@ const OurStoryPillarsCarousel: React.FC = () => {
     e.preventDefault();
     const x = e.pageX - el.offsetLeft;
     const walk = (x - dragInfo.current.startX) * 1.4;
+    if (Math.abs(x - dragInfo.current.startX) > 4) {
+      hasDragged.current = true;
+    }
     el.scrollLeft = dragInfo.current.scrollLeft - walk;
   };
 
@@ -369,7 +376,11 @@ const OurStoryPillarsCarousel: React.FC = () => {
       title: 'Moral Grounding',
       desc: 'Ethical foundations before academic ambition.',
       shape: 'pink-circle' as ISBShapeType,
-      hoverBorder: 'hover:border-[#861fce]',
+      hoverBorder: 'hover:border-[#FA448C]',
+      image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/sports3.jpg',
+      bgColor: 'bg-[#FA448C]',
+      hoverShape: 'four-petal-flower' as ISBShapeType,
+      hoverShapeColor: '#FFC53D',
     },
     {
       id: 'pillar-2',
@@ -377,6 +388,10 @@ const OurStoryPillarsCarousel: React.FC = () => {
       desc: 'Curiosity over rote learning, mastery over memorization.',
       shape: 'blue-hourglass' as ISBShapeType,
       hoverBorder: 'hover:border-[#0064ec]',
+      image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/lab3-1.jpg',
+      bgColor: 'bg-[#0064ec]',
+      hoverShape: 'purple-stairs' as ISBShapeType,
+      hoverShapeColor: '#11FEEE',
     },
     {
       id: 'pillar-3',
@@ -384,6 +399,10 @@ const OurStoryPillarsCarousel: React.FC = () => {
       desc: 'Equipping students to navigate a changing world independently.',
       shape: 'yellow-bars' as ISBShapeType,
       hoverBorder: 'hover:border-[#FF3D37]',
+      image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/g11.jpg',
+      bgColor: 'bg-[#FF3D37]',
+      hoverShape: 'yellow-bars' as ISBShapeType,
+      hoverShapeColor: '#FFFF01',
     },
   ];
 
@@ -426,38 +445,92 @@ const OurStoryPillarsCarousel: React.FC = () => {
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         } ${!isDragging ? 'snap-x snap-mandatory scroll-smooth' : ''}`}
       >
-        {ourStoryPillarsData.map((pillar, idx) => (
-          <div
-            key={pillar.id}
-            className="w-[78vw] max-w-[270px] sm:w-[240px] lg:flex-1 lg:min-w-[170px] shrink-0 snap-start h-full"
-          >
+        {ourStoryPillarsData.map((pillar, idx) => {
+          const isActive = activePillarMobile === pillar.id;
+          return (
             <div
-              className={`p-3.5 sm:p-4 border border-[#ccc] rounded-2xl bg-white ${pillar.hoverBorder} transition-all duration-300 group h-full shadow-xs flex flex-col justify-between min-h-[300px] sm:min-h-[320px]`}
+              key={pillar.id}
+              className="w-[85vw] max-w-[340px] sm:w-[280px] lg:w-full lg:max-w-none shrink-0 snap-start h-full"
             >
-              <div>
-                {/* Blank Picture Frame ready for user to add image */}
-                <div className="relative w-full h-28 sm:h-32 mb-3 rounded-xl bg-slate-50/80 border border-dashed border-slate-200 group-hover:border-slate-300 transition-colors">
-                  {/* Top-left symbol without any background behind it */}
-                  <div className="absolute top-2.5 left-2.5 pointer-events-none">
-                    <ISBShape type={pillar.shape} size={18} />
+              <div
+                onClick={() => {
+                  if (typeof window !== 'undefined' && window.innerWidth >= 1024) return;
+                  if (hasDragged.current) {
+                    hasDragged.current = false;
+                    return;
+                  }
+                  setActivePillarMobile(prev => (prev === pillar.id ? null : pillar.id));
+                }}
+                className={`relative overflow-hidden border border-[#ccc] rounded-2xl ${pillar.bgColor} ${pillar.hoverBorder} transition-all duration-300 group h-full shadow-xs flex flex-col justify-end min-h-[380px] sm:min-h-[410px] lg:min-h-[450px] cursor-pointer lg:cursor-default`}
+              >
+                {/* Background Image: reveals solid color on hover on desktop, or tap on mobile */}
+                {pillar.image ? (
+                  <div
+                    className={`absolute inset-0 bg-cover group-hover:scale-105 group-hover:opacity-0 transition-all duration-500 ease-out ${
+                      pillar.id === 'pillar-2' ? 'intellectual-depth-img' : pillar.id === 'pillar-3' ? 'self-reliance-img' : 'bg-center'
+                    } ${isActive ? 'scale-105 !opacity-0' : ''}`}
+                    style={{ backgroundImage: `url(${pillar.image})` }}
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center pointer-events-none">
+                    <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Image Background</span>
                   </div>
+                )}
+
+                {/* Large decorative shape appearing in top-right on hover (desktop) or tap (mobile) */}
+                {pillar.hoverShape && (
+                  <div
+                    className={`absolute z-10 pointer-events-none opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out ${
+                      pillar.hoverShape === 'four-petal-flower'
+                        ? '-top-8 -right-8 sm:-top-10 sm:-right-10'
+                        : '-top-10 -right-10'
+                    } ${isActive ? '!opacity-100 !scale-100' : ''}`}
+                  >
+                    <ISBShape
+                      type={pillar.hoverShape}
+                      size={pillar.hoverShape === 'four-petal-flower' ? 260 : 200}
+                      color={pillar.hoverShapeColor}
+                    />
+                  </div>
+                )}
+
+                {/* Top shape symbol indicator */}
+                <div
+                  className={`absolute top-3 left-3 z-20 bg-white/90 backdrop-blur-xs p-1.5 rounded-lg shadow-xs group-hover:opacity-0 transition-opacity duration-300 ${
+                    isActive ? '!opacity-0' : ''
+                  }`}
+                >
+                  <ISBShape type={pillar.shape} size={16} />
                 </div>
 
-                <h4 className="font-bold text-sm sm:text-base text-[#111] mb-1.5">
-                  {pillar.title}
-                </h4>
-                <p className="text-xs text-[#555] leading-relaxed">
-                  {pillar.desc}
-                </p>
-              </div>
-
-              <div className="pt-2.5 mt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-[#777]">
-                <span className="font-mono text-[10px] text-[#999]">0{idx + 1}</span>
-                <span className="font-semibold text-[#003366] group-hover:underline">Pillar</span>
+                {/* Text content moved to bottom left with clean readability */}
+                <div
+                  className={`relative z-20 p-4 sm:p-5 text-left text-white w-full flex flex-col justify-end transition-colors duration-300 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent group-hover:bg-transparent ${
+                    isActive ? '!bg-transparent' : ''
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <h4 className="font-bold text-sm sm:text-base text-white [text-shadow:_0_2px_4px_rgba(0,0,0,0.9)] mb-1">
+                        {pillar.title}
+                      </h4>
+                      <p className="text-xs text-slate-200 [text-shadow:_0_1px_3px_rgba(0,0,0,0.8)] leading-relaxed mb-0">
+                        {pillar.desc}
+                      </p>
+                    </div>
+                    <span
+                      className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 shadow-xs bg-white/20 text-white group-hover:bg-white group-hover:text-[#003366] group-hover:translate-x-1 ${
+                        isActive ? '!bg-white !text-[#003366] !translate-x-1' : ''
+                      }`}
+                    >
+                      <ArrowRight size={16} />
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

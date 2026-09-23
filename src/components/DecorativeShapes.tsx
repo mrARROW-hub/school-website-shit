@@ -233,7 +233,52 @@ export type ISBShapeType =
   | 'yellow-bars'
   | 'green-flower'
   | 'red-triangle'
-  | 'pink-arch';
+  | 'pink-arch'
+  | 'double-arrows'
+  | 'four-petal-flower';
+
+export const ShapeFourPetalFlower: React.FC<ShapeProps> = ({
+  className = '',
+  size = 260,
+  color = '#FFC53D',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 260 260"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`inline-block select-none pointer-events-none ${className}`}
+    aria-hidden="true"
+  >
+    <g transform="translate(130, 130) rotate(45)">
+      {/* 4 Petals oriented as a diagonal cross (X) matching Screenshot (443).png */}
+      <path d="M 0 0 C -45 -25 -55 -85 0 -125 C 55 -85 45 -25 0 0 Z" fill={color} />
+      <path d="M 0 0 C 25 -45 85 -55 125 0 C 85 55 25 45 0 0 Z" fill={color} />
+      <path d="M 0 0 C 45 25 55 85 0 125 C -55 85 -45 25 0 0 Z" fill={color} />
+      <path d="M 0 0 C -25 45 -85 55 -125 0 C -85 -55 -25 -45 0 0 Z" fill={color} />
+    </g>
+  </svg>
+);
+
+export const ShapeDoubleArrows: React.FC<ShapeProps> = ({
+  className = '',
+  size = 28,
+  color = '#FFC548',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 64 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`inline-block transition-transform duration-300 hover:scale-110 ${className}`}
+    aria-hidden="true"
+  >
+    <polygon points="2,2 28,16 2,30" fill={color} />
+    <polygon points="32,2 58,16 32,30" fill={color} />
+  </svg>
+);
 
 export const ISBShape: React.FC<{
   type: ISBShapeType;
@@ -256,6 +301,10 @@ export const ISBShape: React.FC<{
       return <ShapeRedTriangle size={size} className={className} color={color} />;
     case 'pink-arch':
       return <ShapePinkArch size={size} className={className} color={color} />;
+    case 'double-arrows':
+      return <ShapeDoubleArrows size={size} className={className} color={color} />;
+    case 'four-petal-flower':
+      return <ShapeFourPetalFlower size={size} className={className} color={color} />;
     default:
       return null;
   }

@@ -41,16 +41,15 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
       {/* 1. HERO IMAGE CAROUSEL */}
       <section
         id="hero"
-        className="relative w-full aspect-[12/7] min-h-[280px] sm:min-h-0 sm:aspect-auto sm:h-[480px] md:h-[520px] lg:h-[560px] flex items-end justify-center overflow-hidden bg-[#0f172a] text-white select-none"
+        className="relative w-full aspect-[12/7] min-h-[280px] sm:min-h-0 sm:aspect-auto sm:h-[480px] md:h-[520px] lg:h-[560px] flex items-end justify-center overflow-hidden bg-[#003366] text-white select-none"
         aria-label="Hero Image Carousel"
       >
         {/* =========================================================================
-            BACKGROUND IMAGES WITH SEAMLESS DISSOLVE INTO DARK SLATE (#0f172a)
-            - Top & Bottom maskImage dissolves image boundaries completely into dark slate
-            - Multi-stop gradient overlays eliminate any perceptible start or end edges
+            BACKGROUND IMAGES WITH SEAMLESS DISSOLVE INTO #003366 (ISB Style)
+            - Top & Bottom gradient overlays blend seamlessly into #003366
             - Object-cover ensures edge-to-edge bleed across all screen sizes
             ========================================================================= */}
-        <div className="absolute inset-0 z-0 overflow-hidden bg-[#0f172a]">
+        <div className="absolute inset-0 z-0 overflow-hidden bg-[#003366]">
           <AnimatePresence mode="sync" initial={false}>
             <motion.div
               key={activeSlide.id}
@@ -60,8 +59,8 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
               transition={{ duration: 1.0, ease: 'easeInOut' }}
               className="absolute inset-0 w-full h-full"
               style={{
-                maskImage: 'linear-gradient(to bottom, black 0%, black 86%, rgba(0,0,0,0.5) 95%, transparent 100%)',
-                WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 86%, rgba(0,0,0,0.5) 95%, transparent 100%)',
+                maskImage: 'linear-gradient(to bottom, black 0%, black 85%, rgba(0,0,0,0.5) 95%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 85%, rgba(0,0,0,0.5) 95%, transparent 100%)',
               }}
             >
               <img
@@ -83,11 +82,11 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
             </motion.div>
           </AnimatePresence>
 
-          {/* Subtle top depth vignette (reduced to almost zero, preserves just enough contrast for nav text) */}
-          <div className="absolute inset-x-0 top-0 h-20 sm:h-24 bg-gradient-to-b from-black/35 via-black/10 to-transparent pointer-events-none z-10" />
+          {/* Top Blend confined strictly to the navigation bar area */}
+          <div className="absolute inset-x-0 top-0 h-14 sm:h-16 md:h-20 bg-gradient-to-b from-[#003366] via-[#003366]/60 to-transparent pointer-events-none z-10" />
 
-          {/* Softened Bottom Blend into Dark Slate (#0f172a) */}
-          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 md:h-40 bg-gradient-to-t from-[#0f172a] from-0% via-[#0f172a]/80 via-20% via-[#0f172a]/25 via-60% to-transparent pointer-events-none z-10" />
+          {/* Softened Bottom Blend into #003366 (kept as is) */}
+          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 md:h-40 bg-gradient-to-t from-[#003366] from-0% via-[#003366]/80 via-20% via-[#003366]/25 via-60% to-transparent pointer-events-none z-10" />
         </div>
 
         {/* =========================================================================
@@ -154,12 +153,12 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
       {/* =========================================================================
           HERO HEADLINE BANNER FOR SMALL SCREENS:
           - Changes dynamically with the slide image
-          - Seamless Dark Slate (#0f172a) background matching hero bottom blend
+          - Seamless #003366 background matching hero bottom blend
           - Crisp white text
           - Word-wrap preserved for smaller screens
           ========================================================================= */}
       <section
-        className="sm:hidden w-full bg-[#0f172a] py-6 px-4 text-center"
+        className="sm:hidden w-full bg-[#003366] py-6 px-4 text-center"
         aria-label="School Vision Headline"
       >
         <div className="w-full max-w-sm mx-auto flex items-center justify-center min-h-[44px]">

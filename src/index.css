@@ -296,4 +296,17 @@ html {
   transform-origin: center;
 }
 
+.intellectual-depth-img {
+  background-position: 75% center;
+}
+@media (min-width: 640px) {
+  .intellectual-depth-img {
+    background-position: center;
+  }
+}
+
+.self-reliance-img {
+  background-position: 65% center;
+}
+
 

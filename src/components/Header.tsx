@@ -161,7 +161,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
 
       {/* Optional Search Bar Popup */}
       {searchOpen && (
-        <div className="w-full bg-slate-900/95 backdrop-blur-md border-b border-white/20 px-4 py-3 shadow-lg">
+        <div className="w-full bg-[#002244]/95 backdrop-blur-md border-b border-white/20 px-4 py-3 shadow-lg">
           <form onSubmit={handleSearchSubmit} className="max-w-3xl mx-auto flex items-center gap-2">
             <div className="relative flex-1">
               <Search className="w-4 h-4 text-white/60 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -176,7 +176,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-white text-slate-900 text-xs font-bold uppercase tracking-wider rounded hover:bg-slate-100 transition-colors shadow-sm cursor-pointer"
+              className="px-4 py-2 bg-white text-[#003366] text-xs font-bold uppercase tracking-wider rounded hover:bg-slate-100 transition-colors shadow-sm cursor-pointer"
             >
               Search
             </button>
@@ -241,7 +241,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             <button
               type="button"
               onClick={() => onOpenAdmissions('inquire')}
-              className="px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+              className="px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-100 text-[#003366] text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
             >
               Inquire
             </button>
@@ -249,7 +249,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             {/* VISIT Button with background */}
             <a
               href="#contact"
-              className="px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
+              className="px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-100 text-[#003366] text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
             >
               Visit
             </a>
@@ -277,10 +277,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md flex items-center gap-1.5 shadow-md border border-white/50 active:scale-95 cursor-pointer"
+              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-[#003366] text-xs font-bold uppercase tracking-wider rounded-md flex items-center gap-1.5 shadow-md border border-white/50 active:scale-95 cursor-pointer"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-4 h-4 text-slate-900" /> : <Menu className="w-4 h-4 text-slate-900" />}
+              {mobileMenuOpen ? <X className="w-4 h-4 text-[#003366]" /> : <Menu className="w-4 h-4 text-[#003366]" />}
               <span>{mobileMenuOpen ? 'Close' : 'Menu'}</span>
             </button>
           </div>
@@ -290,7 +290,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             3. MOBILE MENU DRAWER (RESPONSIVE VIEW)
             ========================================================================= */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/20 px-5 py-6 shadow-2xl animate-in slide-in-from-top-2 duration-200">
+          <div className="lg:hidden bg-[#002244]/95 backdrop-blur-xl border-t border-white/20 px-5 py-6 shadow-2xl animate-in slide-in-from-top-2 duration-200">
             {/* Action Buttons Row */}
             <div className="grid grid-cols-3 gap-2 pb-5 border-b border-white/15">
               <button
@@ -299,14 +299,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
                   setMobileMenuOpen(false);
                   onOpenAdmissions('inquire');
                 }}
-                className="py-2.5 px-2 bg-white text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md text-center shadow-sm active:scale-95 cursor-pointer"
+                className="py-2.5 px-2 bg-white text-[#003366] text-xs font-bold uppercase tracking-wider rounded-md text-center shadow-sm active:scale-95 cursor-pointer"
               >
                 Inquire
               </button>
               <a
                 href="#contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-2 bg-white text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md text-center shadow-sm active:scale-95 cursor-pointer"
+                className="py-2.5 px-2 bg-white text-[#003366] text-xs font-bold uppercase tracking-wider rounded-md text-center shadow-sm active:scale-95 cursor-pointer"
               >
                 Visit
               </a>

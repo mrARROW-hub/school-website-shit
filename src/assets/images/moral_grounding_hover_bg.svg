@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520" preserveAspectRatio="xMidYMid slice" width="100%" height="100%">
+  <!-- Vibrant Pink Background matching Screenshot (443).png -->
+  <rect width="100%" height="100%" fill="#FA448C" />
+  
+  <!-- Yellow 4-Petal Geometric Flower matching the screenshot in the top right -->
+  <g transform="translate(340, 95)">
+    <!-- Top Petal -->
+    <path d="M 0 0 C -52 -32 -52 -112 0 -140 C 52 -112 52 -32 0 0 Z" fill="#FFC53D" />
+    <!-- Right Petal -->
+    <path d="M 0 0 C 32 -52 112 -52 140 0 C 112 52 32 52 0 0 Z" fill="#FFC53D" />
+    <!-- Bottom Petal -->
+    <path d="M 0 0 C 52 32 52 112 0 140 C -52 112 -52 32 0 0 Z" fill="#FFC53D" />
+    <!-- Left Petal -->
+    <path d="M 0 0 C -32 52 -112 52 -140 0 C -112 -52 -32 -52 0 0 Z" fill="#FFC53D" />
+  </g>
+</svg>
