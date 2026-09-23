@@ -16,6 +16,7 @@ import { motion } from 'motion/react';
 import { BeyondDevSamajReviews } from './BeyondDevSamajReviews';
 import { WeMoveSection } from './WeMoveSection';
 import campusPhoto from '../assets/campus1-1.webp';
+import g16Fallback from '../assets/g16.jpg';
 
 interface CampusFacility {
   tag: string;
@@ -295,6 +296,173 @@ const FacultyCarousel: React.FC<{ faculty: FacultyMember[] }> = ({ faculty }) =>
   );
 };
 
+const OurStoryPillarsCarousel: React.FC = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragInfo = useRef({
+    isDown: false,
+    startX: 0,
+    scrollLeft: 0,
+  });
+
+  // Mouse wheel horizontal scroll support
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const onWheel = (e: WheelEvent) => {
+      if (el.scrollWidth <= el.clientWidth) return;
+      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      if (Math.abs(delta) > 0) {
+        const atStart = el.scrollLeft <= 0 && delta < 0;
+        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 && delta > 0;
+        if (!atStart && !atEnd) {
+          e.preventDefault();
+          el.scrollLeft += delta;
+        }
+      }
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    const el = scrollRef.current;
+    if (!el || el.scrollWidth <= el.clientWidth) return;
+    dragInfo.current.isDown = true;
+    dragInfo.current.startX = e.pageX - el.offsetLeft;
+    dragInfo.current.scrollLeft = el.scrollLeft;
+    setIsDragging(true);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!dragInfo.current.isDown) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = (x - dragInfo.current.startX) * 1.4;
+    el.scrollLeft = dragInfo.current.scrollLeft - walk;
+  };
+
+  const handleMouseUpOrLeave = () => {
+    if (dragInfo.current.isDown) {
+      dragInfo.current.isDown = false;
+      setIsDragging(false);
+    }
+  };
+
+  const scrollByAmount = (direction: 'left' | 'right') => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const step = 220;
+    el.scrollBy({
+      left: direction === 'left' ? -step : step,
+      behavior: 'smooth',
+    });
+  };
+
+  const ourStoryPillarsData = [
+    {
+      id: 'pillar-1',
+      title: 'Moral Grounding',
+      desc: 'Ethical foundations before academic ambition.',
+      shape: 'pink-circle' as ISBShapeType,
+      hoverBorder: 'hover:border-[#861fce]',
+    },
+    {
+      id: 'pillar-2',
+      title: 'Intellectual Depth',
+      desc: 'Curiosity over rote learning, mastery over memorization.',
+      shape: 'blue-hourglass' as ISBShapeType,
+      hoverBorder: 'hover:border-[#0064ec]',
+    },
+    {
+      id: 'pillar-3',
+      title: 'Self-Reliance',
+      desc: 'Equipping students to navigate a changing world independently.',
+      shape: 'yellow-bars' as ISBShapeType,
+      hoverBorder: 'hover:border-[#FF3D37]',
+    },
+  ];
+
+  return (
+    <div className="mt-6 relative">
+      {/* Navigation Controls just like Hero Section carousel */}
+      <div className="flex items-center justify-between mb-3 px-0.5">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-[#003366]/80 flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#003366] inline-block" />
+          Core Pillars
+        </span>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <button
+            type="button"
+            onClick={() => scrollByAmount('left')}
+            aria-label="Previous pillar"
+            className="w-8 h-8 rounded-full bg-white hover:bg-[#003366] text-[#003366] hover:text-white border border-[#ccc] shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByAmount('right')}
+            aria-label="Next pillar"
+            className="w-8 h-8 rounded-full bg-white hover:bg-[#003366] text-[#003366] hover:text-white border border-[#ccc] shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Horizontal Form with Scroll & Elongated Card Height with Blank Picture Slot */}
+      <div
+        ref={scrollRef}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUpOrLeave}
+        onMouseLeave={handleMouseUpOrLeave}
+        className={`flex flex-row gap-3.5 sm:gap-4 overflow-x-auto no-scrollbar pb-3 pt-1 -mx-2 px-2 sm:mx-0 sm:px-0 select-none ${
+          isDragging ? 'cursor-grabbing' : 'cursor-grab'
+        } ${!isDragging ? 'snap-x snap-mandatory scroll-smooth' : ''}`}
+      >
+        {ourStoryPillarsData.map((pillar, idx) => (
+          <div
+            key={pillar.id}
+            className="w-[78vw] max-w-[270px] sm:w-[240px] lg:flex-1 lg:min-w-[170px] shrink-0 snap-start h-full"
+          >
+            <div
+              className={`p-3.5 sm:p-4 border border-[#ccc] rounded-2xl bg-white ${pillar.hoverBorder} transition-all duration-300 group h-full shadow-xs flex flex-col justify-between min-h-[300px] sm:min-h-[320px]`}
+            >
+              <div>
+                {/* Blank Picture Frame ready for user to add image */}
+                <div className="relative w-full h-28 sm:h-32 mb-3 rounded-xl bg-slate-50/80 border border-dashed border-slate-200 group-hover:border-slate-300 transition-colors">
+                  {/* Top-left symbol without any background behind it */}
+                  <div className="absolute top-2.5 left-2.5 pointer-events-none">
+                    <ISBShape type={pillar.shape} size={18} />
+                  </div>
+                </div>
+
+                <h4 className="font-bold text-sm sm:text-base text-[#111] mb-1.5">
+                  {pillar.title}
+                </h4>
+                <p className="text-xs text-[#555] leading-relaxed">
+                  {pillar.desc}
+                </p>
+              </div>
+
+              <div className="pt-2.5 mt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-[#777]">
+                <span className="font-mono text-[10px] text-[#999]">0{idx + 1}</span>
+                <span className="font-semibold text-[#003366] group-hover:underline">Pillar</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const WireframeSections: React.FC = () => {
   const [isMobileOrTablet, setIsMobileOrTablet] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -516,35 +684,7 @@ export const WireframeSections: React.FC = () => {
                   <p className="hidden lg:block text-base text-[#003366] leading-relaxed mb-6">
                     Rooted in the educational philosophy of Dev Samaj, we believe true schooling shapes both intellect and conscience. For decades, our classrooms have been incubators of curiosity, resilience, and compassion.
                   </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
-                    <ScrollPopBox direction="left" className="h-full">
-                      <div className="p-4 border border-[#ccc] rounded-xl bg-white hover:border-[#861fce] transition-colors group h-full shadow-xs">
-                        <div className="mb-2">
-                          <ISBShape type="pink-circle" size={18} />
-                        </div>
-                        <h4 className="font-semibold text-sm mb-1 text-[#222]">Moral Grounding</h4>
-                        <p className="text-xs text-[#666] leading-relaxed">Ethical foundations before academic ambition.</p>
-                      </div>
-                    </ScrollPopBox>
-                    <ScrollPopBox direction="right" className="h-full">
-                      <div className="p-4 border border-[#ccc] rounded-xl bg-white hover:border-[#0064ec] transition-colors group h-full shadow-xs">
-                        <div className="mb-2">
-                          <ISBShape type="blue-hourglass" size={18} />
-                        </div>
-                        <h4 className="font-semibold text-sm mb-1 text-[#222]">Intellectual Depth</h4>
-                        <p className="text-xs text-[#666] leading-relaxed">Curiosity over rote learning, mastery over memorization.</p>
-                      </div>
-                    </ScrollPopBox>
-                    <ScrollPopBox direction="left" className="h-full">
-                      <div className="p-4 border border-[#ccc] rounded-xl bg-white hover:border-[#FF3D37] transition-colors group h-full shadow-xs">
-                        <div className="mb-2">
-                          <ISBShape type="yellow-bars" size={18} />
-                        </div>
-                        <h4 className="font-semibold text-sm mb-1 text-[#222]">Self-Reliance</h4>
-                        <p className="text-xs text-[#666] leading-relaxed">Equipping students to navigate a changing world independently.</p>
-                      </div>
-                    </ScrollPopBox>
-                  </div>
+                  <OurStoryPillarsCarousel />
                   <ScrollPopBox direction="right" className="mt-8">
                     <div className="flex flex-wrap gap-8">
                       <div>

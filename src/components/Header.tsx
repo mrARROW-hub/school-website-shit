@@ -72,44 +72,43 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full font-sans transition-all duration-200">
+    <header className="absolute top-0 left-0 right-0 z-50 w-full font-sans">
       {/* =========================================================================
-          1. TOP UTILITY BAR (MODELED AFTER BDCS UTILITY TIER)
-          - Sizing: ~34px height
-          - Buttons: Portals dropdown, Give/Support, Contact, Quick Search trigger
-          - Neutral wireframe theme: clean subtle grey/charcoal border & text
+          1. TOP UTILITY BAR
+          - Transparent frosted styling over hero, stays in place
+          - Visible on tablet/desktop, clean & compact
           ========================================================================= */}
-      <div className="w-full bg-[#f8f8f8] border-b border-[#e5e5e5] text-[#444] text-[11px] sm:text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-9 flex items-center justify-between">
+      <div className="hidden sm:block w-full border-b border-white/15 bg-black/20 backdrop-blur-xs text-white/90 text-[11px] sm:text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 sm:h-9 flex items-center justify-between">
           {/* Left Info: Contact & Affiliation */}
           <div className="flex items-center gap-4 sm:gap-6">
-            <span className="hidden md:inline-flex items-center gap-1.5 font-medium text-[#555]">
+            <span className="hidden md:inline-flex items-center gap-1.5 font-medium text-white/80">
               <span>CBSE Affiliation No. 2630018</span>
             </span>
             <a
               href="tel:01722704495"
-              className="inline-flex items-center gap-1.5 hover:text-black transition-colors"
+              className="inline-flex items-center gap-1.5 text-white/90 hover:text-white transition-colors"
             >
-              <Phone className="w-3 h-3 text-[#666]" />
+              <Phone className="w-3 h-3 text-white/75" />
               <span className="hidden sm:inline">0172-2704495</span>
             </a>
             <a
               href="mailto:info@isdevsamaj21.ac.in"
-              className="hidden sm:inline-flex items-center gap-1.5 hover:text-black transition-colors"
+              className="hidden sm:inline-flex items-center gap-1.5 text-white/90 hover:text-white transition-colors"
             >
-              <Mail className="w-3 h-3 text-[#666]" />
+              <Mail className="w-3 h-3 text-white/75" />
               <span>info@isdevsamaj21.ac.in</span>
             </a>
           </div>
 
-          {/* Right Utility Buttons: Portals, Give, Search */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          {/* Right Utility Buttons: Portals, Give, Search (with background maintained) */}
+          <div className="flex items-center gap-2 sm:gap-3">
             {/* Portals Dropdown Button */}
             <div className="relative">
               <button
                 type="button"
                 onClick={() => setPortalsDropdownOpen(!portalsDropdownOpen)}
-                className="flex items-center gap-1 px-2.5 py-1 text-[#333] hover:text-black hover:bg-[#eaeaea] rounded transition-colors font-medium tracking-wide uppercase text-[10px] sm:text-[11px]"
+                className="flex items-center gap-1 px-2.5 py-1 bg-white/20 hover:bg-white/30 text-white rounded-md transition-colors font-medium tracking-wide uppercase text-[10px] sm:text-[11px] border border-white/30 backdrop-blur-xs shadow-2xs cursor-pointer"
               >
                 Portals
                 <ChevronDown className={`w-3 h-3 transition-transform ${portalsDropdownOpen ? 'rotate-180' : ''}`} />
@@ -117,7 +116,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
 
               {portalsDropdownOpen && (
                 <div
-                  className="absolute right-0 mt-1 w-44 bg-white border border-[#ccc] rounded shadow-lg py-1.5 z-50 text-left animate-in fade-in duration-150"
+                  className="absolute right-0 mt-1 w-44 bg-white text-[#222] border border-[#ccc] rounded-lg shadow-xl py-1.5 z-50 text-left animate-in fade-in duration-150"
                   onMouseLeave={() => setPortalsDropdownOpen(false)}
                 >
                   {portalLinks.map((portal) => (
@@ -134,26 +133,26 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
               )}
             </div>
 
-            <span className="text-[#ccc]">|</span>
+            <span className="text-white/40">|</span>
 
             {/* Give / Support Button */}
             <a
               href="#community"
-              className="text-[#333] hover:text-black hover:underline font-medium tracking-wide uppercase text-[10px] sm:text-[11px]"
+              className="text-white/90 hover:text-white font-medium tracking-wide uppercase text-[10px] sm:text-[11px] transition-colors"
             >
               Give
             </a>
 
-            <span className="text-[#ccc]">|</span>
+            <span className="text-white/40">|</span>
 
             {/* Search Trigger Button */}
             <button
               type="button"
               onClick={() => setSearchOpen(!searchOpen)}
-              className="flex items-center gap-1.5 text-[#333] hover:text-black px-1.5 py-1 rounded transition-colors font-medium text-[10px] sm:text-[11px]"
+              className="flex items-center gap-1.5 text-white/90 hover:text-white px-2 py-1 bg-white/15 hover:bg-white/25 rounded-md transition-colors font-medium text-[10px] sm:text-[11px] border border-white/20 backdrop-blur-xs cursor-pointer"
               aria-label="Search site"
             >
-              <Search className="w-3.5 h-3.5 text-[#444]" />
+              <Search className="w-3.5 h-3.5 text-white" />
               <span className="hidden sm:inline uppercase">Search</span>
             </button>
           </div>
@@ -162,29 +161,29 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
 
       {/* Optional Search Bar Popup */}
       {searchOpen && (
-        <div className="w-full bg-white border-b border-[#ccc] px-4 py-3 shadow-md">
+        <div className="w-full bg-slate-900/95 backdrop-blur-md border-b border-white/20 px-4 py-3 shadow-lg">
           <form onSubmit={handleSearchSubmit} className="max-w-3xl mx-auto flex items-center gap-2">
             <div className="relative flex-1">
-              <Search className="w-4 h-4 text-[#888] absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-white/60 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search academics, admissions, campus, sports..."
-                className="w-full pl-9 pr-4 py-2 border border-[#ccc] rounded text-sm text-[#222] placeholder:text-[#888] focus:outline-none focus:border-[#222]"
+                className="w-full pl-9 pr-4 py-2 bg-white/10 border border-white/30 rounded text-sm text-white placeholder:text-white/60 focus:outline-none focus:border-white"
                 autoFocus
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#222] text-white text-xs font-semibold uppercase tracking-wider rounded hover:bg-black transition-colors"
+              className="px-4 py-2 bg-white text-slate-900 text-xs font-bold uppercase tracking-wider rounded hover:bg-slate-100 transition-colors shadow-sm cursor-pointer"
             >
               Search
             </button>
             <button
               type="button"
               onClick={() => setSearchOpen(false)}
-              className="p-2 text-[#666] hover:text-black rounded"
+              className="p-2 text-white/80 hover:text-white rounded cursor-pointer"
               aria-label="Close search"
             >
               <X className="w-5 h-5" />
@@ -194,22 +193,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
       )}
 
       {/* =========================================================================
-          2. MAIN NAVIGATION BAR (MODELED DIRECTLY AFTER BDCS)
-          - Sizing: ~72px height, generous spacing
-          - Left: School Logo & Title
-          - Center: ABOUT, ADMISSIONS, ACADEMICS, THE EXPERIENCE, PROGRAMS
-          - Right Buttons: INQUIRE, VISIT, APPLY
-          - Color Scheme: Neutral wireframe (white background, #222 text, #ccc borders)
+          2. MAIN NAVIGATION BAR (TRANSPARENT BAR, WHITE SCHOOL NAME, SOLID BUTTONS)
           ========================================================================= */}
-      <nav
-        className={`w-full transition-all duration-200 ${
-          isScrolled
-            ? 'bg-white/95 backdrop-blur-md shadow-sm border-b border-[#ccc] py-3'
-            : 'bg-white border-b border-[#e5e5e5] py-4'
-        }`}
-      >
+      <nav className="w-full bg-transparent py-3 sm:py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
-          {/* Logo & School Name (Official IS Dev Samaj Emblem) */}
+          {/* Logo & School Name in Crisp White */}
           <a href="#hero" className="flex items-center gap-3 shrink-0 group">
             <img
               src={logoUrl}
@@ -222,66 +210,66 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
                   target.src = `${import.meta.env.BASE_URL}logo.png`;
                 }
               }}
-              className="w-10 h-10 sm:w-12 sm:h-12 object-contain shrink-0 group-hover:scale-105 transition-transform drop-shadow-sm"
+              className="w-10 h-10 sm:w-12 sm:h-12 object-contain shrink-0 group-hover:scale-105 transition-transform drop-shadow-md brightness-105"
             />
             <div className="text-left">
-              <span className="block text-sm sm:text-base font-bold tracking-tight text-[#111] leading-tight">
+              <span className="block text-sm sm:text-base lg:text-lg font-bold tracking-tight text-white leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.6)]">
                 IS Dev Samaj
               </span>
-              <span className="block text-[11px] sm:text-xs text-[#555] font-normal leading-tight">
+              <span className="block text-[11px] sm:text-xs text-white/90 font-medium leading-tight drop-shadow-[0_1px_3px_rgba(0,0,0,0.5)]">
                 Senior Secondary School
               </span>
             </div>
           </a>
 
-          {/* Desktop Navigation Category Links */}
+          {/* Desktop Navigation Links (White text on transparent bar) */}
           <div className="hidden xl:flex items-center gap-6 2xl:gap-8">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
-                className="text-xs font-semibold tracking-wider text-[#333] hover:text-black transition-colors py-2 border-b-2 border-transparent hover:border-[#222]"
+                className="text-xs font-bold tracking-wider text-white hover:text-white/80 transition-colors py-2 border-b-2 border-transparent hover:border-white drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]"
               >
                 {item.label}
               </a>
             ))}
           </div>
 
-          {/* Right Action Buttons: INQUIRE, VISIT, APPLY (Exact buttons from BDCS) */}
+          {/* Right Action Buttons: Solid backgrounds preserved */}
           <div className="hidden lg:flex items-center gap-2.5">
-            {/* INQUIRE Button */}
+            {/* INQUIRE Button with background */}
             <button
               type="button"
               onClick={() => onOpenAdmissions('inquire')}
-              className="px-3.5 py-2 border border-[#ccc] hover:border-[#999] bg-white hover:bg-neutral-50 text-[#222] text-xs font-semibold uppercase tracking-wider rounded transition-colors shadow-sm"
+              className="px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
             >
               Inquire
             </button>
 
-            {/* VISIT Button */}
+            {/* VISIT Button with background */}
             <a
               href="#contact"
-              className="px-3.5 py-2 border border-[#ccc] hover:border-[#999] bg-white hover:bg-neutral-50 text-[#222] text-xs font-semibold uppercase tracking-wider rounded transition-colors shadow-sm"
+              className="px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
             >
               Visit
             </a>
 
-            {/* APPLY Button (Primary prominent action) */}
+            {/* APPLY Button with background */}
             <button
               type="button"
               onClick={() => onOpenAdmissions('apply')}
-              className="px-4 py-2 bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-600 hover:border-red-600 text-xs font-bold uppercase tracking-wider rounded transition-colors duration-200 shadow-sm"
+              className="px-4 py-1.5 sm:py-2 bg-[#FF3D37] hover:bg-[#e02d27] text-white text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
             >
               Apply
             </button>
           </div>
 
-          {/* Mobile Right: Quick Apply Button + Hamburger Menu */}
+          {/* Mobile Right: Quick Apply Button + Hamburger Menu (Solid backgrounds preserved) */}
           <div className="flex items-center gap-2 xl:hidden">
             <button
               type="button"
               onClick={() => onOpenAdmissions('apply')}
-              className="px-3 py-1.5 bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-600 hover:border-red-600 text-xs font-bold uppercase tracking-wider rounded transition-colors duration-200"
+              className="px-3 py-1.5 bg-[#FF3D37] hover:bg-[#e02d27] text-white text-xs font-bold uppercase tracking-wider rounded-md shadow-md active:scale-95 cursor-pointer"
             >
               Apply
             </button>
@@ -289,10 +277,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="px-3 py-1.5 bg-white hover:bg-black text-black hover:text-white border border-black hover:border-black text-xs font-bold uppercase tracking-wider rounded transition-colors duration-200 flex items-center gap-1.5 shadow-sm"
+              className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md flex items-center gap-1.5 shadow-md border border-white/50 active:scale-95 cursor-pointer"
               aria-label="Toggle navigation menu"
             >
-              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+              {mobileMenuOpen ? <X className="w-4 h-4 text-slate-900" /> : <Menu className="w-4 h-4 text-slate-900" />}
               <span>{mobileMenuOpen ? 'Close' : 'Menu'}</span>
             </button>
           </div>
@@ -302,23 +290,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             3. MOBILE MENU DRAWER (RESPONSIVE VIEW)
             ========================================================================= */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-[#ccc] px-5 py-6 shadow-xl animate-in slide-in-from-top-2 duration-200">
+          <div className="lg:hidden bg-slate-900/95 backdrop-blur-xl border-t border-white/20 px-5 py-6 shadow-2xl animate-in slide-in-from-top-2 duration-200">
             {/* Action Buttons Row */}
-            <div className="grid grid-cols-3 gap-2 pb-5 border-b border-[#e5e5e5]">
+            <div className="grid grid-cols-3 gap-2 pb-5 border-b border-white/15">
               <button
                 type="button"
                 onClick={() => {
                   setMobileMenuOpen(false);
                   onOpenAdmissions('inquire');
                 }}
-                className="py-2.5 px-2 border border-[#ccc] text-[#222] text-xs font-semibold uppercase tracking-wider rounded text-center"
+                className="py-2.5 px-2 bg-white text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md text-center shadow-sm active:scale-95 cursor-pointer"
               >
                 Inquire
               </button>
               <a
                 href="#contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className="py-2.5 px-2 border border-[#ccc] text-[#222] text-xs font-semibold uppercase tracking-wider rounded text-center"
+                className="py-2.5 px-2 bg-white text-slate-900 text-xs font-bold uppercase tracking-wider rounded-md text-center shadow-sm active:scale-95 cursor-pointer"
               >
                 Visit
               </a>
@@ -328,7 +316,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
                   setMobileMenuOpen(false);
                   onOpenAdmissions('apply');
                 }}
-                className="py-2.5 px-2 bg-white hover:bg-red-600 text-red-600 hover:text-white border border-red-600 hover:border-red-600 text-xs font-bold uppercase tracking-wider rounded text-center transition-colors duration-200"
+                className="py-2.5 px-2 bg-[#FF3D37] text-white text-xs font-bold uppercase tracking-wider rounded-md text-center shadow-sm active:scale-95 cursor-pointer"
               >
                 Apply
               </button>
@@ -341,7 +329,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
                   key={item.label}
                   href={item.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="py-2.5 px-3 text-sm font-semibold tracking-wider text-[#222] hover:bg-neutral-100 rounded transition-colors"
+                  className="py-2.5 px-3 text-sm font-semibold tracking-wider text-white hover:bg-white/10 rounded transition-colors"
                 >
                   {item.label}
                 </a>
@@ -349,8 +337,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             </div>
 
             {/* Utility Links: Portals & Giving */}
-            <div className="pt-4 border-t border-[#e5e5e5] flex flex-col gap-2 text-xs text-[#555]">
-              <div className="font-semibold text-[11px] uppercase tracking-wider text-[#888] px-3 pt-1">
+            <div className="pt-4 border-t border-white/15 flex flex-col gap-2 text-xs text-white/80">
+              <div className="font-semibold text-[11px] uppercase tracking-wider text-white/60 px-3 pt-1">
                 Portals &amp; Community
               </div>
               {portalLinks.map((portal) => (
@@ -358,7 +346,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
                   key={portal.label}
                   href={portal.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="px-3 py-1.5 text-xs text-[#444] hover:text-black hover:bg-neutral-50 rounded"
+                  className="px-3 py-1.5 text-xs text-white/80 hover:text-white hover:bg-white/10 rounded"
                 >
                   {portal.label}
                 </a>
@@ -366,7 +354,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
               <a
                 href="#community"
                 onClick={() => setMobileMenuOpen(false)}
-                className="px-3 py-1.5 text-xs font-medium text-[#222] hover:underline"
+                className="px-3 py-1.5 text-xs font-medium text-white hover:underline"
               >
                 Support / Give to Dev Samaj
               </a>

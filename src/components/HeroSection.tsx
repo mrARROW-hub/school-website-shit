@@ -41,21 +41,16 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
       {/* 1. HERO IMAGE CAROUSEL */}
       <section
         id="hero"
-        className="relative w-full aspect-[12/7] sm:aspect-auto sm:h-[440px] md:h-[480px] lg:h-[520px] flex items-end justify-center overflow-hidden bg-[#003366] text-white select-none border-b-0 sm:border-b border-[#002244]"
+        className="relative w-full aspect-[12/7] min-h-[280px] sm:min-h-0 sm:aspect-auto sm:h-[480px] md:h-[520px] lg:h-[560px] flex items-end justify-center overflow-hidden bg-[#0f172a] text-white select-none"
         aria-label="Hero Image Carousel"
       >
         {/* =========================================================================
-            BACKGROUND IMAGES (EXACT 1200x700 ASPECT RATIO ADAPTIVE SIZING)
-            - Sequential order: 
-                1st: g17.jpg (Student life, 1200x700)
-                2nd: campus3-1.jpg (Campus architecture, 1200x700)
-                3rd: g16.jpg / g16.webp (Sports & Football Team, 1200x700)
-            - Same duration across all slides (10s each) with smooth fade transitions
-            - Small screens: aspect-[12/7] container with object-contain ensures 
-              100% of the image fits edge-to-edge without being cropped
-            - Large screens: balanced banner height
+            BACKGROUND IMAGES WITH SEAMLESS DISSOLVE INTO DARK SLATE (#0f172a)
+            - Top & Bottom maskImage dissolves image boundaries completely into dark slate
+            - Multi-stop gradient overlays eliminate any perceptible start or end edges
+            - Object-cover ensures edge-to-edge bleed across all screen sizes
             ========================================================================= */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 z-0 overflow-hidden bg-[#0f172a]">
           <AnimatePresence mode="sync" initial={false}>
             <motion.div
               key={activeSlide.id}
@@ -64,6 +59,10 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
               exit={{ opacity: 0 }}
               transition={{ duration: 1.0, ease: 'easeInOut' }}
               className="absolute inset-0 w-full h-full"
+              style={{
+                maskImage: 'linear-gradient(to bottom, black 0%, black 86%, rgba(0,0,0,0.5) 95%, transparent 100%)',
+                WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 86%, rgba(0,0,0,0.5) 95%, transparent 100%)',
+              }}
             >
               <img
                 src={activeSlide.url}
@@ -78,18 +77,17 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                     }
                   }
                 }}
-                className="w-full h-full object-contain sm:object-cover object-center"
+                className="w-full h-full object-cover object-center"
                 loading="eager"
               />
             </motion.div>
           </AnimatePresence>
 
-          {/* ISB.BE-inspired #003366 Gradient Blends on Top and Bottom */}
-          {/* Top blend: softly darkens from #003366 down to transparent */}
-          <div className="absolute inset-x-0 top-0 h-24 sm:h-36 md:h-44 bg-gradient-to-b from-[#003366]/90 via-[#003366]/45 to-transparent pointer-events-none z-10" />
+          {/* Subtle top depth vignette (reduced to almost zero, preserves just enough contrast for nav text) */}
+          <div className="absolute inset-x-0 top-0 h-20 sm:h-24 bg-gradient-to-b from-black/35 via-black/10 to-transparent pointer-events-none z-10" />
 
-          {/* Bottom blend: seamless upward fade from #003366 to transparent for text legibility */}
-          <div className="absolute inset-x-0 bottom-0 h-36 sm:h-56 md:h-64 bg-gradient-to-t from-[#003366] via-[#003366]/75 to-transparent pointer-events-none z-10" />
+          {/* Softened Bottom Blend into Dark Slate (#0f172a) */}
+          <div className="absolute inset-x-0 bottom-0 h-24 sm:h-32 md:h-40 bg-gradient-to-t from-[#0f172a] from-0% via-[#0f172a]/80 via-20% via-[#0f172a]/25 via-60% to-transparent pointer-events-none z-10" />
         </div>
 
         {/* =========================================================================
@@ -156,12 +154,12 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
       {/* =========================================================================
           HERO HEADLINE BANNER FOR SMALL SCREENS:
           - Changes dynamically with the slide image
-          - Seamless #003366 background matching hero bottom blend
+          - Seamless Dark Slate (#0f172a) background matching hero bottom blend
           - Crisp white text
           - Word-wrap preserved for smaller screens
           ========================================================================= */}
       <section
-        className="sm:hidden w-full bg-[#003366] border-b border-[#002244] py-6 px-4 text-center"
+        className="sm:hidden w-full bg-[#0f172a] py-6 px-4 text-center"
         aria-label="School Vision Headline"
       >
         <div className="w-full max-w-sm mx-auto flex items-center justify-center min-h-[44px]">

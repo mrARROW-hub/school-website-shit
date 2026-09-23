@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'motion/react';
-import { Sparkles, CheckCircle2, HeartHandshake, BookOpen, ShieldCheck, X } from 'lucide-react';
+import { Sparkles, CheckCircle2, HeartHandshake, BookOpen, ShieldCheck, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { STORY_STATS } from '../data/schoolData';
 import campusImg from '../assets/campus1-1.webp';
-import { ISBRedCornerAccent } from './DecorativeShapes';
+import g16Fallback from '../assets/g16.jpg';
+import { ISBRedCornerAccent, ISBShape, ISBShapeType } from './DecorativeShapes';
 
 export const OurStorySection: React.FC = () => {
   const [showStoryModal, setShowStoryModal] = useState(false);
@@ -22,6 +23,16 @@ export const OurStorySection: React.FC = () => {
     mq.addEventListener?.('change', update);
     return () => mq.removeEventListener?.('change', update);
   }, []);
+
+  const pillarsRef = useRef<HTMLDivElement>(null);
+  const scrollPillars = (direction: 'left' | 'right') => {
+    if (!pillarsRef.current) return;
+    const step = 220;
+    pillarsRef.current.scrollBy({
+      left: direction === 'left' ? -step : step,
+      behavior: 'smooth',
+    });
+  };
 
   return (
     <section id="story" className="py-20 lg:py-28 bg-white border-b border-slate-200">
@@ -140,21 +151,91 @@ export const OurStorySection: React.FC = () => {
               </p>
             </div>
 
-            {/* Key Pillars */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-slate-50 border border-slate-200">
-                <HeartHandshake className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900">Moral Character</h4>
-                  <p className="text-[11px] text-slate-500">Truthfulness, empathy, and respect in daily habit.</p>
+            {/* Key Pillars — Horizontal Form with Scroll */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-3 px-0.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#003366]/80 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#003366] inline-block" />
+                  Core Pillars
+                </span>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => scrollPillars('left')}
+                    aria-label="Previous pillar"
+                    className="w-8 h-8 rounded-full bg-white hover:bg-[#003366] text-[#003366] hover:text-white border border-[#ccc] shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollPillars('right')}
+                    aria-label="Next pillar"
+                    className="w-8 h-8 rounded-full bg-white hover:bg-[#003366] text-[#003366] hover:text-white border border-[#ccc] shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
                 </div>
               </div>
-              <div className="flex items-start gap-2.5 p-3 rounded-lg bg-slate-50 border border-slate-200">
-                <BookOpen className="w-5 h-5 text-blue-800 shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="text-xs font-bold text-slate-900">Academic Rigour</h4>
-                  <p className="text-[11px] text-slate-500">Conceptual mastery and active scientific inquiry.</p>
-                </div>
+
+              <div
+                ref={pillarsRef}
+                className="flex flex-row gap-3.5 overflow-x-auto no-scrollbar pb-3 pt-1 -mx-2 px-2 sm:mx-0 sm:px-0 select-none snap-x snap-mandatory scroll-smooth"
+              >
+                {[
+                  {
+                    id: 'pillar-1',
+                    title: 'Moral Grounding',
+                    desc: 'Ethical foundations before academic ambition.',
+                    shape: 'pink-circle' as ISBShapeType,
+                    hoverBorder: 'hover:border-[#861fce]',
+                  },
+                  {
+                    id: 'pillar-2',
+                    title: 'Intellectual Depth',
+                    desc: 'Curiosity over rote learning, mastery over memorization.',
+                    shape: 'blue-hourglass' as ISBShapeType,
+                    hoverBorder: 'hover:border-[#0064ec]',
+                  },
+                  {
+                    id: 'pillar-3',
+                    title: 'Self-Reliance',
+                    desc: 'Equipping students to navigate a changing world independently.',
+                    shape: 'yellow-bars' as ISBShapeType,
+                    hoverBorder: 'hover:border-[#FF3D37]',
+                  },
+                ].map((pillar, idx) => (
+                  <div
+                    key={pillar.id}
+                    className="w-[78vw] max-w-[270px] sm:w-[240px] shrink-0 snap-start h-full"
+                  >
+                    <div
+                      className={`p-3.5 sm:p-4 border border-[#ccc] rounded-2xl bg-white ${pillar.hoverBorder} transition-all duration-300 group h-full shadow-xs flex flex-col justify-between min-h-[300px] sm:min-h-[320px]`}
+                    >
+                      <div>
+                        {/* Blank Picture Slot ready for user to add image */}
+                        <div className="relative w-full h-28 sm:h-32 mb-3 rounded-xl bg-slate-50/80 border border-dashed border-slate-200 group-hover:border-slate-300 transition-colors">
+                          {/* Top-left symbol without any background behind it */}
+                          <div className="absolute top-2.5 left-2.5 pointer-events-none">
+                            <ISBShape type={pillar.shape} size={18} />
+                          </div>
+                        </div>
+
+                        <h4 className="font-bold text-sm sm:text-base text-[#111] mb-1.5">
+                          {pillar.title}
+                        </h4>
+                        <p className="text-xs text-[#555] leading-relaxed">
+                          {pillar.desc}
+                        </p>
+                      </div>
+
+                      <div className="pt-2.5 mt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-[#777]">
+                        <span className="font-mono text-[10px] text-[#999]">0{idx + 1}</span>
+                        <span className="font-semibold text-[#003366] group-hover:underline">Pillar</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
