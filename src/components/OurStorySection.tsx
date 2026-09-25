@@ -5,6 +5,9 @@ import { STORY_STATS } from '../data/schoolData';
 import campusImg from '../assets/campus1-1.webp';
 import g16Fallback from '../assets/g16.jpg';
 import moralGroundingImg from '../assets/images/moral_grounding_1790149720413.jpg';
+import lab3Img from '../assets/lab3-1.jpg';
+import intellectualDepthHoverImg from '../assets/images/intellectual_depth_hover.png';
+import selfRelianceHoverImg from '../assets/images/self_reliance_hover.png';
 import { ISBRedCornerAccent, ISBShape, ISBShapeType } from './DecorativeShapes';
 
 export const OurStorySection: React.FC = () => {
@@ -47,91 +50,10 @@ export const OurStorySection: React.FC = () => {
           <span className="w-10 h-[1px] bg-amber-400" />
         </div>
 
-        {/* Responsive Background inspired by ISB's "Discover & Experience" section */}
-        <motion.div
-          initial={!isMobileOrTablet ? { opacity: 0, x: -140, scale: 0.98 } : false}
-          whileInView={!isMobileOrTablet ? { opacity: 1, x: 0, scale: 1 } : undefined}
-          viewport={{ once: true, amount: 0.12 }}
-          transition={{
-            type: 'spring',
-            stiffness: 75,
-            damping: 18,
-            mass: 0.85,
-          }}
-          className="relative rounded-3xl lg:bg-[#f5f5f5] lg:border lg:border-neutral-200/90 lg:p-12 xl:p-14 lg:shadow-sm"
-        >
-          {/* Red coloured design at top-right corner for large screens (enlarged for prominence) */}
-          <div className="hidden lg:block absolute -top-7 -right-4 xl:-top-8 xl:-right-5 z-20 pointer-events-none select-none">
-            <ISBRedCornerAccent size={112} />
-          </div>
-
-          {/* Wireframe: .story-layout (2 columns grid) */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Wireframe: .story-image */}
-            <div className="relative group">
-              {/* Small screens wrapper:
-                  - The background touches the left edge completely (half out of screen feel).
-                  - The background is expanded and visibly framed around the image.
-                  - The image itself is NOT cut, keeping its full rounded corners and borders intact.
-                  - The entire unit smoothly pops out of the left side. */}
-              <motion.div
-                initial={isMobileOrTablet ? { opacity: 0, x: -110, scale: 0.95 } : false}
-                whileInView={isMobileOrTablet ? { opacity: 1, x: 0, scale: 1 } : undefined}
-                viewport={{ once: true, amount: 0.12 }}
-                transition={{
-                  type: 'spring',
-                  stiffness: 85,
-                  damping: 17,
-                  mass: 0.85,
-                }}
-                className="relative rounded-r-3xl rounded-l-none bg-[#f5f5f5] border-y border-r border-l-0 border-neutral-200/90 shadow-md
-                  -ml-4 sm:-ml-6 w-[calc(100%+1rem)] sm:w-[calc(100%+1.5rem)]
-                  p-6 sm:p-8 pt-8 sm:pt-10 pb-8 sm:pb-10 pl-6 sm:pl-8 pr-6 sm:pr-8
-                  lg:ml-0 lg:w-full lg:rounded-3xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
-              >
-                {/* Red coloured design at top-right corner for small screens (enlarged for prominence) */}
-                <div className="block lg:hidden absolute -top-5 right-3 sm:-top-6 sm:right-4 z-20 pointer-events-none select-none">
-                  <ISBRedCornerAccent size={88} />
-                </div>
-
-                {/* Uncut campus photo with complete rounded corners and slate depth gradient */}
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/25 border border-slate-200 aspect-[16/10] sm:aspect-[16/10] lg:aspect-[4/3] bg-slate-900">
-                  <img
-                    src={campusImg}
-                    alt="IS Dev Samaj Iconic Heritage Campus Chandigarh"
-                    loading="lazy"
-                    decoding="async"
-                    className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700"
-                  />
-                  {/* Dark slate depth gradient on bottom */}
-                  <div className="absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent pointer-events-none" />
-
-                  {/* Bottom-left CAMPUS label with white color and Poppins sans-serif typography */}
-                  <div
-                    id="our-story-campus-image-label"
-                    className="absolute bottom-3 left-4 sm:bottom-5 sm:left-6 z-10 select-none pointer-events-none flex items-center"
-                  >
-                    <span
-                      className="text-white text-xl sm:text-2xl md:text-3xl font-bold tracking-wider sm:tracking-widest uppercase drop-shadow-[0_3px_8px_rgba(0,0,0,0.85)]"
-                      style={{ fontFamily: "'Poppins', sans-serif" }}
-                    >
-                      CAMPUS
-                    </span>
-                  </div>
-                </div>
-              </motion.div>
-
-              {/* Decorative Badge */}
-              <div className="hidden sm:flex absolute -top-5 -right-5 bg-blue-900 text-amber-300 p-4 rounded-xl shadow-xl border border-amber-400/30 items-center gap-3">
-                <ShieldCheck className="w-8 h-8 shrink-0 text-amber-400" />
-                <div>
-                  <p className="text-xs font-bold uppercase text-white">Affiliated with CBSE</p>
-                  <p className="text-[11px] text-amber-200">New Delhi • Co-Educational</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Wireframe: .story-text */}
+        {/* Content Container:
+            - On small screens: boxes scroll horizontally; campus photo below with left-bleed gray background.
+            - On large screens: NO background behind boxes; boxes placed side by side horizontally in 3 columns with no scroll; campus photo brought down with its own gray background and red corner accent. */}
+        <div className="relative">
           <div className="flex flex-col">
             <h2
               className="text-[34px] font-fraunces font-bold text-slate-900 tracking-tight leading-tight mb-6 text-center break-words"
@@ -140,11 +62,7 @@ export const OurStorySection: React.FC = () => {
               where values meet vision.....
             </h2>
 
-            {/* Reduced text on small screens (outside any box/background); full text on large screens */}
-            <p className="block lg:hidden text-base text-[#003366] leading-relaxed mb-6 font-medium">
-              Rooted in Dev Samaj philosophy, shaping intellect and character with purpose.
-            </p>
-            <div className="hidden lg:block space-y-4 mb-8 text-base text-[#003366] leading-relaxed">
+            <div className="hidden lg:block space-y-4 mb-8 text-base text-[#003366] leading-relaxed max-w-3xl">
               <p>
                 A school rooted in community, shaped by decades of commitment to holistic education. More than academics &mdash; a place where character is built alongside knowledge.
               </p>
@@ -153,14 +71,14 @@ export const OurStorySection: React.FC = () => {
               </p>
             </div>
 
-            {/* Key Pillars — Horizontal Form with Scroll */}
+            {/* Key Pillars — Horizontal Form with Scroll on Small Screens; 3 Columns Side-by-Side on Large Screens */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-3 px-0.5">
                 <span className="text-[11px] font-bold uppercase tracking-wider text-[#003366]/80 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#003366] inline-block" />
                   Core Pillars
                 </span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex lg:hidden items-center gap-1.5">
                   <button
                     type="button"
                     onClick={() => scrollPillars('left')}
@@ -182,7 +100,7 @@ export const OurStorySection: React.FC = () => {
 
               <div
                 ref={pillarsRef}
-                className="flex flex-row gap-3.5 overflow-x-auto no-scrollbar pb-3 pt-1 -mx-2 px-2 sm:mx-0 sm:px-0 select-none snap-x snap-mandatory scroll-smooth"
+                className="flex lg:grid lg:grid-cols-3 gap-3.5 sm:gap-4 lg:gap-6 overflow-x-auto lg:overflow-visible no-scrollbar pb-3 pt-1 -mx-2 px-2 sm:mx-0 sm:px-0 select-none lg:select-auto snap-x snap-mandatory scroll-smooth lg:snap-none"
               >
                 {[
                   {
@@ -201,55 +119,79 @@ export const OurStorySection: React.FC = () => {
                     title: 'Intellectual Depth',
                     desc: 'Curiosity over rote learning, mastery over memorization.',
                     shape: 'blue-hourglass' as ISBShapeType,
-                    hoverBorder: 'hover:border-[#0064ec]',
-                    image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/lab3-1.jpg',
-                    bgColor: 'bg-[#0064ec]',
-                    hoverShape: 'purple-stairs' as ISBShapeType,
-                    hoverShapeColor: '#11FEEE',
+                    hoverBorder: 'hover:border-[#FEBD38]',
+                    image: lab3Img || 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/lab3-1.jpg',
+                    bgColor: 'bg-[#FEBD38]',
+                    hoverBgImage: intellectualDepthHoverImg,
+                    hoverShape: undefined,
+                    hoverShapeColor: '#002B49',
                   },
                   {
                     id: 'pillar-3',
                     title: 'Self-Reliance',
                     desc: 'Equipping students to navigate a changing world independently.',
                     shape: 'yellow-bars' as ISBShapeType,
-                    hoverBorder: 'hover:border-[#FF3D37]',
+                    hoverBorder: 'hover:border-[#00A661]',
                     image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/g11.jpg',
-                    bgColor: 'bg-[#FF3D37]',
-                    hoverShape: 'yellow-bars' as ISBShapeType,
-                    hoverShapeColor: '#FFFF01',
+                    bgColor: 'bg-[#00A661]',
+                    hoverBgImage: selfRelianceHoverImg,
+                    hoverShape: undefined,
+                    hoverShapeColor: '#002B49',
                   },
-                ].map((pillar, idx) => {
+                ].map((pillar) => {
                   const isActive = activePillarMobile === pillar.id;
                   return (
                     <div
                       key={pillar.id}
-                      className="w-[85vw] max-w-[340px] sm:w-[280px] lg:w-full lg:max-w-none shrink-0 snap-start h-full"
+                      className="w-[85vw] max-w-[340px] sm:w-[280px] lg:w-auto lg:max-w-none shrink-0 lg:shrink snap-start lg:snap-none h-full"
                     >
                       <div
                         onClick={() => {
                           if (typeof window !== 'undefined' && window.innerWidth >= 1024) return;
                           setActivePillarMobile(prev => (prev === pillar.id ? null : pillar.id));
                         }}
-                        className={`relative overflow-hidden border border-[#ccc] rounded-2xl ${pillar.bgColor} ${pillar.hoverBorder} transition-all duration-300 group h-full shadow-xs flex flex-col justify-end min-h-[380px] sm:min-h-[410px] lg:min-h-[450px] cursor-pointer lg:cursor-default`}
+                        className={`relative overflow-hidden border border-[#ccc] rounded-tr-2xl rounded-bl-2xl sm:rounded-tr-3xl sm:rounded-bl-3xl rounded-tl-none rounded-br-none ${pillar.bgColor} ${pillar.hoverBorder} transition-all duration-300 group h-full shadow-md hover:shadow-none flex flex-col justify-end min-h-[380px] sm:min-h-[410px] lg:min-h-[450px] cursor-pointer lg:cursor-default`}
                       >
-                        {/* Background Image: reveals solid color on hover on desktop, or tap on mobile */}
-                        {pillar.image ? (
+                        {/* Hover Background Image (e.g. user-provided artwork without text) */}
+                        {pillar.hoverBgImage && (
                           <div
-                            className={`absolute inset-0 bg-cover group-hover:scale-105 group-hover:opacity-0 transition-all duration-500 ease-out ${
+                            className="absolute inset-0 bg-cover bg-no-repeat bg-right-top pointer-events-none z-0"
+                            style={{ backgroundImage: `url(${pillar.hoverBgImage})` }}
+                          />
+                        )}
+
+                        {/* Background Image: reveals solid color / hoverBgImage on hover on desktop, or tap on mobile */}
+                        {pillar.image && (
+                          <div
+                            className={`absolute inset-0 bg-cover group-hover:scale-105 group-hover:opacity-0 transition-all duration-500 ease-out z-10 ${
                               pillar.id === 'pillar-2' ? 'intellectual-depth-img' : pillar.id === 'pillar-3' ? 'self-reliance-img' : 'bg-center'
                             } ${isActive ? 'scale-105 !opacity-0' : ''}`}
                             style={{ backgroundImage: `url(${pillar.image})` }}
                           />
-                        ) : (
-                          <div className="absolute inset-0 bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center pointer-events-none">
-                            <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Image Background</span>
-                          </div>
+                        )}
+
+                        {/* Top depth gradient for rich visual depth when photo is shown - removed while hovering */}
+                        {pillar.image && (
+                          <div
+                            className={`absolute inset-x-0 top-0 h-28 sm:h-32 bg-gradient-to-b from-slate-950/80 via-slate-950/30 to-transparent pointer-events-none z-15 transition-opacity duration-500 ease-out group-hover:opacity-0 ${
+                              isActive ? '!opacity-0' : ''
+                            }`}
+                          />
+                        )}
+
+                        {/* Bottom depth gradient for rich visual depth when photo is shown - removed while hovering */}
+                        {pillar.image && (
+                          <div
+                            className={`absolute inset-x-0 bottom-0 h-44 sm:h-48 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent pointer-events-none z-15 transition-opacity duration-500 ease-out group-hover:opacity-0 ${
+                              isActive ? '!opacity-0' : ''
+                            }`}
+                          />
                         )}
 
                         {/* Large decorative shape appearing in top-right on hover (desktop) or tap (mobile) */}
                         {pillar.hoverShape && (
                           <div
-                            className={`absolute z-10 pointer-events-none opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out ${
+                            className={`absolute z-15 pointer-events-none opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out ${
                               pillar.hoverShape === 'four-petal-flower'
                                 ? '-top-8 -right-8 sm:-top-10 sm:-right-10'
                                 : '-top-10 -right-10'
@@ -265,32 +207,44 @@ export const OurStorySection: React.FC = () => {
 
                         {/* Top shape symbol indicator */}
                         <div
-                          className={`absolute top-3 left-3 z-20 bg-white/90 backdrop-blur-xs p-1.5 rounded-lg shadow-xs group-hover:opacity-0 transition-opacity duration-300 ${
-                            isActive ? '!opacity-0' : ''
-                          }`}
+                          className={`absolute top-3 left-3 z-20 ${
+                            pillar.image
+                              ? 'bg-white/90 backdrop-blur-xs p-1.5 rounded-lg shadow-xs group-hover:opacity-0 transition-opacity duration-300'
+                              : 'bg-slate-100/90 border border-slate-200/60 p-1.5 rounded-lg shadow-2xs'
+                          } ${isActive && pillar.image ? '!opacity-0' : ''}`}
                         >
                           <ISBShape type={pillar.shape} size={16} />
                         </div>
 
-                        {/* Text content moved to bottom left with clean readability */}
-                        <div
-                          className={`relative z-20 p-4 sm:p-5 text-left text-white w-full flex flex-col justify-end transition-colors duration-300 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent group-hover:bg-transparent ${
-                            isActive ? '!bg-transparent' : ''
-                          }`}
-                        >
+                        {/* Text content moved to bottom left with clean readability without background gradient sticking */}
+                        <div className="relative z-20 p-4 sm:p-5 text-left w-full flex flex-col justify-end bg-transparent">
                           <div className="flex items-center justify-between gap-3">
                             <div>
-                              <h4 className="font-bold text-sm sm:text-base text-white [text-shadow:_0_2px_4px_rgba(0,0,0,0.9)] mb-1">
+                              <h4
+                                className={`font-bold text-sm sm:text-base mb-1 ${
+                                  pillar.image
+                                    ? 'text-white [text-shadow:_0_2px_4px_rgba(0,0,0,0.9)]'
+                                    : 'text-[#002B49]'
+                                }`}
+                              >
                                 {pillar.title}
                               </h4>
-                              <p className="text-xs text-slate-200 [text-shadow:_0_1px_3px_rgba(0,0,0,0.8)] leading-relaxed mb-0">
+                              <p
+                                className={`text-xs leading-relaxed mb-0 font-medium ${
+                                  pillar.image
+                                    ? 'text-slate-100 [text-shadow:_0_1px_3px_rgba(0,0,0,0.8)]'
+                                    : 'text-slate-600'
+                                }`}
+                              >
                                 {pillar.desc}
                               </p>
                             </div>
                             <span
-                              className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 shadow-xs bg-white/20 text-white group-hover:bg-white group-hover:text-[#003366] group-hover:translate-x-1 ${
-                                isActive ? '!bg-white !text-[#003366] !translate-x-1' : ''
-                              }`}
+                              className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 shadow-xs ${
+                                pillar.image
+                                  ? 'bg-white/20 text-white group-hover:bg-white group-hover:text-[#002B49] group-hover:translate-x-1'
+                                  : 'bg-slate-100 text-[#002B49] group-hover:bg-[#002B49] group-hover:text-white group-hover:translate-x-1'
+                              } ${isActive ? (pillar.image ? '!bg-white !text-[#002B49] !translate-x-1' : '!bg-[#002B49] !text-white !translate-x-1') : ''}`}
                             >
                               <ArrowRight size={16} />
                             </span>
@@ -330,9 +284,72 @@ export const OurStorySection: React.FC = () => {
               </button>
             </div>
           </div>
+
+          {/* Wireframe: .story-image brought down on large screens with its gray background and red corner accent */}
+          <div className="relative group mt-8 sm:mt-10 lg:mt-12">
+            <motion.div
+              initial={isMobileOrTablet ? { opacity: 0, x: -110, scale: 0.95 } : { opacity: 0, y: 35, scale: 0.98 }}
+              whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.12 }}
+              transition={{
+                type: 'spring',
+                stiffness: 85,
+                damping: 17,
+                mass: 0.85,
+              }}
+              className="relative rounded-r-3xl rounded-l-none bg-[#f5f5f5] border-y border-r border-l-0 border-neutral-200/90 shadow-md
+                -ml-4 sm:-ml-6 w-[calc(100%+1rem)] sm:w-[calc(100%+1.5rem)]
+                p-6 sm:p-8 pt-8 sm:pt-10 pb-8 sm:pb-10 pl-6 sm:pl-8 pr-6 sm:pr-8
+                lg:ml-0 lg:w-full lg:rounded-3xl lg:border lg:border-neutral-200/90 lg:bg-[#f5f5f5] lg:p-10 xl:p-12 lg:shadow-md"
+            >
+              {/* Red coloured design at top-right corner for small screens */}
+              <div className="block lg:hidden absolute -top-5 right-3 sm:-top-6 sm:right-4 z-20 pointer-events-none select-none">
+                <ISBRedCornerAccent size={88} />
+              </div>
+
+              {/* Red coloured design at top-right corner for large screens */}
+              <div className="hidden lg:block absolute -top-7 -right-4 xl:-top-8 xl:-right-5 z-20 pointer-events-none select-none">
+                <ISBRedCornerAccent size={112} />
+              </div>
+
+              {/* Uncut campus photo with complete rounded corners and slate depth gradient */}
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/25 border border-slate-200 aspect-[16/10] sm:aspect-[16/10] lg:aspect-[21/9] xl:aspect-[2.4/1] min-h-[230px] sm:min-h-[300px] lg:min-h-[420px] bg-slate-900">
+                <img
+                  src={campusImg}
+                  alt="IS Dev Samaj Iconic Heritage Campus Chandigarh"
+                  loading="lazy"
+                  decoding="async"
+                  className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700"
+                />
+                {/* Dark slate depth gradient on bottom */}
+                <div className="absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent pointer-events-none" />
+
+                {/* Bottom-left CAMPUS label with white color and Poppins sans-serif typography */}
+                <div
+                  id="our-story-campus-image-label"
+                  className="absolute bottom-3 left-4 sm:bottom-5 sm:left-6 z-10 select-none pointer-events-none flex items-center"
+                >
+                  <span
+                    className="text-white text-xl sm:text-2xl md:text-3xl font-bold tracking-wider sm:tracking-widest uppercase drop-shadow-[0_3px_8px_rgba(0,0,0,0.85)]"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    CAMPUS
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Decorative Badge */}
+            <div className="hidden sm:flex absolute -top-5 -right-5 bg-blue-900 text-amber-300 p-4 rounded-xl shadow-xl border border-amber-400/30 items-center gap-3">
+              <ShieldCheck className="w-8 h-8 shrink-0 text-amber-400" />
+              <div>
+                <p className="text-xs font-bold uppercase text-white">Affiliated with CBSE</p>
+                <p className="text-[11px] text-amber-200">New Delhi • Co-Educational</p>
+              </div>
+            </div>
+          </div>
         </div>
-      </motion.div>
-    </div>
+      </div>
 
       {/* Story Modal */}
       {showStoryModal && (

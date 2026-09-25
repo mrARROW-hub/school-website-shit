@@ -235,7 +235,29 @@ export type ISBShapeType =
   | 'red-triangle'
   | 'pink-arch'
   | 'double-arrows'
-  | 'four-petal-flower';
+  | 'four-petal-flower'
+  | 'red-stairs';
+
+export const ShapeRedStairs: React.FC<ShapeProps> = ({
+  className = '',
+  size = 200,
+  color = '#FA3838',
+}) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 165 165"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className={`inline-block select-none pointer-events-none ${className}`}
+    aria-hidden="true"
+  >
+    {/* 3-Tier Step Grid matching Screenshot (444).png */}
+    <rect x="110" y="0" width="55" height="55" fill={color} />
+    <rect x="55" y="55" width="110" height="55" fill={color} />
+    <rect x="0" y="110" width="110" height="55" fill={color} />
+  </svg>
+);
 
 export const ShapeFourPetalFlower: React.FC<ShapeProps> = ({
   className = '',
@@ -305,6 +327,8 @@ export const ISBShape: React.FC<{
       return <ShapeDoubleArrows size={size} className={className} color={color} />;
     case 'four-petal-flower':
       return <ShapeFourPetalFlower size={size} className={className} color={color} />;
+    case 'red-stairs':
+      return <ShapeRedStairs size={size} className={className} color={color} />;
     default:
       return null;
   }

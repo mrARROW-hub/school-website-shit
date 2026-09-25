@@ -41,8 +41,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
   ];
 
   const portalLinks = [
-    { label: 'Parent Portal', href: '#contact' },
-    { label: 'Student Portal', href: '#contact' },
+    { label: 'Parent Portal', href: '#admissions' },
+    { label: 'Student Portal', href: '#admissions' },
     { label: 'Alumni Network', href: '#community' },
   ];
 
@@ -52,18 +52,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
     const q = searchQuery.toLowerCase();
 
     // Route to appropriate section based on keyword
-    if (q.includes('admiss') || q.includes('fee') || q.includes('apply')) {
+    if (q.includes('admiss') || q.includes('fee') || q.includes('apply') || q.includes('visit') || q.includes('inquir') || q.includes('contact')) {
       window.location.hash = '#admissions';
-    } else if (q.includes('acad') || q.includes('class') || q.includes('curric') || q.includes('cbse')) {
+    } else if (q.includes('acad') || q.includes('class') || q.includes('curric') || q.includes('cbse') || q.includes('camp') || q.includes('facil') || q.includes('lab')) {
       window.location.hash = '#journey';
-    } else if (q.includes('camp') || q.includes('facil') || q.includes('lab')) {
-      window.location.hash = '#campus';
     } else if (q.includes('sport') || q.includes('club') || q.includes('activ') || q.includes('life')) {
       window.location.hash = '#beyond';
     } else if (q.includes('achieve') || q.includes('award')) {
       window.location.hash = '#achievements';
-    } else if (q.includes('contact') || q.includes('phone') || q.includes('visit') || q.includes('address')) {
-      window.location.hash = '#contact';
     } else {
       window.location.hash = '#story';
     }
@@ -247,12 +243,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
             </button>
 
             {/* VISIT Button with background */}
-            <a
-              href="#contact"
+            <button
+              type="button"
+              onClick={() => onOpenAdmissions('visit')}
               className="px-3.5 py-1.5 sm:py-2 bg-white hover:bg-slate-100 text-[#003366] text-xs font-bold uppercase tracking-wider rounded-md transition-all shadow-md hover:shadow-lg hover:scale-105 active:scale-95 cursor-pointer"
             >
               Visit
-            </a>
+            </button>
 
             {/* APPLY Button with background */}
             <button
@@ -303,13 +300,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
               >
                 Inquire
               </button>
-              <a
-                href="#contact"
-                onClick={() => setMobileMenuOpen(false)}
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenAdmissions('visit');
+                }}
                 className="py-2.5 px-2 bg-white text-[#003366] text-xs font-bold uppercase tracking-wider rounded-md text-center shadow-sm active:scale-95 cursor-pointer"
               >
                 Visit
-              </a>
+              </button>
               <button
                 type="button"
                 onClick={() => {

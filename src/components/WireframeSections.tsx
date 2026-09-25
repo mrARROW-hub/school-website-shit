@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { MapPin, Navigation, ExternalLink, Phone, Mail, Clock, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import {
   ISBShape,
   ISBWordBadge,
@@ -18,357 +18,15 @@ import { WeMoveSection } from './WeMoveSection';
 import campusPhoto from '../assets/campus1-1.webp';
 import g16Fallback from '../assets/g16.jpg';
 import moralGroundingImg from '../assets/images/moral_grounding_1790149720413.jpg';
-
-interface CampusFacility {
-  tag: string;
-  title: string;
-  desc: string;
-}
-
-const CampusFacilitiesCarousel: React.FC<{ facilities: CampusFacility[] }> = ({ facilities }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragInfo = useRef({
-    isDown: false,
-    startX: 0,
-    scrollLeft: 0,
-  });
-
-  // Enable mouse wheel to scroll horizontally on small screens without showing scrollbar
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const onWheel = (e: WheelEvent) => {
-      // Only handle if content overflows horizontally (small screens)
-      if (el.scrollWidth <= el.clientWidth) return;
-
-      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-      if (Math.abs(delta) > 0) {
-        const atStart = el.scrollLeft <= 0 && delta < 0;
-        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 && delta > 0;
-
-        if (!atStart && !atEnd) {
-          e.preventDefault();
-          el.scrollLeft += delta;
-        }
-      }
-    };
-
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, []);
-
-  // Mouse Drag handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    const el = scrollRef.current;
-    if (!el || el.scrollWidth <= el.clientWidth) return;
-    dragInfo.current.isDown = true;
-    dragInfo.current.startX = e.pageX - el.offsetLeft;
-    dragInfo.current.scrollLeft = el.scrollLeft;
-    setIsDragging(true);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!dragInfo.current.isDown) return;
-    const el = scrollRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - dragInfo.current.startX) * 1.4;
-    el.scrollLeft = dragInfo.current.scrollLeft - walk;
-  };
-
-  const handleMouseUpOrLeave = () => {
-    if (dragInfo.current.isDown) {
-      dragInfo.current.isDown = false;
-      setIsDragging(false);
-    }
-  };
-
-  const scrollByAmount = (direction: 'left' | 'right') => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const step = Math.min(el.clientWidth * 0.85, 320);
-    el.scrollBy({
-      left: direction === 'left' ? -step : step,
-      behavior: 'smooth',
-    });
-  };
-
-  return (
-    <div className="relative">
-      {/* Mobile/Small-screen simple navigation arrows */}
-      <div className="flex md:hidden items-center justify-between mb-2 px-1">
-        <span className="text-[11px] font-medium text-[#777]">
-          Drag or scroll with mouse
-        </span>
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => scrollByAmount('left')}
-            aria-label="Previous facility"
-            className="p-1.5 rounded-full border border-[#ccc] bg-white text-[#555] hover:bg-[#f5f5f5] hover:text-black transition-colors cursor-pointer"
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollByAmount('right')}
-            aria-label="Next facility"
-            className="p-1.5 rounded-full border border-[#ccc] bg-white text-[#555] hover:bg-[#f5f5f5] hover:text-black transition-colors cursor-pointer"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </div>
-
-      {/* Facility Cards: Horizontal scroll on small screens (< md), 3-column grid on desktop (md+) */}
-      <div
-        ref={scrollRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={handleMouseUpOrLeave}
-        className={`flex md:grid md:grid-cols-3 gap-4 md:gap-6 overflow-x-auto md:overflow-visible no-scrollbar pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 select-none ${
-          isDragging ? 'cursor-grabbing' : 'cursor-grab md:cursor-default'
-        } ${!isDragging ? 'snap-x snap-mandatory md:snap-none' : ''}`}
-      >
-        {facilities.map((facility, idx) => (
-          <div
-            key={idx}
-            className="w-[82vw] max-w-[320px] sm:w-[320px] md:w-auto shrink-0 md:shrink snap-center h-full"
-          >
-            <div className="border border-[#ccc] rounded overflow-hidden bg-white h-full flex flex-col hover:border-[#888] hover:shadow-xs transition-all select-none">
-              <div className="wf-img-placeholder h-44 shrink-0 font-medium select-none" draggable={false}>
-                {facility.tag}
-              </div>
-              <div className="p-4 flex-1 flex flex-col justify-between">
-                <div>
-                  <h4 className="font-bold text-sm text-[#222] mb-1">{facility.title}</h4>
-                  <p className="text-xs text-[#666] leading-relaxed">{facility.desc}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
-
-interface FacultyMember {
-  tag: string;
-  name: string;
-  role: string;
-  bio: string;
-}
-
-const FacultyCarousel: React.FC<{ faculty: FacultyMember[] }> = ({ faculty }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragInfo = useRef({
-    isDown: false,
-    startX: 0,
-    scrollLeft: 0,
-  });
-
-  // Enable mouse wheel to scroll horizontally on small screens without showing scrollbar
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const onWheel = (e: WheelEvent) => {
-      // Only handle if content overflows horizontally (small screens)
-      if (el.scrollWidth <= el.clientWidth) return;
-
-      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-      if (Math.abs(delta) > 0) {
-        const atStart = el.scrollLeft <= 0 && delta < 0;
-        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 && delta > 0;
-
-        if (!atStart && !atEnd) {
-          e.preventDefault();
-          el.scrollLeft += delta;
-        }
-      }
-    };
-
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, []);
-
-  // Mouse Drag handlers
-  const handleMouseDown = (e: React.MouseEvent) => {
-    const el = scrollRef.current;
-    if (!el || el.scrollWidth <= el.clientWidth) return;
-    dragInfo.current.isDown = true;
-    dragInfo.current.startX = e.pageX - el.offsetLeft;
-    dragInfo.current.scrollLeft = el.scrollLeft;
-    setIsDragging(true);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!dragInfo.current.isDown) return;
-    const el = scrollRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - dragInfo.current.startX) * 1.4;
-    el.scrollLeft = dragInfo.current.scrollLeft - walk;
-  };
-
-  const handleMouseUpOrLeave = () => {
-    if (dragInfo.current.isDown) {
-      dragInfo.current.isDown = false;
-      setIsDragging(false);
-    }
-  };
-
-  const scrollByAmount = (direction: 'left' | 'right') => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const step = Math.min(el.clientWidth * 0.85, 280);
-    el.scrollBy({
-      left: direction === 'left' ? -step : step,
-      behavior: 'smooth',
-    });
-  };
-
-  return (
-    <div className="relative mt-8">
-      {/* Mobile/Small-screen simple navigation arrows */}
-      <div className="flex md:hidden items-center justify-between mb-2 px-1">
-        <span className="text-[11px] font-medium text-[#777]">
-          Drag or scroll with mouse
-        </span>
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => scrollByAmount('left')}
-            aria-label="Previous educator"
-            className="p-1.5 rounded-full border border-[#ccc] bg-white text-[#555] hover:bg-[#f5f5f5] hover:text-black transition-colors cursor-pointer"
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <button
-            type="button"
-            onClick={() => scrollByAmount('right')}
-            aria-label="Next educator"
-            className="p-1.5 rounded-full border border-[#ccc] bg-white text-[#555] hover:bg-[#f5f5f5] hover:text-black transition-colors cursor-pointer"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      </div>
-
-      {/* Faculty Cards: Horizontal scroll on small screens (< md), 4-column grid on desktop (md+) */}
-      <div
-        ref={scrollRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={handleMouseUpOrLeave}
-        className={`flex md:grid md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 overflow-x-auto md:overflow-visible no-scrollbar pb-3 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 select-none ${
-          isDragging ? 'cursor-grabbing' : 'cursor-grab md:cursor-default'
-        } ${!isDragging ? 'snap-x snap-mandatory md:snap-none' : ''}`}
-      >
-        {faculty.map((member, idx) => (
-          <div
-            key={idx}
-            className="w-[78vw] max-w-[280px] sm:w-[260px] md:w-auto shrink-0 md:shrink snap-center h-full"
-          >
-            <div className="border border-[#ccc] rounded overflow-hidden text-center bg-white h-full flex flex-col hover:border-[#888] hover:shadow-xs transition-all select-none">
-              <div className="wf-img-placeholder h-56 shrink-0 font-medium select-none" draggable={false}>
-                {member.tag}
-              </div>
-              <div className="p-4 flex-1 flex flex-col justify-between">
-                <div>
-                  <h4 className="font-bold text-sm text-[#222]">{member.name}</h4>
-                  <div className="text-xs text-[#888] mb-2">{member.role}</div>
-                  <p className="text-xs text-[#666] leading-relaxed">{member.bio}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-};
+import lab3Img from '../assets/lab3-1.jpg';
+import intellectualDepthHoverImg from '../assets/images/intellectual_depth_hover.png';
+import selfRelianceHoverImg from '../assets/images/self_reliance_hover.png';
 
 const OurStoryPillarsCarousel: React.FC = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [activePillarMobile, setActivePillarMobile] = useState<string | null>(null);
-  const hasDragged = useRef(false);
-  const dragInfo = useRef({
-    isDown: false,
-    startX: 0,
-    scrollLeft: 0,
-  });
-
-  // Mouse wheel horizontal scroll support
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const onWheel = (e: WheelEvent) => {
-      if (el.scrollWidth <= el.clientWidth) return;
-      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
-      if (Math.abs(delta) > 0) {
-        const atStart = el.scrollLeft <= 0 && delta < 0;
-        const atEnd = el.scrollLeft + el.clientWidth >= el.scrollWidth - 2 && delta > 0;
-        if (!atStart && !atEnd) {
-          e.preventDefault();
-          el.scrollLeft += delta;
-        }
-      }
-    };
-
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, []);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    const el = scrollRef.current;
-    if (!el || el.scrollWidth <= el.clientWidth) return;
-    dragInfo.current.isDown = true;
-    dragInfo.current.startX = e.pageX - el.offsetLeft;
-    dragInfo.current.scrollLeft = el.scrollLeft;
-    hasDragged.current = false;
-    setIsDragging(true);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!dragInfo.current.isDown) return;
-    const el = scrollRef.current;
-    if (!el) return;
-    e.preventDefault();
-    const x = e.pageX - el.offsetLeft;
-    const walk = (x - dragInfo.current.startX) * 1.4;
-    if (Math.abs(x - dragInfo.current.startX) > 4) {
-      hasDragged.current = true;
-    }
-    el.scrollLeft = dragInfo.current.scrollLeft - walk;
-  };
-
-  const handleMouseUpOrLeave = () => {
-    if (dragInfo.current.isDown) {
-      dragInfo.current.isDown = false;
-      setIsDragging(false);
-    }
-  };
-
-  const scrollByAmount = (direction: 'left' | 'right') => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const step = 220;
-    el.scrollBy({
-      left: direction === 'left' ? -step : step,
-      behavior: 'smooth',
-    });
-  };
+  const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
 
   const ourStoryPillarsData = [
     {
@@ -387,150 +45,470 @@ const OurStoryPillarsCarousel: React.FC = () => {
       title: 'Intellectual Depth',
       desc: 'Curiosity over rote learning, mastery over memorization.',
       shape: 'blue-hourglass' as ISBShapeType,
-      hoverBorder: 'hover:border-[#0064ec]',
-      image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/lab3-1.jpg',
-      bgColor: 'bg-[#0064ec]',
-      hoverShape: 'purple-stairs' as ISBShapeType,
-      hoverShapeColor: '#11FEEE',
+      hoverBorder: 'hover:border-[#FEBD38]',
+      image: lab3Img || 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/lab3-1.jpg',
+      bgColor: 'bg-[#FEBD38]',
+      hoverBgImage: intellectualDepthHoverImg,
+      hoverShape: undefined,
+      hoverShapeColor: '#002B49',
     },
     {
       id: 'pillar-3',
       title: 'Self-Reliance',
       desc: 'Equipping students to navigate a changing world independently.',
       shape: 'yellow-bars' as ISBShapeType,
-      hoverBorder: 'hover:border-[#FF3D37]',
+      hoverBorder: 'hover:border-[#00A661]',
       image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/g11.jpg',
-      bgColor: 'bg-[#FF3D37]',
-      hoverShape: 'yellow-bars' as ISBShapeType,
-      hoverShapeColor: '#FFFF01',
+      bgColor: 'bg-[#00A661]',
+      hoverBgImage: selfRelianceHoverImg,
+      hoverShape: undefined,
+      hoverShapeColor: '#002B49',
     },
   ];
 
+  const nextSlide = () => {
+    setCurrentIndex((prev) => (prev + 1) % ourStoryPillarsData.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prev) => (prev - 1 + ourStoryPillarsData.length) % ourStoryPillarsData.length);
+  };
+
+  // 5 seconds auto-transition for smaller screens only
+  useEffect(() => {
+    if (isPaused) return;
+
+    const interval = setInterval(() => {
+      // Only auto-slide if on smaller screens (< 1024px)
+      if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+        setCurrentIndex((prev) => (prev + 1) % ourStoryPillarsData.length);
+      }
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isPaused, currentIndex]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    setIsPaused(true);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+    touchStartX.current = null;
+    setIsPaused(false);
+  };
+
+  const renderPillarCard = (pillar: (typeof ourStoryPillarsData)[0]) => {
+    const isActive = activePillarMobile === pillar.id;
+    return (
+      <div
+        onClick={() => {
+          if (typeof window !== 'undefined' && window.innerWidth >= 1024) return;
+          setActivePillarMobile((prev) => (prev === pillar.id ? null : pillar.id));
+        }}
+        className={`relative overflow-hidden border border-[#ccc] rounded-tr-2xl rounded-bl-2xl sm:rounded-tr-3xl sm:rounded-bl-3xl rounded-tl-none rounded-br-none ${pillar.bgColor} ${pillar.hoverBorder} transition-all duration-300 group h-full shadow-md hover:shadow-none flex flex-col justify-end min-h-[380px] sm:min-h-[410px] lg:min-h-[450px] cursor-pointer lg:cursor-default`}
+      >
+        {/* Hover Background Image (e.g. user-provided artwork without text) */}
+        {pillar.hoverBgImage && (
+          <div
+            className="absolute inset-0 bg-cover bg-no-repeat bg-right-top pointer-events-none z-0"
+            style={{ backgroundImage: `url(${pillar.hoverBgImage})` }}
+          />
+        )}
+
+        {/* Background Image: reveals solid color / hoverBgImage on hover on desktop, or tap on mobile */}
+        {pillar.image && (
+          <div
+            className={`absolute inset-0 bg-cover group-hover:scale-105 group-hover:opacity-0 transition-all duration-500 ease-out z-10 ${
+              pillar.id === 'pillar-2'
+                ? 'intellectual-depth-img'
+                : pillar.id === 'pillar-3'
+                ? 'self-reliance-img'
+                : 'bg-center'
+            } ${isActive ? 'scale-105 !opacity-0' : ''}`}
+            style={{ backgroundImage: `url(${pillar.image})` }}
+          />
+        )}
+
+        {/* Top depth gradient for rich visual depth when photo is shown - removed while hovering */}
+        {pillar.image && (
+          <div
+            className={`absolute inset-x-0 top-0 h-28 sm:h-32 bg-gradient-to-b from-slate-950/80 via-slate-950/30 to-transparent pointer-events-none z-15 transition-opacity duration-500 ease-out group-hover:opacity-0 ${
+              isActive ? '!opacity-0' : ''
+            }`}
+          />
+        )}
+
+        {/* Bottom depth gradient for rich visual depth when photo is shown - removed while hovering */}
+        {pillar.image && (
+          <div
+            className={`absolute inset-x-0 bottom-0 h-44 sm:h-48 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent pointer-events-none z-15 transition-opacity duration-500 ease-out group-hover:opacity-0 ${
+              isActive ? '!opacity-0' : ''
+            }`}
+          />
+        )}
+
+        {/* Large decorative shape appearing in top-right on hover (desktop) or tap (mobile) */}
+        {pillar.hoverShape && (
+          <div
+            className={`absolute z-15 pointer-events-none opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out ${
+              pillar.hoverShape === 'four-petal-flower'
+                ? '-top-8 -right-8 sm:-top-10 sm:-right-10'
+                : '-top-10 -right-10'
+            } ${isActive ? '!opacity-100 !scale-100' : ''}`}
+          >
+            <ISBShape
+              type={pillar.hoverShape}
+              size={pillar.hoverShape === 'four-petal-flower' ? 260 : 200}
+              color={pillar.hoverShapeColor}
+            />
+          </div>
+        )}
+
+        {/* Top shape symbol indicator */}
+        <div
+          className={`absolute top-3 left-3 z-20 ${
+            pillar.image
+              ? 'bg-white/90 backdrop-blur-xs p-1.5 rounded-lg shadow-xs group-hover:opacity-0 transition-opacity duration-300'
+              : 'bg-slate-100/90 border border-slate-200/60 p-1.5 rounded-lg shadow-2xs'
+          } ${isActive && pillar.image ? '!opacity-0' : ''}`}
+        >
+          <ISBShape type={pillar.shape} size={16} />
+        </div>
+
+        {/* Text content moved to bottom left with clean readability without background gradient sticking */}
+        <div className="relative z-20 p-4 sm:p-5 text-left w-full flex flex-col justify-end bg-transparent">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h4
+                className={`font-bold text-sm sm:text-base mb-1 ${
+                  pillar.image
+                    ? 'text-white [text-shadow:_0_2px_4px_rgba(0,0,0,0.9)]'
+                    : 'text-[#002B49]'
+                }`}
+              >
+                {pillar.title}
+              </h4>
+              <p
+                className={`text-xs leading-relaxed mb-0 font-medium ${
+                  pillar.image
+                    ? 'text-slate-100 [text-shadow:_0_1px_3px_rgba(0,0,0,0.8)]'
+                    : 'text-slate-600'
+                }`}
+              >
+                {pillar.desc}
+              </p>
+            </div>
+            <span
+              className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 shadow-xs ${
+                pillar.image
+                  ? 'bg-white/20 text-white group-hover:bg-white group-hover:text-[#002B49] group-hover:translate-x-1'
+                  : 'bg-slate-100 text-[#002B49] group-hover:bg-[#002B49] group-hover:text-white group-hover:translate-x-1'
+              } ${isActive ? (pillar.image ? '!bg-white !text-[#002B49] !translate-x-1' : '!bg-[#002B49] !text-white !translate-x-1') : ''}`}
+            >
+              <ArrowRight size={16} />
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <div className="mt-6 relative">
-      {/* Navigation Controls just like Hero Section carousel */}
-      <div className="flex items-center justify-between mb-3 px-0.5">
-        <span className="text-[11px] font-bold uppercase tracking-wider text-[#003366]/80 flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#003366] inline-block" />
+    <div className="relative">
+      {/* Navigation Controls: arrows & dots on small screens; title only on large screens */}
+      <div className="flex items-center justify-between lg:justify-center mb-3 px-2 sm:px-4">
+        <span className="text-[11px] font-bold uppercase tracking-wider text-blue-100 flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-white inline-block" />
           Core Pillars
+          <span className="lg:hidden text-white/70 font-medium">({currentIndex + 1}/3)</span>
         </span>
-        <div className="flex items-center gap-1.5 sm:gap-2">
+        <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
           <button
             type="button"
-            onClick={() => scrollByAmount('left')}
+            onClick={prevSlide}
             aria-label="Previous pillar"
-            className="w-8 h-8 rounded-full bg-white hover:bg-[#003366] text-[#003366] hover:text-white border border-[#ccc] shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white/95 hover:bg-white text-[#003366] border border-white/40 shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
           >
             <ChevronLeft size={16} />
           </button>
           <button
             type="button"
-            onClick={() => scrollByAmount('right')}
+            onClick={nextSlide}
             aria-label="Next pillar"
-            className="w-8 h-8 rounded-full bg-white hover:bg-[#003366] text-[#003366] hover:text-white border border-[#ccc] shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white/95 hover:bg-white text-[#003366] border border-white/40 shadow-xs flex items-center justify-center transition-all hover:scale-105 active:scale-95 cursor-pointer"
           >
             <ChevronRight size={16} />
           </button>
         </div>
       </div>
 
-      {/* Horizontal Form with Scroll & Elongated Card Height with Blank Picture Slot */}
+      {/* Small Screens (< 1024px): Single box visible at a time with 5-second auto-slide transition from right */}
       <div
-        ref={scrollRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
-        onMouseLeave={handleMouseUpOrLeave}
-        className={`flex flex-row gap-3.5 sm:gap-4 overflow-x-auto no-scrollbar pb-3 pt-1 -mx-2 px-2 sm:mx-0 sm:px-0 select-none ${
-          isDragging ? 'cursor-grabbing' : 'cursor-grab'
-        } ${!isDragging ? 'snap-x snap-mandatory scroll-smooth' : ''}`}
+        className="block lg:hidden relative overflow-hidden w-full max-w-[340px] sm:max-w-[360px] mx-auto pb-1"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
       >
-        {ourStoryPillarsData.map((pillar, idx) => {
-          const isActive = activePillarMobile === pillar.id;
-          return (
-            <div
-              key={pillar.id}
-              className="w-[85vw] max-w-[340px] sm:w-[280px] lg:w-full lg:max-w-none shrink-0 snap-start h-full"
-            >
-              <div
-                onClick={() => {
-                  if (typeof window !== 'undefined' && window.innerWidth >= 1024) return;
-                  if (hasDragged.current) {
-                    hasDragged.current = false;
-                    return;
-                  }
-                  setActivePillarMobile(prev => (prev === pillar.id ? null : pillar.id));
-                }}
-                className={`relative overflow-hidden border border-[#ccc] rounded-2xl ${pillar.bgColor} ${pillar.hoverBorder} transition-all duration-300 group h-full shadow-xs flex flex-col justify-end min-h-[380px] sm:min-h-[410px] lg:min-h-[450px] cursor-pointer lg:cursor-default`}
-              >
-                {/* Background Image: reveals solid color on hover on desktop, or tap on mobile */}
-                {pillar.image ? (
-                  <div
-                    className={`absolute inset-0 bg-cover group-hover:scale-105 group-hover:opacity-0 transition-all duration-500 ease-out ${
-                      pillar.id === 'pillar-2' ? 'intellectual-depth-img' : pillar.id === 'pillar-3' ? 'self-reliance-img' : 'bg-center'
-                    } ${isActive ? 'scale-105 !opacity-0' : ''}`}
-                    style={{ backgroundImage: `url(${pillar.image})` }}
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-slate-100 border-2 border-dashed border-slate-300 flex items-center justify-center pointer-events-none">
-                    <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wider">Image Background</span>
-                  </div>
-                )}
-
-                {/* Large decorative shape appearing in top-right on hover (desktop) or tap (mobile) */}
-                {pillar.hoverShape && (
-                  <div
-                    className={`absolute z-10 pointer-events-none opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out ${
-                      pillar.hoverShape === 'four-petal-flower'
-                        ? '-top-8 -right-8 sm:-top-10 sm:-right-10'
-                        : '-top-10 -right-10'
-                    } ${isActive ? '!opacity-100 !scale-100' : ''}`}
-                  >
-                    <ISBShape
-                      type={pillar.hoverShape}
-                      size={pillar.hoverShape === 'four-petal-flower' ? 260 : 200}
-                      color={pillar.hoverShapeColor}
-                    />
-                  </div>
-                )}
-
-                {/* Top shape symbol indicator */}
-                <div
-                  className={`absolute top-3 left-3 z-20 bg-white/90 backdrop-blur-xs p-1.5 rounded-lg shadow-xs group-hover:opacity-0 transition-opacity duration-300 ${
-                    isActive ? '!opacity-0' : ''
-                  }`}
-                >
-                  <ISBShape type={pillar.shape} size={16} />
-                </div>
-
-                {/* Text content moved to bottom left with clean readability */}
-                <div
-                  className={`relative z-20 p-4 sm:p-5 text-left text-white w-full flex flex-col justify-end transition-colors duration-300 bg-gradient-to-t from-slate-950/95 via-slate-950/70 to-transparent group-hover:bg-transparent ${
-                    isActive ? '!bg-transparent' : ''
-                  }`}
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <h4 className="font-bold text-sm sm:text-base text-white [text-shadow:_0_2px_4px_rgba(0,0,0,0.9)] mb-1">
-                        {pillar.title}
-                      </h4>
-                      <p className="text-xs text-slate-200 [text-shadow:_0_1px_3px_rgba(0,0,0,0.8)] leading-relaxed mb-0">
-                        {pillar.desc}
-                      </p>
-                    </div>
-                    <span
-                      className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-300 shadow-xs bg-white/20 text-white group-hover:bg-white group-hover:text-[#003366] group-hover:translate-x-1 ${
-                        isActive ? '!bg-white !text-[#003366] !translate-x-1' : ''
-                      }`}
-                    >
-                      <ArrowRight size={16} />
-                    </span>
-                  </div>
-                </div>
-              </div>
+        <div
+          className="flex transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+        >
+          {ourStoryPillarsData.map((pillar) => (
+            <div key={pillar.id} className="w-full shrink-0 px-1">
+              {renderPillarCard(pillar)}
             </div>
-          );
-        })}
+          ))}
+        </div>
+
+        {/* Slide Indicator Dots for small screens */}
+        <div className="flex items-center justify-center gap-1.5 mt-3">
+          {ourStoryPillarsData.map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Go to pillar ${idx + 1}`}
+              className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
+                currentIndex === idx
+                  ? 'w-6 bg-white'
+                  : 'w-1.5 bg-white/40 hover:bg-white/70'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Large Screens (lg+): 3-Column Side-by-Side Grid, no sliding */}
+      <div className="hidden lg:grid lg:grid-cols-3 lg:gap-6 w-full">
+        {ourStoryPillarsData.map((pillar) => (
+          <div key={pillar.id} className="h-full">
+            {renderPillarCard(pillar)}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const learningStagesData: {
+  id: string;
+  stepLabel: string;
+  shape: ISBShapeType;
+  title: string;
+  classes: string;
+  accentColor: string;
+  bgHover: string;
+  image?: string;
+  imageAlt?: string;
+}[] = [
+  {
+    id: 'primary',
+    stepLabel: '01 — Foundation',
+    shape: 'pink-circle',
+    title: 'Primary School',
+    classes: 'Nursery to 4',
+    accentColor: '#fe76b4',
+    bgHover: 'hover:border-[#fe76b4]',
+    image: '',
+    imageAlt: 'Primary School',
+  },
+  {
+    id: 'middle',
+    stepLabel: '02 — Exploration',
+    shape: 'green-flower',
+    title: 'Middle School',
+    classes: 'Classes 5 to 8',
+    accentColor: '#00b273',
+    bgHover: 'hover:border-[#00b273]',
+    image: '',
+    imageAlt: 'Middle School',
+  },
+  {
+    id: 'high',
+    stepLabel: '03 — Deepening & Mastery',
+    shape: 'yellow-bars',
+    title: 'High School',
+    classes: 'Classes 9 to 12',
+    accentColor: '#FFC548',
+    bgHover: 'hover:border-[#FFC548]',
+    image: '',
+    imageAlt: 'High School',
+  },
+];
+
+const LearningJourneyStagesCarousel: React.FC = () => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const { scrollLeft, clientWidth } = scrollRef.current;
+    if (clientWidth > 0) {
+      const idx = Math.round(scrollLeft / clientWidth);
+      if (idx !== currentIndex && idx >= 0 && idx < learningStagesData.length) {
+        setCurrentIndex(idx);
+      }
+    }
+  };
+
+  const scrollToIndex = (index: number) => {
+    if (!scrollRef.current) return;
+    const targetLeft = index * scrollRef.current.clientWidth;
+    scrollRef.current.scrollTo({ left: targetLeft, behavior: 'smooth' });
+    setCurrentIndex(index);
+  };
+
+  const handlePrev = () => {
+    scrollToIndex(Math.max(0, currentIndex - 1));
+  };
+
+  const handleNext = () => {
+    scrollToIndex(Math.min(learningStagesData.length - 1, currentIndex + 1));
+  };
+
+  const renderCardContent = (stage: (typeof learningStagesData)[0]) => (
+    <div
+      className={`relative overflow-hidden p-6 sm:p-8 border border-neutral-300 sm:border-neutral-200/80 rounded-2xl bg-[#1e293b] shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between min-h-[420px] sm:min-h-[440px] h-full group cursor-pointer`}
+    >
+      {/* Background image if provided, or dark/neutral blank canvas ready for image */}
+      {stage.image ? (
+        <>
+          <img
+            src={stage.image}
+            alt={stage.imageAlt || stage.title}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+        </>
+      ) : (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#2a384c] via-[#1e293b] to-[#0f172a] pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
+        </>
+      )}
+
+      {/* Step shape and label tag */}
+      <div className="relative z-10 mb-auto flex items-center justify-between">
+        <span className="text-xs uppercase tracking-wider font-semibold text-white/80 bg-black/30 backdrop-blur-xs px-2.5 py-1 rounded-full border border-white/10">
+          {stage.stepLabel}
+        </span>
+        <div className="transition-transform duration-300 group-hover:scale-125">
+          <ISBShape type={stage.shape} size={24} />
+        </div>
+      </div>
+
+      {/* Text and Arrow row at the bottom matching user's provided reference image */}
+      <div className="relative z-10 mt-auto flex items-end justify-between gap-4 pt-4">
+        <div>
+          <h3 className="font-bold text-2xl sm:text-[26px] text-white mb-1.5 tracking-tight drop-shadow-sm">
+            {stage.title}
+          </h3>
+          <div className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-slate-200/90">
+            {stage.classes}
+          </div>
+        </div>
+        <div className="shrink-0 p-2.5 rounded-full text-white/90 group-hover:text-white transition-all transform group-hover:translate-x-1.5">
+          <ArrowRight className="w-5 h-5 sm:w-6 sm:h-6" />
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="mb-2">
+      {/* Mobile & Small Screen: Horizontal Scroll Carousel showing exactly one elongated box at a time */}
+      <div className="block md:hidden">
+        {/* Navigation & Stage Counter Bar */}
+        <div className="flex items-center justify-between mb-3 px-1">
+          <span className="text-xs font-semibold text-[#666] tracking-wide">
+            Stage {currentIndex + 1} of {learningStagesData.length}
+          </span>
+          <div className="flex items-center gap-1.5">
+            <button
+              type="button"
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              aria-label="Previous academic stage"
+              className={`p-1.5 rounded-full border border-[#ddd] bg-white transition-all ${
+                currentIndex === 0
+                  ? 'opacity-40 cursor-not-allowed text-[#aaa]'
+                  : 'text-[#222] hover:bg-[#f0f0f0] active:scale-95 shadow-2xs'
+              }`}
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              disabled={currentIndex === learningStagesData.length - 1}
+              aria-label="Next academic stage"
+              className={`p-1.5 rounded-full border border-[#ddd] bg-white transition-all ${
+                currentIndex === learningStagesData.length - 1
+                  ? 'opacity-40 cursor-not-allowed text-[#aaa]'
+                  : 'text-[#222] hover:bg-[#f0f0f0] active:scale-95 shadow-2xs'
+              }`}
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+
+        {/* Horizontal Scrollable Row */}
+        <div
+          ref={scrollRef}
+          onScroll={handleScroll}
+          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none pb-2 -mx-1 px-1 touch-pan-x"
+          style={{ scrollSnapType: 'x mandatory', WebkitOverflowScrolling: 'touch' }}
+        >
+          {learningStagesData.map((stage) => (
+            <div
+              key={stage.id}
+              className="w-full min-w-full flex-shrink-0 snap-center px-1"
+            >
+              {renderCardContent(stage)}
+            </div>
+          ))}
+        </div>
+
+        {/* Indicator dots for mobile */}
+        <div className="flex justify-center items-center gap-2 mt-3">
+          {learningStagesData.map((stage, idx) => (
+            <button
+              key={stage.id}
+              type="button"
+              onClick={() => scrollToIndex(idx)}
+              aria-label={`Go to ${stage.title}`}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                currentIndex === idx ? 'w-6 bg-[#002244]' : 'w-2 bg-[#ccc] hover:bg-[#999]'
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Medium & Large Screens: 3-Column Side-by-Side Elongated Grid */}
+      <div className="hidden md:grid md:grid-cols-3 md:gap-6">
+        {learningStagesData.map((stage, idx) => (
+          <ScrollPopBox
+            key={stage.id}
+            direction={idx === 2 ? 'right' : 'left'}
+            className="h-full"
+          >
+            {renderCardContent(stage)}
+          </ScrollPopBox>
+        ))}
       </div>
     </div>
   );
@@ -560,66 +538,6 @@ export const WireframeSections: React.FC = () => {
     { type: 'yellow-bars', name: 'Expression', desc: 'Diversity of talents & vibrant voice', color: '#FFC548' },
     { type: 'green-flower', name: 'Flourishing', desc: 'Holistic character & moral grounding', color: '#00b273' },
     { type: 'red-triangle', name: 'Empowerment', desc: 'Courage, leadership, & forward drive', color: '#FF3D37' },
-  ];
-
-  const campusFacilities = [
-    {
-      tag: 'LIBRARY PHOTO',
-      title: 'Library & Resource Centre',
-      desc: 'Over 25,000 volumes, digital research pods, quiet study carrels, and periodical archives.',
-    },
-    {
-      tag: 'LABORATORIES PHOTO',
-      title: 'Science & Computer Labs',
-      desc: 'Dedicated Physics, Chemistry, Biology, and AI-enabled computer stations built to CBSE specifications.',
-    },
-    {
-      tag: 'SPORTS COMPLEX PHOTO',
-      title: 'Sports & Play Arena',
-      desc: 'Multi-sport turf, athletics track, basketball court, indoor badminton hall, and yoga pavilion.',
-    },
-    {
-      tag: 'SMART SUITES PHOTO',
-      title: 'Smart Classrooms & Audio-Visual',
-      desc: 'Interactive smart panels, multimedia lecture capture, and air-conditioned ergonomic learning spaces.',
-    },
-    {
-      tag: 'CREATIVE ARTS PHOTO',
-      title: 'Arts & Cultural Studio',
-      desc: 'Dedicated vocal & instrumental acoustic rooms, fine arts studio, and classical dance auditorium.',
-    },
-    {
-      tag: 'INNOVATION HUB PHOTO',
-      title: 'Robotics & STEM Tinkering Lab',
-      desc: 'Hands-on experiential tinkering lab with 3D modeling kits, coding stations, and electronics testbeds.',
-    },
-  ];
-
-  const facultyMembers: FacultyMember[] = [
-    {
-      tag: 'FACULTY PHOTO',
-      name: 'Dr. S. Sharma',
-      role: 'Principal • Ph.D., M.Ed.',
-      bio: '25+ years in educational leadership, pedagogy reform, and character-centred schooling.',
-    },
-    {
-      tag: 'FACULTY PHOTO',
-      name: 'Mrs. R. Kaur',
-      role: 'Vice Principal • M.Sc., B.Ed.',
-      bio: 'Spearheading academic rigor, student welfare, and CBSE compliance for over two decades.',
-    },
-    {
-      tag: 'FACULTY PHOTO',
-      name: 'Mr. A. Verma',
-      role: 'Head of Sciences • M.Sc. Physics',
-      bio: 'Inspiring future engineers and researchers with inquiry-led laboratory instruction.',
-    },
-    {
-      tag: 'FACULTY PHOTO',
-      name: 'Mrs. P. Gupta',
-      role: 'Head of Humanities • M.A., M.Phil.',
-      bio: 'Fostering critical thought, historical consciousness, and articulate prose in every student.',
-    },
   ];
 
   return (
@@ -689,148 +607,142 @@ export const WireframeSections: React.FC = () => {
               where <ShadyHighlight color="turquoise">values</ShadyHighlight> meet <ShadyHighlight color="turquoise" delay={500}>vision</ShadyHighlight>.....
             </h2>
 
-            {/* ISB-Style Sentence with Inline Shapes on Signature ISB Blue Background */}
-            <ScrollPopBox direction="right" className="my-8">
-              <div className="relative max-w-4xl mx-auto p-6 sm:p-10 pb-12 sm:pb-12 rounded-3xl rounded-bl-none border-0 border-none bg-[#0064ec] text-white shadow-xl shadow-blue-900/10 overflow-hidden text-center">
-                {/* ISB Signature Bottom-Left Corner Design */}
-                <ISBCornerDesign size={38} className="sm:scale-110" />
+            {/* Unified ISB Blue Card Area extending from top statement to beneath the boxes */}
+            <ScrollPopBox direction="right" className="my-8 lg:my-12">
+              <div className="relative">
+                {/* The Blue Border / Background extending straight down behind the boxes */}
+                <div
+                  className="absolute inset-y-0 left-0 right-0 lg:left-1/2 lg:-translate-x-1/2 lg:w-[calc(100%-((100%-3rem)/6))] lg:max-w-[955px] rounded-3xl rounded-bl-none border-0 border-none bg-[#0064ec] shadow-xl shadow-blue-900/10 overflow-hidden pointer-events-none z-0"
+                >
+                  {/* Subtle ambient gradient overlay matching isb.be learning journey */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-[#0051e8] via-[#0064ec] to-[#0d7aff] opacity-90 pointer-events-none" />
 
-                {/* Subtle ambient gradient overlay matching isb.be learning journey */}
-                <div className="absolute inset-0 bg-gradient-to-tr from-[#0051e8] via-[#0064ec] to-[#0d7aff] opacity-90 pointer-events-none" />
+                  {/* ISB Signature Bottom-Left Corner Design */}
+                  <ISBCornerDesign size={38} className="sm:scale-110 pointer-events-auto" />
+                </div>
 
-                <p className="relative z-10 text-base sm:text-xl text-white font-medium leading-relaxed sm:leading-loose">
-                  We are an inclusive, value-grounded{' '}
-                  <ISBWordBadge shape="blue-hourglass" label="Intellect & Rigor" light>
-                    school
-                  </ISBWordBadge>{' '}
-                  in Chandigarh for{' '}
-                  <ISBWordBadge shape="pink-circle" label="Community & Belonging" light>
-                    students
-                  </ISBWordBadge>{' '}
-                  from Preschool through{' '}
-                  <ISBWordBadge shape="purple-stairs" label="Continuous Learning" light>
-                    Class XII
-                  </ISBWordBadge>
-                  , offering an immersive and culturally{' '}
-                  <ISBWordBadge shape="green-flower" label="Flourishing Character" light>
-                    rich
-                  </ISBWordBadge>{' '}
-                  education for{' '}
-                  <ISBWordBadge shape="yellow-bars" label="Diverse Voices" light>
-                    curious minds
-                  </ISBWordBadge>{' '}
-                  guided by{' '}
-                  <ISBWordBadge shape="red-triangle" label="Empowerment & Purpose" light>
-                    moral integrity
-                  </ISBWordBadge>
-                  .
-                </p>
+                {/* Foreground Content */}
+                <div className="relative z-10 pt-8 sm:pt-10 px-3 sm:px-6 lg:px-0 pb-10 sm:pb-12">
+                  {/* ISB-Style Sentence with Inline Shapes */}
+                  <div className="max-w-3xl mx-auto text-center mb-6 sm:mb-8 px-3 sm:px-6">
+                    <p className="text-base sm:text-xl text-white font-medium leading-relaxed sm:leading-loose">
+                      We are an inclusive, value-grounded{' '}
+                      <ISBWordBadge shape="blue-hourglass" label="Intellect & Rigor" light>
+                        school
+                      </ISBWordBadge>{' '}
+                      in Chandigarh for{' '}
+                      <ISBWordBadge shape="pink-circle" label="Community & Belonging" light>
+                        students
+                      </ISBWordBadge>{' '}
+                      from Preschool through{' '}
+                      <ISBWordBadge shape="purple-stairs" label="Continuous Learning" light>
+                        Class XII
+                      </ISBWordBadge>
+                      , offering an immersive and culturally{' '}
+                      <ISBWordBadge shape="green-flower" label="Flourishing Character" light>
+                        rich
+                      </ISBWordBadge>{' '}
+                      education for{' '}
+                      <ISBWordBadge shape="yellow-bars" label="Diverse Voices" light>
+                        curious minds
+                      </ISBWordBadge>{' '}
+                      guided by{' '}
+                      <ISBWordBadge shape="red-triangle" label="Empowerment & Purpose" light>
+                        moral integrity
+                      </ISBWordBadge>
+                      .
+                    </p>
+                  </div>
+
+                  {/* Core Pillars Boxes:
+                      - Left and right boxes are half out of the blue border on large screens.
+                      - Horizontal carousel with scroll/drag on small screens. */}
+                  <OurStoryPillarsCarousel />
+                </div>
               </div>
             </ScrollPopBox>
 
-            {/* Responsive Background inspired by ISB's "Discover & Experience" section:
-                - On small screens: background & red top-right design sit behind the image only and slide in from the left.
-                - On large screens: background & red top-right design sit behind the heritage card and slide in from the left to its original place. */}
-            <motion.div
-              initial={!isMobileOrTablet ? { opacity: 0, x: -140, scale: 0.98 } : false}
-              whileInView={!isMobileOrTablet ? { opacity: 1, x: 0, scale: 1 } : undefined}
-              viewport={{ once: true, amount: 0.12 }}
-              transition={{
-                type: 'spring',
-                stiffness: 75,
-                damping: 18,
-                mass: 0.85,
-              }}
-              className="relative rounded-3xl lg:bg-[#f5f5f5] lg:border lg:border-neutral-200/90 lg:p-12 xl:p-14 lg:shadow-sm mt-8"
-            >
-              {/* Red coloured design at top-right corner for large screens (enlarged for prominence) */}
-              <div className="hidden lg:block absolute -top-7 -right-4 xl:-top-8 xl:-right-5 z-20 pointer-events-none select-none">
-                <ISBRedCornerAccent size={112} />
+            {/* Content Container for Statistics & Campus Photo */}
+            <div className="relative mt-8 lg:mt-10">
+              <div>
+
+                {/* Statistics Row */}
+                <ScrollPopBox direction="right" className="mt-8 mb-2">
+                  <div className="flex flex-wrap items-center gap-8 sm:gap-12 py-1">
+                    <div>
+                      <div className="text-3xl sm:text-4xl font-bold text-[#222]">2,400+</div>
+                      <div className="text-xs sm:text-sm text-[#666] font-medium mt-0.5">Students</div>
+                    </div>
+                    <div className="hidden sm:block w-px h-8 bg-neutral-200" />
+                    <div>
+                      <div className="text-3xl sm:text-4xl font-bold text-[#222]">180+</div>
+                      <div className="text-xs sm:text-sm text-[#666] font-medium mt-0.5">Faculty Members</div>
+                    </div>
+                    <div className="hidden sm:block w-px h-8 bg-neutral-200" />
+                    <div>
+                      <div className="text-3xl sm:text-4xl font-bold text-[#222]">98%</div>
+                      <div className="text-xs sm:text-sm text-[#666] font-medium mt-0.5">Board Distinction</div>
+                    </div>
+                  </div>
+                </ScrollPopBox>
               </div>
 
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 items-center">
-                <div>
-                  {/* Reduced text on small screens (outside any box/background); full text on large screens */}
-                  <p className="block lg:hidden text-base text-[#003366] leading-relaxed mb-6 font-medium">
-                    Rooted in Dev Samaj philosophy, shaping intellect and character with purpose.
-                  </p>
-                  <p className="hidden lg:block text-base text-[#003366] leading-relaxed mb-6">
-                    Rooted in the educational philosophy of Dev Samaj, we believe true schooling shapes both intellect and conscience. For decades, our classrooms have been incubators of curiosity, resilience, and compassion.
-                  </p>
-                  <OurStoryPillarsCarousel />
-                  <ScrollPopBox direction="right" className="mt-8">
-                    <div className="flex flex-wrap gap-8">
-                      <div>
-                        <div className="text-3xl font-bold text-[#222]">2,400+</div>
-                        <div className="text-xs text-[#666]">Students</div>
-                      </div>
-                      <div>
-                        <div className="text-3xl font-bold text-[#222]">180+</div>
-                        <div className="text-xs text-[#666]">Faculty Members</div>
-                      </div>
-                      <div>
-                        <div className="text-3xl font-bold text-[#222]">98%</div>
-                        <div className="text-xs text-[#666]">Board Distinction</div>
-                      </div>
-                    </div>
-                  </ScrollPopBox>
+              {/* Campus Photo Container:
+                  - Small screens: Left-bleed gray background sliding in from left edge with red corner accent.
+                  - Large screens: Brought down below the boxes with full gray background, border, shadow, and red corner accent. */}
+              <motion.div
+                initial={isMobileOrTablet ? { opacity: 0, x: -110, scale: 0.95 } : { opacity: 0, y: 35, scale: 0.98 }}
+                whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.12 }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 80,
+                  damping: 18,
+                  mass: 0.85,
+                }}
+                className="relative rounded-r-3xl rounded-l-none bg-[#f5f5f5] border-y border-r border-l-0 border-neutral-200/90 shadow-md
+                  -ml-[var(--space-4,32px)] w-[calc(100%+var(--space-4,32px))]
+                  p-6 sm:p-8 pt-8 sm:pt-10 pb-8 sm:pb-10 pl-6 sm:pl-8 pr-6 sm:pr-8
+                  mt-8 sm:mt-10
+                  lg:ml-0 lg:w-full lg:rounded-3xl lg:border lg:border-neutral-200/90 lg:bg-[#f5f5f5] lg:p-10 xl:p-12 lg:shadow-md lg:mt-12"
+              >
+                {/* Red coloured design at top-right corner for small screens */}
+                <div className="block lg:hidden absolute -top-5 right-3 sm:-top-6 sm:right-4 z-20 pointer-events-none select-none">
+                  <ISBRedCornerAccent size={88} />
                 </div>
 
-                <div>
-                  {/* Small screens wrapper:
-                      - The background touches the left edge completely (half out of screen feel).
-                      - The background is expanded and visibly framed around the image.
-                      - The image itself is NOT cut, keeping its full rounded corners and borders intact.
-                      - The entire unit smoothly pops out of the left side. */}
-                  <motion.div
-                    initial={isMobileOrTablet ? { opacity: 0, x: -110, scale: 0.95 } : false}
-                    whileInView={isMobileOrTablet ? { opacity: 1, x: 0, scale: 1 } : undefined}
-                    viewport={{ once: true, amount: 0.12 }}
-                    transition={{
-                      type: 'spring',
-                      stiffness: 85,
-                      damping: 17,
-                      mass: 0.85,
-                    }}
-                    className="relative rounded-r-3xl rounded-l-none bg-[#f5f5f5] border-y border-r border-l-0 border-neutral-200/90 shadow-md
-                      -ml-[var(--space-4,32px)] w-[calc(100%+var(--space-4,32px))]
-                      p-6 sm:p-8 pt-8 sm:pt-10 pb-8 sm:pb-10 pl-6 sm:pl-8 pr-6 sm:pr-8
-                      lg:ml-0 lg:w-full lg:rounded-3xl lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none"
+                {/* Red coloured design at top-right corner for large screens (on top-right of its gray background) */}
+                <div className="hidden lg:block absolute -top-7 -right-4 xl:-top-8 xl:-right-5 z-20 pointer-events-none select-none">
+                  <ISBRedCornerAccent size={112} />
+                </div>
+
+                {/* Uncut campus photo with complete rounded corners and slate depth gradient */}
+                <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] lg:aspect-[21/9] xl:aspect-[2.4/1] min-h-[230px] sm:min-h-[300px] lg:min-h-[420px] rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/25 border border-slate-200/90 bg-slate-900 group">
+                  <img
+                    src={campusPhoto}
+                    alt="I.S. Dev Samaj School Iconic Heritage Campus, Sector 21-C, Chandigarh"
+                    loading="lazy"
+                    decoding="async"
+                    className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700 ease-out"
+                  />
+                  {/* Dark slate depth gradient along the bottom */}
+                  <div className="absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent pointer-events-none" />
+
+                  {/* Bottom-left CAMPUS label with white color and Poppins sans-serif typography */}
+                  <div
+                    id="campus-image-label"
+                    className="absolute bottom-3 left-4 sm:bottom-5 sm:left-6 z-10 select-none pointer-events-none flex items-center"
                   >
-                    {/* Red coloured design at top-right corner for small screens (enlarged for prominence) */}
-                    <div className="block lg:hidden absolute -top-5 right-3 sm:-top-6 sm:right-4 z-20 pointer-events-none select-none">
-                      <ISBRedCornerAccent size={88} />
-                    </div>
-
-                    {/* Uncut campus photo with complete rounded corners and slate depth gradient */}
-                    <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] lg:aspect-[16/11] min-h-[230px] sm:min-h-[300px] md:min-h-[360px] rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/25 border border-slate-200/90 bg-slate-900 group">
-                      <img
-                        src={campusPhoto}
-                        alt="I.S. Dev Samaj School Iconic Heritage Campus, Sector 21-C, Chandigarh"
-                        loading="lazy"
-                        decoding="async"
-                        className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700 ease-out"
-                      />
-                      {/* Dark slate depth gradient along the bottom */}
-                      <div className="absolute inset-x-0 bottom-0 h-28 sm:h-36 bg-gradient-to-t from-slate-900/80 via-slate-900/30 to-transparent pointer-events-none" />
-
-                      {/* Bottom-left CAMPUS label with white color and Poppins sans-serif typography */}
-                      <div
-                        id="campus-image-label"
-                        className="absolute bottom-3 left-4 sm:bottom-5 sm:left-6 z-10 select-none pointer-events-none flex items-center"
-                      >
-                        <span
-                          className="text-white text-xl sm:text-2xl md:text-3xl font-bold tracking-wider sm:tracking-widest uppercase drop-shadow-[0_3px_8px_rgba(0,0,0,0.85)]"
-                          style={{ fontFamily: "'Poppins', sans-serif" }}
-                        >
-                          CAMPUS
-                        </span>
-                      </div>
-                    </div>
-                  </motion.div>
+                    <span
+                      className="text-white text-xl sm:text-2xl md:text-3xl font-bold tracking-wider sm:tracking-widest uppercase drop-shadow-[0_3px_8px_rgba(0,0,0,0.85)]"
+                      style={{ fontFamily: "'Poppins', sans-serif" }}
+                    >
+                      CAMPUS
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            </div>
           </div>
         </ScrollPopSection>
       </section>
@@ -838,163 +750,71 @@ export const WireframeSections: React.FC = () => {
       {/* =========================================================================
           3. THE LEARNING JOURNEY — Academics
           ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="journey">
+      <section className="relative overflow-hidden bg-white pt-16 sm:pt-20 pb-0 border-b border-[#ccc]" id="journey">
         {/* Scroll-triggered edge pop shape (half pops out from left edge, 0 extra vertical space) */}
         <ISBScrollPopEdgeShape shape="blue-hourglass" align="left" topPosition="top-24 sm:top-28" />
         <ScrollPopSection direction="left">
+          {/* Top White Area: Header & Heading */}
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">
               <ISBShape type="purple-stairs" size={15} />
               <span>Academics</span>
             </div>
-          <h2
-            className="wf-heading !text-[36px] font-poppins font-bold text-[#222] leading-tight text-center break-words"
-            style={{ fontFamily: "'Poppins', sans-serif", fontSize: '36px' }}
-          >
-            The <ShadyHighlight color="turquoise">Learning Journey</ShadyHighlight>
-          </h2>
-
-          {/* ISB-Style Academic Sentence with Inline Shapes on Deep Navy/ISB Blue Background */}
-          <ScrollPopBox direction="left" className="my-8">
-            <div className="relative max-w-4xl mx-auto p-6 sm:p-10 pb-12 sm:pb-12 rounded-3xl rounded-bl-none border-0 border-none bg-[#002244] text-white shadow-xl shadow-blue-950/20 overflow-hidden text-center">
-              {/* ISB Signature Bottom-Left Corner Design */}
-              <ISBCornerDesign size={38} className="sm:scale-110" />
-
-              {/* Ambient gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-[#001730] via-[#002244] to-[#0a3565] opacity-95 pointer-events-none" />
-
-              <p className="relative z-10 text-base sm:text-xl text-white font-medium leading-relaxed sm:leading-loose">
-                Our academic continuum guides students from{' '}
-                <ISBWordBadge shape="pink-circle" label="Curiosity & Expression" light>
-                  Pre-Primary wonder
-                </ISBWordBadge>{' '}
-                through foundational{' '}
-                <ISBWordBadge shape="green-flower" label="Breadth & Fluency" light>
-                  Primary discovery
-                </ISBWordBadge>
-                , advancing into rigorous{' '}
-                <ISBWordBadge shape="yellow-bars" label="Disciplined Inquiry" light>
-                  Middle School sciences
-                </ISBWordBadge>{' '}
-                and culminating in exemplary{' '}
-                <ISBWordBadge shape="purple-stairs" label="Mastery & Pathways" light>
-                  Senior Secondary CBSE
-                </ISBWordBadge>{' '}
-                distinction.
-              </p>
-            </div>
-          </ScrollPopBox>
-
-          <p className="max-w-2xl text-base text-[#666] mb-8 text-center mx-auto break-words">
-            A continuous continuum of growth from the earliest steps of wonder to the confident leap into adulthood.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
-            <ScrollPopBox direction="left" className="h-full">
-              <div className="p-6 border border-[#ccc] rounded flex flex-col justify-between bg-white hover:border-[#fe76b4] hover:shadow-xs transition-all group h-full">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs uppercase tracking-wider text-[#888]">01 &mdash; Foundation</span>
-                    <div className="transition-transform duration-300 group-hover:scale-125">
-                      <ISBShape type="pink-circle" size={24} />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-lg text-[#222] mb-1">Pre-Primary</h3>
-                  <div className="text-xs text-[#666] mb-3">Nursery &ndash; KG</div>
-                  <p className="text-sm text-[#666] leading-relaxed">Play-based discovery, sensorial development, foundational literacy, and social warmth.</p>
-                </div>
-                <div className="mt-4 text-xs font-semibold text-[#222] pt-3 border-t border-[#eee]">Focus: Curiosity &amp; Expression</div>
-              </div>
-            </ScrollPopBox>
-
-            <ScrollPopBox direction="right" className="h-full">
-              <div className="p-6 border border-[#ccc] rounded flex flex-col justify-between bg-white hover:border-[#00b273] hover:shadow-xs transition-all group h-full">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs uppercase tracking-wider text-[#888]">02 &mdash; Exploration</span>
-                    <div className="transition-transform duration-300 group-hover:scale-125">
-                      <ISBShape type="green-flower" size={24} />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-lg text-[#222] mb-1">Primary</h3>
-                  <div className="text-xs text-[#666] mb-3">Classes I &ndash; V</div>
-                  <p className="text-sm text-[#666] leading-relaxed">Core academic fluency, environmental awareness, artistic exploration, and collaborative projects.</p>
-                </div>
-                <div className="mt-4 text-xs font-semibold text-[#222] pt-3 border-t border-[#eee]">Focus: Breadth &amp; Confidence</div>
-              </div>
-            </ScrollPopBox>
-
-            <ScrollPopBox direction="left" className="h-full">
-              <div className="p-6 border border-[#ccc] rounded flex flex-col justify-between bg-white hover:border-[#FFC548] hover:shadow-xs transition-all group h-full">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs uppercase tracking-wider text-[#888]">03 &mdash; Deepening</span>
-                    <div className="transition-transform duration-300 group-hover:scale-125">
-                      <ISBShape type="yellow-bars" size={24} />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-lg text-[#222] mb-1">Middle School</h3>
-                  <div className="text-xs text-[#666] mb-3">Classes VI &ndash; VIII</div>
-                  <p className="text-sm text-[#666] leading-relaxed">Subject specialization, laboratory sciences, critical reading, debates, and competitive athletics.</p>
-                </div>
-                <div className="mt-4 text-xs font-semibold text-[#222] pt-3 border-t border-[#eee]">Focus: Critical Thinking &amp; Discipline</div>
-              </div>
-            </ScrollPopBox>
-
-            <ScrollPopBox direction="right" className="h-full">
-              <div className="p-6 border border-[#ccc] rounded flex flex-col justify-between bg-white hover:border-[#861fce] hover:shadow-xs transition-all group h-full">
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs uppercase tracking-wider text-[#888]">04 &mdash; Mastery</span>
-                    <div className="transition-transform duration-300 group-hover:scale-125">
-                      <ISBShape type="purple-stairs" size={24} />
-                    </div>
-                  </div>
-                  <h3 className="font-bold text-lg text-[#222] mb-1">Senior Secondary</h3>
-                  <div className="text-xs text-[#666] mb-3">Classes IX &ndash; XII</div>
-                  <p className="text-sm text-[#666] leading-relaxed">CBSE excellence, stream specialization (Science, Commerce, Humanities), career mentoring, and leadership.</p>
-                </div>
-                <div className="mt-4 text-xs font-semibold text-[#222] pt-3 border-t border-[#eee]">Focus: Excellence &amp; Pathways</div>
-              </div>
-            </ScrollPopBox>
-          </div>
-        </div>
-        </ScrollPopSection>
-      </section>
-
-      {/* =========================================================================
-          4. WHERE LEARNING HAPPENS — Campus Facilities
-          ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="campus">
-        {/* Scroll-triggered edge pop shape (half pops out from right edge, 0 extra vertical space) */}
-        <ISBScrollPopEdgeShape shape="green-flower" align="right" topPosition="top-24 sm:top-28" />
-        <ScrollPopSection direction="right">
-          <div className="wireframe-container relative z-10">
-            <div className="wf-label text-center flex items-center justify-center gap-2">
-              <ISBShape type="yellow-bars" size={15} />
-              <span>Campus</span>
-            </div>
             <h2
               className="wf-heading !text-[36px] font-poppins font-bold text-[#222] leading-tight text-center break-words"
               style={{ fontFamily: "'Poppins', sans-serif", fontSize: '36px' }}
             >
-              Where <ShadyHighlight color="turquoise">Learning Happens</ShadyHighlight>
+              The <ShadyHighlight color="turquoise">Learning Journey</ShadyHighlight>
             </h2>
-            <p className="max-w-2xl text-base text-[#666] text-center mx-auto break-words">
-              Purpose-built spaces that invite curiosity, discipline, and creative pursuit across every acre.
+
+            <p className="max-w-2xl text-base text-[#666] mb-8 sm:mb-10 text-center mx-auto break-words">
+              A continuous continuum of growth from the earliest steps of wonder to the confident leap into adulthood.
             </p>
-            <ScrollPopBox direction="left" className="my-8">
-              <div className="wf-img-placeholder h-[380px]">
-                MAIN CAMPUS AERIAL / PANORAMA PHOTO
+          </div>
+
+          {/* Overlapping Blue Background Container:
+              - The solid dark blue background starts halfway down the boxes (top-[200px] on mobile, top-[220px] on desktop)
+              - Fills the entire lower section with rich royal blue, ambient gradient, and corner accent
+              - The boxes are half in the white area and half in the blue area */}
+          <div className="relative mt-2">
+            {/* The Solid Dark Blue Background spanning full width and filling down through the section */}
+            <div className="absolute inset-x-0 bottom-0 top-[200px] sm:top-[220px] bg-[#002244] text-white shadow-2xl overflow-hidden">
+              {/* Ambient gradient overlay matching ISB branding */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-[#001730] via-[#002244] to-[#0a3565] opacity-95 pointer-events-none" />
+              {/* Signature ISB Bottom-Left Corner Design */}
+              <ISBCornerDesign size={42} className="sm:scale-110" />
+            </div>
+
+            {/* Content: 3 Boxes (half out) + Academic Statement below inside blue area */}
+            <div className="wireframe-container relative z-10">
+              {/* 3 Academic Stage Boxes */}
+              <LearningJourneyStagesCarousel />
+
+              {/* ISB-Style Academic Sentence on the Blue Background beneath the boxes */}
+              <div className="relative z-10 max-w-4xl mx-auto pt-8 sm:pt-10 pb-14 sm:pb-16 px-4 text-center">
+                <p className="text-base sm:text-xl text-white font-medium leading-relaxed sm:leading-loose">
+                  Our academic continuum guides students from{' '}
+                  <ISBWordBadge shape="pink-circle" label="Curiosity & Expression" light>
+                    Primary School wonder
+                  </ISBWordBadge>{' '}
+                  through foundational{' '}
+                  <ISBWordBadge shape="green-flower" label="Disciplined Inquiry" light>
+                    Middle School discovery
+                  </ISBWordBadge>
+                  , advancing into rigorous{' '}
+                  <ISBWordBadge shape="yellow-bars" label="Inquiry & Mastery" light>
+                    High School
+                  </ISBWordBadge>{' '}
+                  distinction.
+                </p>
               </div>
-            </ScrollPopBox>
-            {/* Facility Cards: Horizontal scroll with mouse support on small screens (< md), 3-column grid on desktop (md+) */}
-            <CampusFacilitiesCarousel facilities={campusFacilities} />
+            </div>
           </div>
         </ScrollPopSection>
       </section>
 
       {/* =========================================================================
-          5. BEYOND THE CLASSROOM — Student Life
+          4. BEYOND THE CLASSROOM — Student Life
           ========================================================================= */}
       <section className="wireframe-section relative overflow-hidden" id="beyond">
         {/* Scroll-triggered edge pop shape in empty margin space */}
@@ -1337,31 +1157,7 @@ export const WireframeSections: React.FC = () => {
       </section>
 
       {/* =========================================================================
-          10. THE PEOPLE BEHIND THE LEARNING — Educators
-          ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="educators">
-        {/* Scroll-triggered edge pop shape in empty margin space */}
-        <ISBScrollPopEdgeShape shape="green-flower" align="right" topPosition="top-24 sm:top-28" />
-        <ScrollPopSection direction="right">
-          <div className="wireframe-container relative z-10">
-            <div className="wf-label text-center flex items-center justify-center gap-2">
-              <ISBShape type="purple-stairs" size={15} />
-              <span>Faculty</span>
-            </div>
-            <h2
-              className="wf-heading !text-[36px] font-poppins font-bold text-[#222] leading-tight text-center break-words"
-              style={{ fontFamily: "'Poppins', sans-serif", fontSize: '36px' }}
-            >
-              The People Behind <ShadyHighlight color="turquoise">the Learning</ShadyHighlight>
-            </h2>
-            {/* Faculty Cards: Horizontal scroll with mouse support on small screens (< md), 4-column grid on desktop (md+) */}
-            <FacultyCarousel faculty={facultyMembers} />
-          </div>
-        </ScrollPopSection>
-      </section>
-
-      {/* =========================================================================
-          11. BEYOND DEV SAMAJ — Community & Alumni (OpenClaw-style Reviews Slider)
+          BEYOND DEV SAMAJ — Community & Alumni (OpenClaw-style Reviews Slider)
           ========================================================================= */}
       <BeyondDevSamajReviews />
 
@@ -1483,155 +1279,7 @@ export const WireframeSections: React.FC = () => {
       </section>
 
       {/* =========================================================================
-          13. CONTACT — Reach Out
-          ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="contact">
-        {/* Scroll-triggered edge pop shape in empty margin space */}
-        <ISBScrollPopEdgeShape shape="blue-hourglass" align="left" topPosition="top-24 sm:top-28" />
-        <ScrollPopSection direction="left">
-          <div className="wireframe-container relative z-10">
-            <div className="wf-label text-center flex items-center justify-center gap-2">
-              <ISBShape type="blue-hourglass" size={15} />
-              <span>Reach Out</span>
-            </div>
-            <h2
-              className="wf-heading !text-[36px] font-poppins font-bold text-[#222] leading-tight text-center break-words"
-              style={{ fontFamily: "'Poppins', sans-serif", fontSize: '36px' }}
-            >
-              Contact <ShadyHighlight color="turquoise">Us</ShadyHighlight>
-            </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mt-8 items-stretch">
-              <ScrollPopBox direction="left" className="h-full">
-                <div className="p-6 sm:p-8 border border-[#ccc] rounded flex flex-col justify-between bg-white h-full gap-6">
-                  <div className="space-y-4">
-                    <div>
-                      <div className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[#0064ec] font-bold mb-1">
-                        <MapPin className="w-3.5 h-3.5 text-[#0064ec]" />
-                        <span>Campus Address</span>
-                      </div>
-                      <p className="text-sm text-[#222] font-semibold">
-                        I.S. Dev Samaj Senior Secondary School
-                      </p>
-                      <p className="text-xs text-[#555] mt-0.5">
-                        Sector 21-C, Chandigarh &mdash; 160022
-                      </p>
-                      <span className="inline-block mt-1.5 text-[11px] font-medium text-[#0064ec] bg-blue-50 border border-blue-200 px-2 py-0.5 rounded">
-                        Near Aroma Chowk &amp; Sector 21 Market
-                      </span>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[#888] font-bold mb-1">
-                        <Phone className="w-3.5 h-3.5 text-[#888]" />
-                        <span>Phone / Helpdesk</span>
-                      </div>
-                      <p className="text-sm text-[#222]">
-                        <a href="tel:01722704495" className="hover:text-[#0064ec] hover:underline">0172-2704495</a>
-                        {' '}&bull;{' '}
-                        <a href="tel:01722707255" className="hover:text-[#0064ec] hover:underline">0172-2707255</a>
-                      </p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[#888] font-bold mb-1">
-                        <Mail className="w-3.5 h-3.5 text-[#888]" />
-                        <span>Email</span>
-                      </div>
-                      <p className="text-sm text-[#222]">
-                        <a href="mailto:info@isdevsamaj21.ac.in" className="hover:text-[#0064ec] hover:underline">info@isdevsamaj21.ac.in</a>
-                        {' '}&bull;{' '}
-                        <a href="mailto:admissions@isdevsamaj21.ac.in" className="hover:text-[#0064ec] hover:underline">admissions@isdevsamaj21.ac.in</a>
-                      </p>
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-1.5 text-xs uppercase tracking-widest text-[#888] font-bold mb-1">
-                        <Clock className="w-3.5 h-3.5 text-[#888]" />
-                        <span>Office Hours</span>
-                      </div>
-                      <p className="text-sm text-[#222]">
-                        Monday &ndash; Saturday: 8:00 AM &ndash; 2:30 PM<br />
-                        <span className="text-xs text-[#777]">Closed on 2nd Saturdays and Public Holidays</span>
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-3 pt-2">
-                    <a href="mailto:info@isdevsamaj21.ac.in" className="wf-cta inline-block">
-                      SEND AN INQUIRY
-                    </a>
-                    <a
-                      href="https://www.google.com/maps/search/?api=1&query=I.S.+Dev+Samaj+Senior+Secondary+School+Sector+21C+Chandigarh"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded border border-[#bbb] hover:border-[#0064ec] text-[#222] hover:text-[#0064ec] bg-white text-xs font-semibold transition-colors"
-                    >
-                      <Navigation className="w-3.5 h-3.5 text-[#0064ec]" />
-                      Get Directions
-                    </a>
-                  </div>
-                </div>
-              </ScrollPopBox>
-
-              <ScrollPopBox direction="right" className="h-full">
-                <div className="relative border border-[#ccc] rounded-lg overflow-hidden bg-[#f4f4f4] h-full min-h-[380px] flex flex-col shadow-sm group">
-                  {/* Google Map Embedded iframe for I S Dev Samaj School Sector 21 Chandigarh */}
-                  <iframe
-                    title="I.S. Dev Samaj Senior Secondary School Map Location"
-                    src="https://maps.google.com/maps?q=I.S.+Dev+Samaj+Senior+Secondary+School,+Sector+21C,+Chandigarh,+160022&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                    className="w-full h-full min-h-[380px] border-0 flex-grow"
-                    loading="lazy"
-                    allowFullScreen
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-
-                  {/* Top Location Bar Overlay */}
-                  <div className="absolute top-3 left-3 right-3 pointer-events-none flex justify-between items-start gap-2">
-                    <div className="pointer-events-auto bg-white/95 backdrop-blur-sm border border-[#ddd] px-3 py-2 rounded-md shadow-md max-w-xs">
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                        <span className="text-xs font-bold text-[#111]">I.S. Dev Samaj Sr. Sec. School</span>
-                      </div>
-                      <p className="text-[11px] text-[#555] mt-0.5">
-                        Sector 21-C, Chandigarh &bull; PIN 160022
-                      </p>
-                    </div>
-                    <a
-                      href="https://www.google.com/maps/search/?api=1&query=I.S.+Dev+Samaj+Senior+Secondary+School+Sector+21C+Chandigarh"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="pointer-events-auto inline-flex items-center gap-1.5 px-3 py-1.5 bg-white/95 hover:bg-white text-[#0064ec] border border-[#ddd] hover:border-[#0064ec] text-xs font-semibold rounded-md shadow-md transition-colors"
-                      title="Open in Google Maps"
-                    >
-                      <span>View larger map</span>
-                      <ExternalLink className="w-3 h-3" />
-                    </a>
-                  </div>
-
-                  {/* Bottom Navigation Hint Bar */}
-                  <div className="bg-white border-t border-[#e0e0e0] px-4 py-2.5 flex items-center justify-between text-xs text-[#555]">
-                    <span className="flex items-center gap-1.5">
-                      <MapPin className="w-3.5 h-3.5 text-[#0064ec]" />
-                      Behind Petrol Pump on Ambala Road, Sector 21-C
-                    </span>
-                    <a
-                      href="https://www.google.com/maps/search/?api=1&query=I.S.+Dev+Samaj+Senior+Secondary+School+Sector+21C+Chandigarh"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-[#0064ec] hover:underline inline-flex items-center gap-1"
-                    >
-                      Directions &rarr;
-                    </a>
-                  </div>
-                </div>
-              </ScrollPopBox>
-            </div>
-          </div>
-        </ScrollPopSection>
-      </section>
-
-      {/* =========================================================================
-          14. FOOTER — Comprehensive Wireframe Footer with ISB Decorative Shape System
+          FOOTER — Comprehensive Wireframe Footer with ISB Decorative Shape System
           ========================================================================= */}
       <footer className="border-t border-[#ccc] py-12 text-[#666] bg-white overflow-hidden">
         <ScrollPopSection direction="right">
@@ -1659,10 +1307,9 @@ export const WireframeSections: React.FC = () => {
                 <div>
                   <h4 className="text-xs uppercase tracking-widest font-bold text-[#222] mb-3">Academics</h4>
                   <ul className="text-xs flex flex-col gap-1.5">
-                    <li><a href="#journey" className="hover:text-[#222]">Pre-Primary School</a></li>
-                    <li><a href="#journey" className="hover:text-[#222]">Primary Wing</a></li>
+                    <li><a href="#journey" className="hover:text-[#222]">Primary School</a></li>
                     <li><a href="#journey" className="hover:text-[#222]">Middle School</a></li>
-                    <li><a href="#journey" className="hover:text-[#222]">Senior Secondary</a></li>
+                    <li><a href="#journey" className="hover:text-[#222]">High School</a></li>
                     <li><a href="#updates" className="hover:text-[#222]">CBSE Mandatory Disclosure</a></li>
                   </ul>
                 </div>
@@ -1671,7 +1318,7 @@ export const WireframeSections: React.FC = () => {
                 <div>
                   <h4 className="text-xs uppercase tracking-widest font-bold text-[#222] mb-3">Campus &amp; Life</h4>
                   <ul className="text-xs flex flex-col gap-1.5">
-                    <li><a href="#campus" className="hover:text-[#222]">Infrastructure &amp; Labs</a></li>
+                    <li><a href="#story" className="hover:text-[#222]">Our Campus Heritage</a></li>
                     <li><a href="#beyond" className="hover:text-[#222]">Sports &amp; Athletics</a></li>
                     <li><a href="#guldaasta" className="hover:text-[#222]">Guldaasta Festival</a></li>
                     <li><a href="#achievements" className="hover:text-[#222]">Student Achievements</a></li>
@@ -1684,10 +1331,10 @@ export const WireframeSections: React.FC = () => {
                   <h4 className="text-xs uppercase tracking-widest font-bold text-[#222] mb-3">Connect</h4>
                   <ul className="text-xs flex flex-col gap-1.5">
                     <li><a href="#admissions" className="hover:text-[#222]">Admissions 2025&ndash;26</a></li>
-                    <li><a href="#contact" className="hover:text-[#222]">Contact &amp; Directions</a></li>
+                    <li><a href="#story" className="hover:text-[#222]">About Dev Samaj</a></li>
                     <li><a href="#updates" className="hover:text-[#222]">Circulars &amp; Notices</a></li>
                     <li><a href="#community" className="hover:text-[#222]">Alumni Portal</a></li>
-                    <li><a href="#contact" className="hover:text-[#222]">Careers at Dev Samaj</a></li>
+                    <li><a href="#admissions" className="hover:text-[#222]">Inquiry &amp; Admissions</a></li>
                   </ul>
                 </div>
               </ScrollPopBox>

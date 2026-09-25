@@ -297,11 +297,14 @@ html {
 }
 
 .intellectual-depth-img {
-  background-position: 75% center;
+  background-position: 52% center;
+  background-size: cover;
+  background-repeat: no-repeat;
 }
 @media (min-width: 640px) {
   .intellectual-depth-img {
-    background-position: center;
+    background-position: 52% center;
+    background-size: cover;
   }
 }
 
