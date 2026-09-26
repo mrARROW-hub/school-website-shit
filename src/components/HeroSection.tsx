@@ -33,8 +33,8 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
   }, [nextSlide, currentIndex]);
 
   const activeSlide = HERO_SLIDES[currentIndex];
-  const currentPrefix = activeSlide.headlinePrefix || 'WE REDEFINE';
-  const currentHighlight = activeSlide.headlineHighlight || 'FUTURE';
+  const currentPrefix = activeSlide.headlinePrefix || '';
+  const currentHighlight = activeSlide.headlineHighlight || '';
 
   return (
     <>
@@ -68,7 +68,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                 alt={activeSlide.alt}
                 referrerPolicy="no-referrer"
                 onError={(e) => {
-                  if (activeSlide.id === 'slide-3') {
+                  if (activeSlide.url.includes('g16.jpg')) {
                     const target = e.target as HTMLImageElement;
                     if (!target.dataset.fallback) {
                       target.dataset.fallback = 'true';
@@ -76,7 +76,9 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                     }
                   }
                 }}
-                className="w-full h-full object-cover object-center"
+                className={`w-full h-full object-cover ${
+                  activeSlide.url.includes('googleusercontent') ? 'object-[center_80%]' : 'object-center'
+                }`}
                 loading="eager"
               />
             </motion.div>
@@ -99,27 +101,33 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
             ========================================================================= */}
         <div className="hidden sm:flex relative z-10 w-full px-4 sm:px-6 md:px-8 pb-4 sm:pb-6 md:pb-8 justify-center text-center pointer-events-none">
           <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={activeSlide.id}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.6, ease: 'easeInOut' }}
-              className="flex flex-col items-center justify-center -space-y-1 sm:-space-y-2 leading-none"
-            >
-              <span
-                className="text-[23px] font-poppins font-semibold text-white uppercase tracking-wider leading-none m-0 p-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
-                style={{ fontFamily: "'Poppins', sans-serif" }}
+            {Boolean(currentPrefix || currentHighlight) && (
+              <motion.div
+                key={activeSlide.id}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.6, ease: 'easeInOut' }}
+                className="flex flex-col items-center justify-center -space-y-1 sm:-space-y-2 leading-none"
               >
-                {currentPrefix}
-              </span>
-              <span
-                className="text-[46px] md:text-[59px] font-anton tracking-wide text-white uppercase leading-none m-0 p-0 drop-shadow-[0_3px_12px_rgba(0,0,0,0.6)]"
-                style={{ fontFamily: "'Anton', sans-serif" }}
-              >
-                {currentHighlight}
-              </span>
-            </motion.div>
+                {currentPrefix && (
+                  <span
+                    className="text-[23px] font-poppins font-semibold text-white uppercase tracking-wider leading-none m-0 p-0 drop-shadow-[0_2px_8px_rgba(0,0,0,0.6)]"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    {currentPrefix}
+                  </span>
+                )}
+                {currentHighlight && (
+                  <span
+                    className="text-[46px] md:text-[59px] font-anton tracking-wide text-white uppercase leading-none m-0 p-0 drop-shadow-[0_3px_12px_rgba(0,0,0,0.6)]"
+                    style={{ fontFamily: "'Anton', sans-serif" }}
+                  >
+                    {currentHighlight}
+                  </span>
+                )}
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
 
@@ -157,36 +165,42 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
           - Crisp white text
           - Word-wrap preserved for smaller screens
           ========================================================================= */}
-      <section
-        className="sm:hidden w-full bg-[#003366] py-6 px-4 text-center"
-        aria-label="School Vision Headline"
-      >
-        <div className="w-full max-w-sm mx-auto flex items-center justify-center min-h-[44px]">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.h1
-              key={activeSlide.id}
-              initial={{ opacity: 0, y: 4 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -4 }}
-              transition={{ duration: 0.5, ease: 'easeInOut' }}
-              className="inline-flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-center"
-            >
-              <span
-                className="text-[20px] font-poppins font-semibold text-white uppercase tracking-wider leading-none drop-shadow-sm"
-                style={{ fontFamily: "'Poppins', sans-serif" }}
+      {Boolean(currentPrefix || currentHighlight) && (
+        <section
+          className="sm:hidden w-full bg-[#003366] py-6 px-4 text-center"
+          aria-label="School Vision Headline"
+        >
+          <div className="w-full max-w-sm mx-auto flex items-center justify-center min-h-[44px]">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.h1
+                key={activeSlide.id}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -4 }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
+                className="inline-flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 text-center"
               >
-                {currentPrefix}
-              </span>
-              <span
-                className="text-[34px] font-anton tracking-wide text-white uppercase leading-none drop-shadow-sm"
-                style={{ fontFamily: "'Anton', sans-serif" }}
-              >
-                {currentHighlight}
-              </span>
-            </motion.h1>
-          </AnimatePresence>
-        </div>
-      </section>
+                {currentPrefix && (
+                  <span
+                    className="text-[20px] font-poppins font-semibold text-white uppercase tracking-wider leading-none drop-shadow-sm"
+                    style={{ fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    {currentPrefix}
+                  </span>
+                )}
+                {currentHighlight && (
+                  <span
+                    className="text-[34px] font-anton tracking-wide text-white uppercase leading-none drop-shadow-sm"
+                    style={{ fontFamily: "'Anton', sans-serif" }}
+                  >
+                    {currentHighlight}
+                  </span>
+                )}
+              </motion.h1>
+            </AnimatePresence>
+          </div>
+        </section>
+      )}
     </>
   );
 };

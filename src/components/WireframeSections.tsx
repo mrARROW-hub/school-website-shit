@@ -5,6 +5,7 @@ import {
   ISBWordBadge,
   ISBFooterIconsRow,
   ISBScrollPopEdgeShape,
+  ScrollPopContourWave,
   ISBShapeType,
   ISBCornerDesign,
   ISBCornerCard,
@@ -321,7 +322,7 @@ const learningStagesData: {
     classes: 'Nursery to 4',
     accentColor: '#fe76b4',
     bgHover: 'hover:border-[#fe76b4]',
-    image: '',
+    image: 'https://cdn.phototourl.com/member/2026-09-26-bc79a123-53c0-4b94-a662-d7ae1eaab874.jpg',
     imageAlt: 'Primary School',
   },
   {
@@ -378,26 +379,38 @@ const LearningJourneyStagesCarousel: React.FC = () => {
     scrollToIndex(Math.min(learningStagesData.length - 1, currentIndex + 1));
   };
 
-  const renderCardContent = (stage: (typeof learningStagesData)[0]) => (
-    <div
-      className={`relative overflow-hidden p-6 sm:p-8 border border-neutral-300 sm:border-neutral-200/80 rounded-2xl bg-[#1e293b] shadow-xl hover:shadow-2xl transition-all duration-300 flex flex-col justify-between min-h-[420px] sm:min-h-[440px] h-full group cursor-pointer`}
-    >
-      {/* Background image if provided, or dark/neutral blank canvas ready for image */}
-      {stage.image ? (
-        <>
-          <img
-            src={stage.image}
-            alt={stage.imageAlt || stage.title}
-            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-gradient-to-b from-[#2a384c] via-[#1e293b] to-[#0f172a] pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
-        </>
-      )}
+  const renderCardContent = (stage: (typeof learningStagesData)[0]) => {
+    const isPrimary = stage.id === 'primary';
+    return (
+      <div
+        className={`relative overflow-hidden p-6 sm:p-8 border border-neutral-300 sm:border-neutral-200/80 rounded-none bg-[#1e293b] ${
+          isPrimary ? 'shadow-none' : 'shadow-xl hover:shadow-2xl'
+        } transition-all duration-300 flex flex-col justify-between min-h-[420px] sm:min-h-[440px] h-full group cursor-pointer`}
+      >
+        {/* Background image if provided, or dark/neutral blank canvas ready for image */}
+        {stage.image ? (
+          <>
+            <img
+              src={stage.image}
+              alt={stage.imageAlt || stage.title}
+              className={`absolute inset-0 w-full h-full object-cover object-center image-render-crisp ${
+                isPrimary ? 'object-[center_center]' : 'transition-transform duration-700 group-hover:scale-105'
+              }`}
+              style={{ imageRendering: 'high-quality' }}
+            />
+            {/* For primary school box: crop from sides, focus on center, do not add depth */}
+            {isPrimary ? (
+              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/75 to-transparent pointer-events-none" />
+            ) : (
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
+            )}
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-b from-[#2a384c] via-[#1e293b] to-[#0f172a] pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none" />
+          </>
+        )}
 
       {/* Step shape and label tag */}
       <div className="relative z-10 mb-auto flex items-center justify-between">
@@ -425,6 +438,7 @@ const LearningJourneyStagesCarousel: React.FC = () => {
       </div>
     </div>
   );
+};
 
   return (
     <div className="mb-2">
@@ -593,6 +607,14 @@ export const WireframeSections: React.FC = () => {
       <section className="wireframe-section relative overflow-hidden" id="story">
         {/* Scroll-triggered edge pop shape (half pops out from right edge, 0 extra vertical space) */}
         <ISBScrollPopEdgeShape shape="purple-stairs" align="right" topPosition="top-28 sm:top-36" />
+        {/* Authentic Shady Side Academy coiled spirograph popping out from left edge (Image 1 exact) */}
+        <ScrollPopContourWave
+          align="left"
+          variant="twisted-ribbon"
+          color="#11FEEE"
+          topPosition="top-28 sm:top-36"
+          className="opacity-90"
+        />
         <ScrollPopSection direction="left">
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">
@@ -753,6 +775,14 @@ export const WireframeSections: React.FC = () => {
       <section className="relative overflow-hidden bg-white pt-16 sm:pt-20 pb-0 border-b border-[#ccc]" id="journey">
         {/* Scroll-triggered edge pop shape (half pops out from left edge, 0 extra vertical space) */}
         <ISBScrollPopEdgeShape shape="blue-hourglass" align="left" topPosition="top-24 sm:top-28" />
+        {/* Authentic Shady Side Academy coiled spirograph peeking from right edge (Image 2 exact) */}
+        <ScrollPopContourWave
+          align="right"
+          variant="coiled-pod"
+          color="#1FFF01"
+          topPosition="top-24 sm:top-28"
+          className="opacity-90"
+        />
         <ScrollPopSection direction="left">
           {/* Top White Area: Header & Heading */}
           <div className="wireframe-container relative z-10">
@@ -819,6 +849,14 @@ export const WireframeSections: React.FC = () => {
       <section className="wireframe-section relative overflow-hidden" id="beyond">
         {/* Scroll-triggered edge pop shape in empty margin space */}
         <ISBScrollPopEdgeShape shape="yellow-bars" align="left" topPosition="top-24 sm:top-28" />
+        {/* Authentic Shady Side Academy coiled spirograph peeking from right edge (Image 4 exact) */}
+        <ScrollPopContourWave
+          align="right"
+          variant="ruled-twist"
+          color="#11FEEE"
+          topPosition="top-24 sm:top-28"
+          className="opacity-90"
+        />
         <ScrollPopSection direction="left">
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">
@@ -891,6 +929,14 @@ export const WireframeSections: React.FC = () => {
       <section className="wireframe-section relative overflow-hidden" id="guldaasta">
         {/* Scroll-triggered edge pop shape in empty margin space */}
         <ISBScrollPopEdgeShape shape="pink-arch" align="right" topPosition="top-24 sm:top-28" />
+        {/* Authentic Shady Side Academy coiled spirograph peeking from left edge (Image 3 exact) */}
+        <ScrollPopContourWave
+          align="left"
+          variant="cascading-fan"
+          color="#1FFF01"
+          topPosition="top-24 sm:top-28"
+          className="opacity-90"
+        />
         <ScrollPopSection direction="right">
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">
@@ -954,6 +1000,14 @@ export const WireframeSections: React.FC = () => {
       <section className="wireframe-section relative overflow-hidden" id="achievements">
         {/* Scroll-triggered edge pop shape in empty margin space */}
         <ISBScrollPopEdgeShape shape="red-triangle" align="left" topPosition="top-24 sm:top-28" />
+        {/* Authentic Shady Side Academy coiled spirograph peeking from right edge */}
+        <ScrollPopContourWave
+          align="right"
+          variant="vertical-spiral"
+          color="#11FEEE"
+          topPosition="top-24 sm:top-28"
+          className="opacity-90"
+        />
         <ScrollPopSection direction="left">
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">
@@ -1046,6 +1100,14 @@ export const WireframeSections: React.FC = () => {
       <section className="wireframe-section relative overflow-hidden" id="updates">
         {/* Scroll-triggered edge pop shape in empty margin space */}
         <ISBScrollPopEdgeShape shape="purple-stairs" align="right" topPosition="top-24 sm:top-28" />
+        {/* Authentic Shady Side Academy coiled spirograph peeking from left edge */}
+        <ScrollPopContourWave
+          align="left"
+          variant="mobius-loop"
+          color="#1FFF01"
+          topPosition="top-24 sm:top-28"
+          className="opacity-90"
+        />
         <ScrollPopSection direction="right">
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">
@@ -1130,6 +1192,14 @@ export const WireframeSections: React.FC = () => {
       <section className="wireframe-section relative overflow-hidden" id="gallery">
         {/* Scroll-triggered edge pop shape in empty margin space */}
         <ISBScrollPopEdgeShape shape="yellow-bars" align="left" topPosition="top-24 sm:top-28" />
+        {/* Authentic Shady Side Academy coiled spirograph peeking from right edge */}
+        <ScrollPopContourWave
+          align="right"
+          variant="vortex-curl"
+          color="#11FEEE"
+          topPosition="top-24 sm:top-28"
+          className="opacity-90"
+        />
         <ScrollPopSection direction="left">
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">
@@ -1172,6 +1242,14 @@ export const WireframeSections: React.FC = () => {
       <section className="wireframe-section relative overflow-hidden" id="admissions">
         {/* Scroll-triggered edge pop shape in empty margin space */}
         <ISBScrollPopEdgeShape shape="red-triangle" align="right" topPosition="top-24 sm:top-28" />
+        {/* Authentic Shady Side Academy coiled spirograph peeking from left edge */}
+        <ScrollPopContourWave
+          align="left"
+          variant="saddle-cross"
+          color="#1FFF01"
+          topPosition="top-24 sm:top-28"
+          className="opacity-90"
+        />
         <ScrollPopSection direction="right">
           <div className="wireframe-container relative z-10">
             <div className="wf-label text-center flex items-center justify-center gap-2">

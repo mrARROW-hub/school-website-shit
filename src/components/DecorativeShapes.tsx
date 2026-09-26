@@ -714,3 +714,6 @@ export const ISBBigSectionEdgeShape: React.FC<{
   align?: 'left' | 'right';
   className?: string;
 }> = () => null;
+
+export { ContourWavePattern, ScrollPopContourWave } from './ContourWavePattern';
+export type { ContourVariant, ContourWavePatternProps, ScrollPopContourWaveProps } from './ContourWavePattern';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ShadyHighlight } from './ShadyHighlight';
-import { ISBShape, ISBScrollPopEdgeShape } from './DecorativeShapes';
+import { ISBShape, ISBScrollPopEdgeShape, ScrollPopContourWave } from './DecorativeShapes';
 import { ScrollPopSection } from './ScrollPopSection';
 
 export interface CommunityReview {
@@ -202,6 +202,15 @@ export const BeyondDevSamajReviews: React.FC = () => {
     <section className="wireframe-section relative overflow-hidden" id="community">
       {/* Scroll-triggered edge pop shape in empty margin space */}
       <ISBScrollPopEdgeShape shape="pink-circle" align="left" topPosition="top-24 sm:top-28" />
+
+      {/* Authentic Shady Side Academy coiled teardrop pod peeking from right edge (Image 2 exact) */}
+      <ScrollPopContourWave
+        align="right"
+        variant="coiled-pod"
+        color="#11FEEE"
+        topPosition="top-28 sm:top-36"
+        className="opacity-90"
+      />
 
       <ScrollPopSection direction="left">
         <div className="wireframe-container relative z-10 mb-6">

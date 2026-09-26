@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Plus, Image as ImageIcon } from 'lucide-react';
+import { ScrollPopContourWave } from './DecorativeShapes';
 
 interface ValueItem {
   id: string;
@@ -67,10 +68,23 @@ export const WeMoveSection: React.FC = () => {
         background: 'linear-gradient(to right, #F2F3EE 0%, #F2F3EE 50%, #ffffff 50%, #ffffff 100%)'
       }}
     >
-      {/* Mobile background fallback: seamless neutral #F2F3EE */}
-      <div className="lg:hidden absolute inset-0 bg-[#F2F3EE] -z-10" />
+      {/* Background & Edge Decorator container with overflow-hidden - scoped as sibling so it NEVER breaks sticky on section */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
+        {/* Authentic Shady Side Academy coiled ruled twist popping out from right edge (Image 4 exact) */}
+        <ScrollPopContourWave
+          align="right"
+          variant="ruled-twist"
+          color="#1FFF01"
+          linesCount={18}
+          topPosition="top-28 sm:top-36"
+          className="opacity-90"
+        />
 
-      <div className="max-w-[1540px] mx-auto relative">
+        {/* Mobile background fallback: seamless neutral #F2F3EE */}
+        <div className="lg:hidden absolute inset-0 bg-[#F2F3EE] -z-10" />
+      </div>
+
+      <div className="max-w-[1540px] mx-auto relative z-10">
         {/* On larger screens (lg+), section is divided into 2 equal parts:
             Left part: Images stay in their column on the left as the user scrolls
             Right part: Heading moves with the screen (locked in viewport) till section completes */}
@@ -304,7 +318,7 @@ export const WeMoveSection: React.FC = () => {
               Stays locked in place on the right side as you scroll down,
               and naturally leaves when the section is completed!
               ========================================================================= */}
-          <div className="order-1 lg:order-2 w-full lg:w-1/2 sticky-right-heading flex flex-col items-center justify-center text-center select-none py-16 sm:py-20 lg:py-0 px-4 sm:px-8 lg:px-12 bg-white lg:bg-transparent">
+          <div className="order-1 lg:order-2 w-full lg:w-1/2 lg:sticky lg:top-0 lg:h-screen lg:self-start sticky-right-heading flex flex-col items-center justify-center text-center select-none py-16 sm:py-20 lg:py-0 px-4 sm:px-8 lg:px-12 bg-white lg:bg-transparent z-20">
             
             {/* Active Pillar Pill (Subtle feedback tracking scroll progress) */}
             <div className="hidden lg:flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#041E42]/5 border border-[#041E42]/10 mb-6">
