@@ -17,6 +17,7 @@ import { motion } from 'motion/react';
 import { BeyondDevSamajReviews } from './BeyondDevSamajReviews';
 import { WeMoveSection } from './WeMoveSection';
 import { ShadyNewsSocialSection } from './ShadyNewsSocialSection';
+import { ThroughOurLensSection } from './ThroughOurLensSection';
 import campusPhoto from '../assets/campus1-1.webp';
 import campusCustomPhoto from '../assets/images/campus_custom.png';
 import g16Fallback from '../assets/g16.jpg';
@@ -1054,44 +1055,9 @@ export const WireframeSections: React.FC<WireframeSectionsProps> = ({ onOpenWhat
       </section>
 
       {/* =========================================================================
-          8. THROUGH OUR LENS — Gallery Mosaic
+          8. THROUGH OUR LENS — Circular Floating Image Bubbles Canvas
           ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="gallery">
-        {/* Scroll-triggered edge pop shape in empty margin space */}
-        <ISBScrollPopEdgeShape shape="yellow-bars" align="left" topPosition="top-24 sm:top-28" />
-        {/* Authentic Shady Side Academy coiled spirograph peeking from right edge */}
-        <ScrollPopContourWave
-          align="right"
-          variant="vortex-curl"
-          color="#11FEEE"
-          topPosition="top-24 sm:top-28"
-          className="opacity-90"
-        />
-        <ScrollPopSection direction="left">
-          <div className="wireframe-container relative z-10">
-            <div className="wf-label text-center flex items-center justify-center gap-2">
-              <ISBShape type="green-flower" size={15} />
-              <span>Gallery</span>
-            </div>
-            <h2
-              className="wf-heading !text-[36px] font-poppins font-bold text-[#222] leading-tight text-center break-words"
-              style={{ fontFamily: "'Poppins', sans-serif", fontSize: '36px' }}
-            >
-              Through Our <ShadyHighlight color="turquoise">Lens</ShadyHighlight>
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-8">
-              <ScrollPopBox direction="left"><div className="wf-img-placeholder h-40">CLASSROOM IN ACTION</div></ScrollPopBox>
-              <ScrollPopBox direction="right" className="col-span-2"><div className="wf-img-placeholder md:col-span-2 h-40">SCIENCE LAB EXPERIMENT</div></ScrollPopBox>
-              <ScrollPopBox direction="left"><div className="wf-img-placeholder h-40">ART STUDIO</div></ScrollPopBox>
-              <ScrollPopBox direction="right" className="col-span-2 md:row-span-2"><div className="wf-img-placeholder md:col-span-2 md:row-span-2 h-84">ANNUAL SPORTS DAY CELEBRATIONS</div></ScrollPopBox>
-              <ScrollPopBox direction="left"><div className="wf-img-placeholder h-40">MORNING ASSEMBLY</div></ScrollPopBox>
-              <ScrollPopBox direction="right"><div className="wf-img-placeholder h-40">LIBRARY STUDY HOUR</div></ScrollPopBox>
-              <ScrollPopBox direction="left"><div className="wf-img-placeholder h-40">MUSIC PERFORMANCE</div></ScrollPopBox>
-              <ScrollPopBox direction="right"><div className="wf-img-placeholder h-40">CAMPUS CORRIDORS</div></ScrollPopBox>
-            </div>
-          </div>
-        </ScrollPopSection>
-      </section>
+      <ThroughOurLensSection />
 
       {/* =========================================================================
           BEYOND DEV SAMAJ — Community & Alumni (OpenClaw-style Reviews Slider)
