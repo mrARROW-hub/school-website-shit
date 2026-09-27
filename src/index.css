@@ -34,6 +34,50 @@
   }
 }
 
+/* Shady Side Academy News / Social Ticker Animations */
+@keyframes ssaMarquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ssa-marquee {
+  display: flex;
+  width: max-content;
+  animation: ssaMarquee 32s linear infinite;
+}
+
+.animate-ssa-marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes ssaSpiralRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-ssa-spiral {
+  animation: ssaSpiralRotate 25s linear infinite;
+}
+
+.text-stroke-navy {
+  -webkit-text-stroke-width: 1.5px;
+  -webkit-text-stroke-color: #041E42;
+}
+
+@media (min-width: 768px) {
+  .text-stroke-navy {
+    -webkit-text-stroke-width: 2px;
+  }
+}
+
 /* Base typography: All general text defaults to Poppins, sans-serif */
 html,
 body {

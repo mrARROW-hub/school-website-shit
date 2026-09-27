@@ -14,9 +14,15 @@ import {
 
 interface HeaderProps {
   onOpenAdmissions: (type?: 'apply' | 'inquire' | 'visit') => void;
+  onGoHome?: () => void;
+  onOpenWhatsHappening?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
+export const Header: React.FC<HeaderProps> = ({
+  onOpenAdmissions,
+  onGoHome,
+  onOpenWhatsHappening,
+}) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -52,7 +58,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
     const q = searchQuery.toLowerCase();
 
     // Route to appropriate section based on keyword
-    if (q.includes('admiss') || q.includes('fee') || q.includes('apply') || q.includes('visit') || q.includes('inquir') || q.includes('contact')) {
+    if (q.includes('news') || q.includes('update') || q.includes('circular') || q.includes('notice') || q.includes('happen')) {
+      if (onOpenWhatsHappening) onOpenWhatsHappening();
+      else window.location.hash = '#whats-happening';
+    } else if (q.includes('admiss') || q.includes('fee') || q.includes('apply') || q.includes('visit') || q.includes('inquir') || q.includes('contact')) {
       window.location.hash = '#admissions';
     } else if (q.includes('acad') || q.includes('class') || q.includes('curric') || q.includes('cbse') || q.includes('camp') || q.includes('facil') || q.includes('lab')) {
       window.location.hash = '#journey';
@@ -194,7 +203,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAdmissions }) => {
       <nav className="w-full bg-transparent py-3 sm:py-4">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
           {/* Logo & School Name in Crisp White */}
-          <a href="#hero" className="flex items-center gap-3 shrink-0 group">
+          <a
+            href="#hero"
+            onClick={(e) => {
+              if (onGoHome) {
+                e.preventDefault();
+                onGoHome();
+              }
+            }}
+            className="flex items-center gap-3 shrink-0 group cursor-pointer"
+          >
             <img
               src={logoUrl}
               alt="IS Dev Samaj Senior Secondary School Emblem"

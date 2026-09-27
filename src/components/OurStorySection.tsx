@@ -4,6 +4,7 @@ import { Sparkles, CheckCircle2, HeartHandshake, BookOpen, ShieldCheck, X, Chevr
 import { STORY_STATS } from '../data/schoolData';
 import campusImg from '../assets/campus1-1.webp';
 import g16Fallback from '../assets/g16.jpg';
+import moralGroundingEdited from '../assets/images/moral_grounding_edited.png';
 import moralGroundingImg from '../assets/images/moral_grounding_1790149720413.jpg';
 import lab3Img from '../assets/lab3-1.jpg';
 import intellectualDepthHoverImg from '../assets/images/intellectual_depth_hover.png';
@@ -109,7 +110,7 @@ export const OurStorySection: React.FC = () => {
                     desc: 'Ethical foundations before academic ambition.',
                     shape: 'pink-circle' as ISBShapeType,
                     hoverBorder: 'hover:border-[#FA448C]',
-                    image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/sports3.jpg',
+                    image: moralGroundingEdited || 'https://mature-bronze-sjj7ozun.edgeone.dev/file.png',
                     bgColor: 'bg-[#FA448C]',
                     hoverShape: 'four-petal-flower' as ISBShapeType,
                     hoverShapeColor: '#FFC53D',

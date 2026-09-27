@@ -16,6 +16,15 @@ import g16Edited from '../assets/images/g16_edited.png';
 export const HERO_SLIDES: HeroSlide[] = [
   {
     id: 'slide-1',
+    url: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkxcPUwjLi7W_bDJjvDg-IUto0sn2HAFHLt0ApD9JCwDS2Yg74dPBMwMe2OhOqwOVaVmS1SiuDm2QQW3853tMubHa5ooag7-NPK3bLu3_3_mGrvIgHVpdT4JXeVEXA9sc4JojUw=s680-w680-h510-rw',
+    alt: 'I.S. Dev Samaj School Sports Ground and Campus Activities',
+    caption: 'Student Excellence & Cultural Heritage',
+    tagline: 'Empowering young leaders through moral values and progressive education',
+    headlinePrefix: 'WE REDEFINE',
+    headlineHighlight: 'FUTURE',
+  },
+  {
+    id: 'slide-2',
     url: campus3Edited || 'https://abstract-chocolate-cqydlgxb.edgeone.dev/file.png',
     alt: 'I.S. Dev Samaj School Vibrant Campus and Infrastructure',
     caption: 'Lush Green Iconic Campus in Sector 21-C, Chandigarh',
@@ -24,22 +33,13 @@ export const HERO_SLIDES: HeroSlide[] = [
     headlineHighlight: 'POTENTIAL',
   },
   {
-    id: 'slide-2',
+    id: 'slide-3',
     url: g16Edited || 'https://above-scarlet-ptzbcuhx.edgeone.dev/file.png',
     alt: 'I.S. Dev Samaj School Sports & Football Team with Coach',
     caption: 'Athletic Excellence & Team Camaraderie',
     tagline: 'Cultivating discipline, leadership, and physical vitality on the field',
     headlinePrefix: 'IGNITE',
     headlineHighlight: 'PURPOSE',
-  },
-  {
-    id: 'slide-3',
-    url: 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkxcPUwjLi7W_bDJjvDg-IUto0sn2HAFHLt0ApD9JCwDS2Yg74dPBMwMe2OhOqwOVaVmS1SiuDm2QQW3853tMubHa5ooag7-NPK3bLu3_3_mGrvIgHVpdT4JXeVEXA9sc4JojUw=s680-w680-h510-rw',
-    alt: 'I.S. Dev Samaj School Sports Ground and Campus Activities',
-    caption: 'Student Excellence & Cultural Heritage',
-    tagline: 'Empowering young leaders through moral values and progressive education',
-    headlinePrefix: 'WE REDEFINE',
-    headlineHighlight: 'FUTURE',
   },
 ];
 

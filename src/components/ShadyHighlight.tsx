@@ -7,23 +7,30 @@ export type ShadyHighlightColor =
   | 'green' // #1FFF01 — Shady Side Academy fluorescent green
   | 'yellow' // #FFFF01 — Shady Side Academy fluorescent yellow
   | 'pink' // #FF1CA5 — Shady Side Academy fluorescent pink
-  | 'amber'; // #FFB81C — Shady Side Academy warm yellow
+  | 'amber' // #FFB81C — Shady Side Academy warm yellow
+  | 'darkblue' // #002B49 — School signature dark blue / navy
+  | 'dark-blue'
+  | 'blue-600';
 
 interface ShadyHighlightProps {
   children: React.ReactNode;
-  color?: ShadyHighlightColor;
+  color?: ShadyHighlightColor | string;
   className?: string;
   delay?: number;
   heightPercent?: number; // default: 42% matching SSA's 40%
 }
 
-const COLOR_MAP: Record<ShadyHighlightColor, string> = {
+const COLOR_MAP: Record<string, string> = {
   turquoise: '#11FEEE',
   blue: '#11FEEE',
   green: '#1FFF01',
   yellow: '#FFFF01',
   pink: '#FF1CA5',
   amber: '#FFB81C',
+  darkblue: '#002B49',
+  'dark-blue': '#002B49',
+  'blue-600': '#2563EB',
+  blue600: '#2563EB',
 };
 
 /**
@@ -46,12 +53,10 @@ export const ShadyHighlight: React.FC<ShadyHighlightProps> = ({
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: '-10px 0px -60px 0px' });
 
-  const isBlueHighlight = color === 'turquoise' || color === 'blue';
-  const hexColor = COLOR_MAP[color] || COLOR_MAP.turquoise;
+  const hexColor = COLOR_MAP[color] || (color.startsWith('#') ? color : COLOR_MAP.turquoise);
 
-  // For blue highlight: animates width from 0% to 100% as scrolled into view, then stays there.
-  // For other colors: stays static at 100% without slide transition.
-  const currentWidth = isBlueHighlight ? (isInView ? '100%' : '0%') : '100%';
+  // Animates width from 0% to 100% as scrolled into view, then stays there permanently
+  const currentWidth = isInView ? '100%' : '0%';
 
   return (
     <span
@@ -62,9 +67,7 @@ export const ShadyHighlight: React.FC<ShadyHighlightProps> = ({
         backgroundRepeat: 'no-repeat',
         backgroundPosition: '0 100%',
         backgroundSize: `${currentWidth} ${heightPercent}%`,
-        transition: isBlueHighlight
-          ? `background-size 1.4s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`
-          : 'none',
+        transition: `background-size 1.4s cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`,
         WebkitBoxDecorationBreak: 'clone',
         boxDecorationBreak: 'clone',
       }}

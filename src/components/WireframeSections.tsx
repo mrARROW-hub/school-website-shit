@@ -16,6 +16,7 @@ import { ScrollPopSection, ScrollPopBox } from './ScrollPopSection';
 import { motion } from 'motion/react';
 import { BeyondDevSamajReviews } from './BeyondDevSamajReviews';
 import { WeMoveSection } from './WeMoveSection';
+import { ShadyNewsSocialSection } from './ShadyNewsSocialSection';
 import campusPhoto from '../assets/campus1-1.webp';
 import campusCustomPhoto from '../assets/images/campus_custom.png';
 import g16Fallback from '../assets/g16.jpg';
@@ -538,7 +539,11 @@ const LearningJourneyStagesCarousel: React.FC = () => {
   );
 };
 
-export const WireframeSections: React.FC = () => {
+interface WireframeSectionsProps {
+  onOpenWhatsHappening?: () => void;
+}
+
+export const WireframeSections: React.FC<WireframeSectionsProps> = ({ onOpenWhatsHappening }) => {
   const [isMobileOrTablet, setIsMobileOrTablet] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       return window.innerWidth < 1024;
@@ -555,61 +560,14 @@ export const WireframeSections: React.FC = () => {
     return () => mq.removeEventListener?.('change', update);
   }, []);
 
-  const brandPillars: { type: ISBShapeType; name: string; desc: string; color: string }[] = [
-    { type: 'purple-stairs', name: 'Progress', desc: 'Pre-K through Class XII continuum', color: '#861fce' },
-    { type: 'pink-circle', name: 'Community', desc: 'Inclusivity, empathy, & belonging', color: '#fe76b4' },
-    { type: 'blue-hourglass', name: 'Intellect', desc: 'Academic inquiry & critical rigor', color: '#0064ec' },
-    { type: 'yellow-bars', name: 'Expression', desc: 'Diversity of talents & vibrant voice', color: '#FFC548' },
-    { type: 'green-flower', name: 'Flourishing', desc: 'Holistic character & moral grounding', color: '#00b273' },
-    { type: 'red-triangle', name: 'Empowerment', desc: 'Courage, leadership, & forward drive', color: '#FF3D37' },
-  ];
-
   return (
     <>
       {/* =========================================================================
-          ISB-INSPIRED VALUES & DECORATIVE SHAPES RIBBON
-          Replicating the iconic visual language from isb.be
+          SHADY SIDE ACADEMY NEWS & SOCIAL SLIDESHOW WITH MARQUEE TICKER
+          Exact replica of https://sensitive-peach-a552ll1z.edgeone.dev/
+          and https://www.shadysideacademy.org/ right below the hero section
           ========================================================================= */}
-      <section className="border-b border-[#e5e5e5] bg-[#fafafa]/95 py-2 sm:py-3 md:py-3.5 transition-colors overflow-hidden" aria-label="School Pillars and Visual Language">
-        <ScrollPopSection direction="left">
-          <div className="wireframe-container">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-2 md:gap-4">
-              {/* Desktop / Tablet Heading */}
-              <div className="hidden md:flex items-center gap-2.5 text-left shrink-0">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#444] bg-white px-3 py-1 rounded-full border border-[#ddd] shadow-xs">
-                  Visual Language &amp; Pillars
-                </span>
-                <span className="text-xs text-[#666]">
-                  Decorative shapes inspired by international school branding
-                </span>
-              </div>
-
-              {/* Wrapped Shapes Ribbon for Mobile & Desktop (natural word wrapping in lines, no scrolling) */}
-              <div className="w-full md:w-auto flex flex-wrap items-center justify-center md:justify-end gap-1.5 sm:gap-2 py-0.5">
-                {/* Compact label inline on mobile */}
-                <span className="md:hidden text-[10px] font-bold uppercase tracking-wider text-[#555] bg-white px-2.5 py-1 rounded-full border border-[#ddd] shadow-2xs whitespace-nowrap">
-                  Pillars
-                </span>
-
-                {brandPillars.map((item, idx) => (
-                  <div
-                    key={idx}
-                    className="group flex items-center gap-1.5 px-2.5 py-1 sm:py-1.5 rounded-full bg-white border border-[#e5e5e5] hover:border-[#bbb] hover:shadow-xs transition-all cursor-default"
-                    title={`${item.name}: ${item.desc}`}
-                  >
-                    <div className="transition-transform duration-300 group-hover:scale-125 group-hover:rotate-6 shrink-0">
-                      <ISBShape type={item.type} size={16} />
-                    </div>
-                    <span className="text-[11px] sm:text-xs font-semibold text-[#333] whitespace-nowrap group-hover:text-black transition-colors">
-                      {item.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </ScrollPopSection>
-      </section>
+      <ShadyNewsSocialSection onOpenWhatsHappening={onOpenWhatsHappening} />
 
       {/* =========================================================================
           2. OUR STORY — Where Values Meet Vision
@@ -812,7 +770,7 @@ export const WireframeSections: React.FC = () => {
               The <ShadyHighlight color="turquoise">Learning Journey</ShadyHighlight>
             </h2>
 
-            <p className="max-w-2xl text-base text-[#666] mb-8 sm:mb-10 text-center mx-auto break-words">
+            <p className="max-w-2xl text-base text-[#041E42] font-medium mb-8 sm:mb-10 text-center mx-auto break-words">
               A continuous continuum of growth from the earliest steps of wonder to the confident leap into adulthood.
             </p>
           </div>
@@ -905,7 +863,7 @@ export const WireframeSections: React.FC = () => {
               className="wf-heading font-crayon text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-center break-words !text-white"
               style={{ fontFamily: "'DK Crayon Crumble', 'Cabin Sketch', cursive, sans-serif", color: '#ffffff' }}
             >
-              Beyond the <ShadyHighlight color="turquoise">Classroom</ShadyHighlight>
+              Beyond the <ShadyHighlight color="blue-600">Classroom</ShadyHighlight>
             </h2>
             <p className="max-w-2xl text-base !text-white/90 text-center mx-auto break-words" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
               Character is forged as much on the pitch, stage, and easel as it is in the lecture hall.
@@ -962,72 +920,35 @@ export const WireframeSections: React.FC = () => {
       </section>
 
       {/* =========================================================================
-          6. GULDAASTA — Signature Annual Event
+          6. GULDASTAA — Signature Annual Event
           ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="guldaasta">
+      <section className="wireframe-section relative overflow-hidden py-16 sm:py-24 md:py-32" id="guldaasta">
         {/* Scroll-triggered edge pop shape in empty margin space */}
-        <ISBScrollPopEdgeShape shape="pink-arch" align="right" topPosition="top-24 sm:top-28" />
+        <ISBScrollPopEdgeShape shape="pink-arch" align="right" topPosition="top-12 sm:top-20" />
         {/* Authentic Shady Side Academy coiled spirograph peeking from left edge (Image 3 exact) */}
         <ScrollPopContourWave
           align="left"
           variant="cascading-fan"
           color="#1FFF01"
-          topPosition="top-24 sm:top-28"
+          topPosition="top-12 sm:top-20"
           className="opacity-90"
         />
         <ScrollPopSection direction="right">
-          <div className="wireframe-container relative z-10">
-            <div className="wf-label text-center flex items-center justify-center gap-2">
-              <ISBShape type="pink-arch" size={15} />
-              <span>Signature Annual Event</span>
+          <div className="wireframe-container relative z-10 py-6 sm:py-12 flex flex-col items-center justify-center">
+            <div className="wf-label text-center flex items-center justify-center gap-2 mb-4 sm:mb-6">
+              <ISBShape type="pink-arch" size={16} />
+              <span className="text-xs sm:text-sm font-semibold tracking-wider uppercase">Signature Annual Event</span>
             </div>
-            <h2
-              className="wf-heading !text-[36px] font-poppins font-bold text-[#222] leading-tight text-center break-words"
-              style={{ fontFamily: "'Poppins', sans-serif", fontSize: '36px' }}
-            >
-              Guldaasta &mdash; <ShadyHighlight color="turquoise">A Celebration of Togetherness</ShadyHighlight>
+            <h2 className="flex items-center justify-center w-full my-2 sm:my-4" aria-label="Guldastaa">
+              <img
+                src="/guldastaa-heading.png"
+                alt="Guldastaa"
+                className="w-auto h-24 sm:h-36 md:h-48 lg:h-60 xl:h-72 max-w-[94vw] sm:max-w-[85vw] lg:max-w-5xl object-contain select-none mix-blend-multiply drop-shadow-xs transition-transform duration-300 hover:scale-[1.02]"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = 'https://xenacious-amaranth-ld7bcwbz.edgeone.dev/file.png';
+                }}
+              />
             </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mt-8">
-              <ScrollPopBox direction="left">
-                <div>
-                  <p className="text-base text-[#666] leading-relaxed mb-6 text-left">
-                    Our landmark annual showcase where every child&apos;s voice, talent, and culture come together in an unforgettable evening of performance, exhibition, and shared pride.
-                  </p>
-                  <div className="flex gap-8 my-6 justify-start">
-                    <div>
-                      <strong className="block text-2xl font-bold text-[#222]">1,200+</strong>
-                      <span className="text-xs text-[#666]">Student Performers</span>
-                    </div>
-                    <div>
-                      <strong className="block text-2xl font-bold text-[#222]">3,500+</strong>
-                      <span className="text-xs text-[#666]">Audience &amp; Alumni</span>
-                    </div>
-                    <div>
-                      <strong className="block text-2xl font-bold text-[#222]">1</strong>
-                      <span className="text-xs text-[#666]">Unforgettable Night</span>
-                    </div>
-                  </div>
-                  <div className="text-left">
-                    <a href="#guldaasta-details" className="wf-cta">
-                      LEARN ABOUT GULDAASTA
-                    </a>
-                  </div>
-                </div>
-              </ScrollPopBox>
-              <div className="grid grid-cols-2 gap-3">
-                <ScrollPopBox direction="right" className="col-span-2">
-                  <div className="wf-img-placeholder h-64">
-                    GULDAASTA STAGE PHOTO (HERO MOMENT)
-                  </div>
-                </ScrollPopBox>
-                <ScrollPopBox direction="left">
-                  <div className="wf-img-placeholder h-36">DANCE PERFORMANCE</div>
-                </ScrollPopBox>
-                <ScrollPopBox direction="right">
-                  <div className="wf-img-placeholder h-36">MUSIC ENSEMBLE</div>
-                </ScrollPopBox>
-              </div>
-            </div>
           </div>
         </ScrollPopSection>
       </section>
@@ -1133,99 +1054,7 @@ export const WireframeSections: React.FC = () => {
       </section>
 
       {/* =========================================================================
-          8. WHAT'S HAPPENING — School Updates & Circulars
-          ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="updates">
-        {/* Scroll-triggered edge pop shape in empty margin space */}
-        <ISBScrollPopEdgeShape shape="purple-stairs" align="right" topPosition="top-24 sm:top-28" />
-        {/* Authentic Shady Side Academy coiled spirograph peeking from left edge */}
-        <ScrollPopContourWave
-          align="left"
-          variant="mobius-loop"
-          color="#1FFF01"
-          topPosition="top-24 sm:top-28"
-          className="opacity-90"
-        />
-        <ScrollPopSection direction="right">
-          <div className="wireframe-container relative z-10">
-            <div className="wf-label text-center flex items-center justify-center gap-2">
-              <ISBShape type="blue-hourglass" size={15} />
-              <span>News &amp; Updates</span>
-            </div>
-            <h2
-              className="wf-heading !text-[36px] font-poppins font-bold text-[#222] leading-tight text-center break-words"
-              style={{ fontFamily: "'Poppins', sans-serif", fontSize: '36px' }}
-            >
-              What&apos;s <ShadyHighlight color="turquoise">Happening</ShadyHighlight>
-            </h2>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
-              <div className="lg:col-span-2 flex flex-col gap-4">
-                <ScrollPopBox direction="left">
-                  <div className="flex flex-col sm:flex-row gap-4 p-4 border border-[#ccc] rounded items-start sm:items-center bg-white">
-                    <div className="wf-img-placeholder !w-full sm:!w-28 !h-20 shrink-0">THUMB</div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs text-[#888]">12 Feb 2025 &bull; Event</div>
-                      <h4 className="font-semibold text-sm text-[#222] break-words mt-0.5">Annual Sports Meet 2025 Announced</h4>
-                      <p className="text-xs text-[#666] break-words mt-1">Three days of athletic competition, parade, and awards ceremony commencing March 1.</p>
-                    </div>
-                  </div>
-                </ScrollPopBox>
-                <ScrollPopBox direction="right">
-                  <div className="flex flex-col sm:flex-row gap-4 p-4 border border-[#ccc] rounded items-start sm:items-center bg-white">
-                    <div className="wf-img-placeholder !w-full sm:!w-28 !h-20 shrink-0">THUMB</div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs text-[#888]">28 Jan 2025 &bull; Academic</div>
-                      <h4 className="font-semibold text-sm text-[#222] break-words mt-0.5">CBSE Board Exam Preparation Workshops Underway</h4>
-                      <p className="text-xs text-[#666] break-words mt-1">Special doubt-clearing sessions and mock test series scheduled for Classes X and XII.</p>
-                    </div>
-                  </div>
-                </ScrollPopBox>
-                <ScrollPopBox direction="left">
-                  <div className="flex flex-col sm:flex-row gap-4 p-4 border border-[#ccc] rounded items-start sm:items-center bg-white">
-                    <div className="wf-img-placeholder !w-full sm:!w-28 !h-20 shrink-0">THUMB</div>
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs text-[#888]">15 Jan 2025 &bull; Celebration</div>
-                      <h4 className="font-semibold text-sm text-[#222] break-words mt-0.5">Dev Samaj Foundation Day Celebrations</h4>
-                      <p className="text-xs text-[#666] break-words mt-1">Reflecting on our heritage with community service drives and special morning assembly.</p>
-                    </div>
-                  </div>
-                </ScrollPopBox>
-              </div>
-
-              <ScrollPopBox direction="right" className="h-full">
-                <div className="p-4 border border-[#ccc] rounded flex flex-col justify-start bg-white h-full">
-                  <h3 className="font-bold text-sm text-[#222] mb-4 pb-2 border-b border-[#ccc]">Circulars &amp; Notices</h3>
-                  <div className="flex flex-col gap-3">
-                    <div className="pb-2 border-b border-[#eee]">
-                      <div className="text-xs text-[#888]">08 Feb 2025</div>
-                      <div className="text-xs font-medium text-[#222] hover:underline cursor-pointer break-words">Date sheet for Annual Examinations (Classes VI&ndash;IX, XI)</div>
-                    </div>
-                    <div className="pb-2 border-b border-[#eee]">
-                      <div className="text-xs text-[#888]">02 Feb 2025</div>
-                      <div className="text-xs font-medium text-[#222] hover:underline cursor-pointer break-words">Advisory on winter uniform &amp; school timings</div>
-                    </div>
-                    <div className="pb-2 border-b border-[#eee]">
-                      <div className="text-xs text-[#888]">20 Jan 2025</div>
-                      <div className="text-xs font-medium text-[#222] hover:underline cursor-pointer break-words">Parent-Teacher Meeting schedule &amp; slot booking</div>
-                    </div>
-                    <div className="pb-2 border-b border-[#eee]">
-                      <div className="text-xs text-[#888]">10 Jan 2025</div>
-                      <div className="text-xs font-medium text-[#222] hover:underline cursor-pointer break-words">Fee deposit deadline for Quarter IV &mdash; Reminder</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-[#888]">05 Jan 2025</div>
-                      <div className="text-xs font-medium text-[#222] hover:underline cursor-pointer break-words">Transport route adjustment notice &mdash; Route 7 &amp; 12</div>
-                    </div>
-                  </div>
-                </div>
-              </ScrollPopBox>
-            </div>
-          </div>
-        </ScrollPopSection>
-      </section>
-
-      {/* =========================================================================
-          9. THROUGH OUR LENS — Gallery Mosaic
+          8. THROUGH OUR LENS — Gallery Mosaic
           ========================================================================= */}
       <section className="wireframe-section relative overflow-hidden" id="gallery">
         {/* Scroll-triggered edge pop shape in empty margin space */}
@@ -1426,7 +1255,7 @@ export const WireframeSections: React.FC = () => {
                     <li><a href="#journey" className="hover:text-[#222]">Primary School</a></li>
                     <li><a href="#journey" className="hover:text-[#222]">Middle School</a></li>
                     <li><a href="#journey" className="hover:text-[#222]">High School</a></li>
-                    <li><a href="#updates" className="hover:text-[#222]">CBSE Mandatory Disclosure</a></li>
+                    <li><a href="#whats-happening" onClick={(e) => { e.preventDefault(); onOpenWhatsHappening?.(); }} className="hover:text-[#222]">CBSE Mandatory Disclosure</a></li>
                   </ul>
                 </div>
               </ScrollPopBox>
@@ -1436,7 +1265,7 @@ export const WireframeSections: React.FC = () => {
                   <ul className="text-xs flex flex-col gap-1.5">
                     <li><a href="#story" className="hover:text-[#222]">Our Campus Heritage</a></li>
                     <li><a href="#beyond" className="hover:text-[#222]">Sports &amp; Athletics</a></li>
-                    <li><a href="#guldaasta" className="hover:text-[#222]">Guldaasta Festival</a></li>
+                    <li><a href="#guldaasta" className="hover:text-[#222]">Guldastaa Festival</a></li>
                     <li><a href="#achievements" className="hover:text-[#222]">Student Achievements</a></li>
                     <li><a href="#gallery" className="hover:text-[#222]">Campus Gallery</a></li>
                   </ul>
@@ -1448,7 +1277,7 @@ export const WireframeSections: React.FC = () => {
                   <ul className="text-xs flex flex-col gap-1.5">
                     <li><a href="#admissions" className="hover:text-[#222]">Admissions 2025&ndash;26</a></li>
                     <li><a href="#story" className="hover:text-[#222]">About Dev Samaj</a></li>
-                    <li><a href="#updates" className="hover:text-[#222]">Circulars &amp; Notices</a></li>
+                    <li><a href="#whats-happening" onClick={(e) => { e.preventDefault(); onOpenWhatsHappening?.(); }} className="hover:text-[#222]">Circulars &amp; Notices</a></li>
                     <li><a href="#community" className="hover:text-[#222]">Alumni Portal</a></li>
                     <li><a href="#admissions" className="hover:text-[#222]">Inquiry &amp; Admissions</a></li>
                   </ul>
