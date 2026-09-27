@@ -290,12 +290,10 @@ export const OurStorySection: React.FC = () => {
             <motion.div
               initial={isMobileOrTablet ? { opacity: 0, x: -110, scale: 0.95 } : { opacity: 0, y: 35, scale: 0.98 }}
               whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.12 }}
+              viewport={{ once: false, amount: 0.08 }}
               transition={{
-                type: 'spring',
-                stiffness: 85,
-                damping: 17,
-                mass: 0.85,
+                duration: 1.3,
+                ease: [0.16, 1, 0.3, 1],
               }}
               className="relative rounded-r-3xl rounded-l-none bg-[#f5f5f5] border-y border-r border-l-0 border-neutral-200/90 shadow-md
                 -ml-4 sm:-ml-6 w-[calc(100%+1rem)] sm:w-[calc(100%+1.5rem)]

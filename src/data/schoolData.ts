@@ -10,10 +10,13 @@ import {
   Educator,
   CommunityStory,
 } from '../types';
+import campus3Edited from '../assets/images/campus3_edited.png';
+import g16Edited from '../assets/images/g16_edited.png';
+
 export const HERO_SLIDES: HeroSlide[] = [
   {
     id: 'slide-1',
-    url: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/campus3-1.jpg',
+    url: campus3Edited || 'https://abstract-chocolate-cqydlgxb.edgeone.dev/file.png',
     alt: 'I.S. Dev Samaj School Vibrant Campus and Infrastructure',
     caption: 'Lush Green Iconic Campus in Sector 21-C, Chandigarh',
     tagline: 'Modern educational facilities amidst a serene, nature-rich environment',
@@ -22,7 +25,7 @@ export const HERO_SLIDES: HeroSlide[] = [
   },
   {
     id: 'slide-2',
-    url: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/g16.jpg',
+    url: g16Edited || 'https://above-scarlet-ptzbcuhx.edgeone.dev/file.png',
     alt: 'I.S. Dev Samaj School Sports & Football Team with Coach',
     caption: 'Athletic Excellence & Team Camaraderie',
     tagline: 'Cultivating discipline, leadership, and physical vitality on the field',

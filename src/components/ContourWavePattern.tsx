@@ -434,8 +434,8 @@ export const ScrollPopContourWave: React.FC<ScrollPopContourWaveProps> = ({
         }}
         viewport={{ once: false, amount: 0.05, margin: '80px 0px' }}
         transition={{
-          duration: 1.1,
-          ease: [0.22, 1, 0.36, 1],
+          duration: 1.6,
+          ease: [0.16, 1, 0.3, 1],
           delay,
         }}
       >

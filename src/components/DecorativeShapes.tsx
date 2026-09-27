@@ -688,8 +688,8 @@ export const ISBScrollPopEdgeShape: React.FC<{
         }}
         viewport={{ once: false, amount: 0.02, margin: '100px 0px' }}
         transition={{
-          duration: 1.35,
-          ease: [0.22, 1, 0.36, 1],
+          duration: 1.75,
+          ease: [0.16, 1, 0.3, 1],
           delay,
         }}
         whileHover={{

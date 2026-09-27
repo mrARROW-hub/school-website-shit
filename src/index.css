@@ -97,6 +97,11 @@ select {
   color: #222222;
 }
 
+.wireframe-section#beyond {
+  background-color: #4237B3 !important;
+  color: #ffffff !important;
+}
+
 .wf-label {
   font-size: 0.75rem;
   text-transform: uppercase;

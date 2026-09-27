@@ -68,7 +68,7 @@ export const HeroSection: React.FC<HeroSectionProps> = () => {
                 alt={activeSlide.alt}
                 referrerPolicy="no-referrer"
                 onError={(e) => {
-                  if (activeSlide.url.includes('g16.jpg')) {
+                  if (activeSlide.id === 'slide-2' || activeSlide.url.includes('g16')) {
                     const target = e.target as HTMLImageElement;
                     if (!target.dataset.fallback) {
                       target.dataset.fallback = 'true';

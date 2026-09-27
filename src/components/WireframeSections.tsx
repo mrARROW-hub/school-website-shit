@@ -17,7 +17,15 @@ import { motion } from 'motion/react';
 import { BeyondDevSamajReviews } from './BeyondDevSamajReviews';
 import { WeMoveSection } from './WeMoveSection';
 import campusPhoto from '../assets/campus1-1.webp';
+import campusCustomPhoto from '../assets/images/campus_custom.png';
 import g16Fallback from '../assets/g16.jpg';
+import intellectualDepthEdited from '../assets/images/intellectual_depth_edited.png';
+import moralGroundingEdited from '../assets/images/moral_grounding_edited.png';
+import selfRelianceEdited from '../assets/images/self_reliance_edited.png';
+import primarySchoolEdited from '../assets/images/primary_school_edited.png';
+import middleSchoolEdited from '../assets/images/middle_school_edited.png';
+import highSchoolEdited from '../assets/images/high_school_edited.png';
+import beyondClassroomHeroImg from '../assets/images/beyond_classroom_hero.png';
 import moralGroundingImg from '../assets/images/moral_grounding_1790149720413.jpg';
 import lab3Img from '../assets/lab3-1.jpg';
 import intellectualDepthHoverImg from '../assets/images/intellectual_depth_hover.png';
@@ -36,7 +44,7 @@ const OurStoryPillarsCarousel: React.FC = () => {
       desc: 'Ethical foundations before academic ambition.',
       shape: 'pink-circle' as ISBShapeType,
       hoverBorder: 'hover:border-[#FA448C]',
-      image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/sports3.jpg',
+      image: moralGroundingEdited || 'https://mature-bronze-sjj7ozun.edgeone.dev/file.png',
       bgColor: 'bg-[#FA448C]',
       hoverShape: 'four-petal-flower' as ISBShapeType,
       hoverShapeColor: '#FFC53D',
@@ -47,7 +55,7 @@ const OurStoryPillarsCarousel: React.FC = () => {
       desc: 'Curiosity over rote learning, mastery over memorization.',
       shape: 'blue-hourglass' as ISBShapeType,
       hoverBorder: 'hover:border-[#FEBD38]',
-      image: lab3Img || 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/lab3-1.jpg',
+      image: intellectualDepthEdited || 'https://entire-purple-py1kriag.edgeone.dev/file.png',
       bgColor: 'bg-[#FEBD38]',
       hoverBgImage: intellectualDepthHoverImg,
       hoverShape: undefined,
@@ -59,7 +67,7 @@ const OurStoryPillarsCarousel: React.FC = () => {
       desc: 'Equipping students to navigate a changing world independently.',
       shape: 'yellow-bars' as ISBShapeType,
       hoverBorder: 'hover:border-[#00A661]',
-      image: 'https://isdevsamaj21.ac.in/wp-content/uploads/2024/05/g11.jpg',
+      image: selfRelianceEdited || 'https://cooperative-amethyst-sfgabozi.edgeone.dev/file.png',
       bgColor: 'bg-[#00A661]',
       hoverBgImage: selfRelianceHoverImg,
       hoverShape: undefined,
@@ -322,7 +330,7 @@ const learningStagesData: {
     classes: 'Nursery to 4',
     accentColor: '#fe76b4',
     bgHover: 'hover:border-[#fe76b4]',
-    image: 'https://cdn.phototourl.com/member/2026-09-26-bc79a123-53c0-4b94-a662-d7ae1eaab874.jpg',
+    image: primarySchoolEdited || 'https://statutory-silver-pj8r5vnw.edgeone.dev/file.png',
     imageAlt: 'Primary School',
   },
   {
@@ -333,7 +341,7 @@ const learningStagesData: {
     classes: 'Classes 5 to 8',
     accentColor: '#00b273',
     bgHover: 'hover:border-[#00b273]',
-    image: '',
+    image: middleSchoolEdited || 'https://stiff-gray-d8pru0uw.edgeone.dev/file.png',
     imageAlt: 'Middle School',
   },
   {
@@ -344,7 +352,7 @@ const learningStagesData: {
     classes: 'Classes 9 to 12',
     accentColor: '#FFC548',
     bgHover: 'hover:border-[#FFC548]',
-    image: '',
+    image: highSchoolEdited || 'https://solid-purple-umnqlms3.edgeone.dev/file.png',
     imageAlt: 'High School',
   },
 ];
@@ -381,11 +389,11 @@ const LearningJourneyStagesCarousel: React.FC = () => {
 
   const renderCardContent = (stage: (typeof learningStagesData)[0]) => {
     const isPrimary = stage.id === 'primary';
+    const isMiddle = stage.id === 'middle';
+    const isHigh = stage.id === 'high';
     return (
       <div
-        className={`relative overflow-hidden p-6 sm:p-8 border border-neutral-300 sm:border-neutral-200/80 rounded-none bg-[#1e293b] ${
-          isPrimary ? 'shadow-none' : 'shadow-xl hover:shadow-2xl'
-        } transition-all duration-300 flex flex-col justify-between min-h-[420px] sm:min-h-[440px] h-full group cursor-pointer`}
+        className="relative overflow-hidden p-6 sm:p-8 border border-neutral-300 sm:border-neutral-200/80 rounded-none bg-[#1e293b] shadow-none transition-all duration-300 flex flex-col justify-between min-h-[420px] sm:min-h-[440px] h-full group cursor-pointer"
       >
         {/* Background image if provided, or dark/neutral blank canvas ready for image */}
         {stage.image ? (
@@ -393,17 +401,19 @@ const LearningJourneyStagesCarousel: React.FC = () => {
             <img
               src={stage.image}
               alt={stage.imageAlt || stage.title}
-              className={`absolute inset-0 w-full h-full object-cover object-center image-render-crisp ${
-                isPrimary ? 'object-[center_center]' : 'transition-transform duration-700 group-hover:scale-105'
+              className={`absolute inset-0 w-full h-full object-cover image-render-crisp ${
+                isHigh
+                  ? 'object-left'
+                  : isMiddle
+                  ? 'object-[65%_center]'
+                  : isPrimary
+                  ? 'object-[center_center]'
+                  : 'object-center transition-transform duration-700 group-hover:scale-105'
               }`}
               style={{ imageRendering: 'high-quality' }}
             />
-            {/* For primary school box: crop from sides, focus on center, do not add depth */}
-            {isPrimary ? (
-              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/75 to-transparent pointer-events-none" />
-            ) : (
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent pointer-events-none" />
-            )}
+            {/* Smooth bottom depth overlay for all stage cards */}
+            <div className="absolute inset-x-0 bottom-0 h-36 sm:h-40 bg-gradient-to-t from-black/90 via-black/50 to-transparent pointer-events-none" />
           </>
         ) : (
           <>
@@ -715,12 +725,10 @@ export const WireframeSections: React.FC = () => {
               <motion.div
                 initial={isMobileOrTablet ? { opacity: 0, x: -110, scale: 0.95 } : { opacity: 0, y: 35, scale: 0.98 }}
                 whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.12 }}
+                viewport={{ once: false, amount: 0.08 }}
                 transition={{
-                  type: 'spring',
-                  stiffness: 80,
-                  damping: 18,
-                  mass: 0.85,
+                  duration: 1.3,
+                  ease: [0.16, 1, 0.3, 1],
                 }}
                 className="relative rounded-r-3xl rounded-l-none bg-[#f5f5f5] border-y border-r border-l-0 border-neutral-200/90 shadow-md
                   -ml-[var(--space-4,32px)] w-[calc(100%+var(--space-4,32px))]
@@ -741,10 +749,17 @@ export const WireframeSections: React.FC = () => {
                 {/* Uncut campus photo with complete rounded corners and slate depth gradient */}
                 <div className="relative w-full aspect-[16/10] sm:aspect-[4/3] lg:aspect-[21/9] xl:aspect-[2.4/1] min-h-[230px] sm:min-h-[300px] lg:min-h-[420px] rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/25 border border-slate-200/90 bg-slate-900 group">
                   <img
-                    src={campusPhoto}
+                    src={campusCustomPhoto || "https://direct-pink-wzwrcj9t.edgeone.dev/file.png"}
                     alt="I.S. Dev Samaj School Iconic Heritage Campus, Sector 21-C, Chandigarh"
                     loading="lazy"
                     decoding="async"
+                    onError={(e) => {
+                      const target = e.target as HTMLImageElement;
+                      if (!target.dataset.fallback) {
+                        target.dataset.fallback = 'true';
+                        target.src = campusPhoto;
+                      }
+                    }}
                     className="w-full h-full object-cover object-[center_35%] group-hover:scale-105 transition-transform duration-700 ease-out"
                   />
                   {/* Dark slate depth gradient along the bottom */}
@@ -846,35 +861,58 @@ export const WireframeSections: React.FC = () => {
       {/* =========================================================================
           4. BEYOND THE CLASSROOM — Student Life
           ========================================================================= */}
-      <section className="wireframe-section relative overflow-hidden" id="beyond">
-        {/* Scroll-triggered edge pop shape in empty margin space */}
-        <ISBScrollPopEdgeShape shape="yellow-bars" align="left" topPosition="top-24 sm:top-28" />
-        {/* Authentic Shady Side Academy coiled spirograph peeking from right edge (Image 4 exact) */}
+      <section
+        className="wireframe-section !pt-0 relative overflow-hidden !bg-[#4237B3] text-white"
+        id="beyond"
+        style={{ backgroundColor: '#4237B3' }}
+      >
+        {/* Full-bleed Hero image at the top of Beyond the Classroom section */}
+        <div
+          className="w-full relative overflow-hidden aspect-[1024/696] sm:aspect-auto sm:min-h-[70vh] md:min-h-[85vh] lg:min-h-[90vh] flex items-center justify-center !bg-[#4237B3]"
+          style={{ backgroundColor: '#4237B3' }}
+        >
+          <img
+            src={beyondClassroomHeroImg || 'https://industrial-green-acskebcp.edgeone.dev/file.png'}
+            alt="Beyond the Classroom Hero"
+            className="w-full h-full object-cover object-center sm:min-h-[70vh] md:min-h-[85vh] lg:min-h-[90vh] block select-none"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              if (!target.dataset.fallback) {
+                target.dataset.fallback = 'true';
+                target.src = 'https://industrial-green-acskebcp.edgeone.dev/file.png';
+              }
+            }}
+          />
+        </div>
+
+        {/* Scroll-triggered edge pop shape beside the heading area */}
+        <ISBScrollPopEdgeShape shape="yellow-bars" align="left" topPosition="top-[60%] sm:top-[65%]" />
+        {/* Authentic Shady Side Academy coiled spirograph beside the heading area */}
         <ScrollPopContourWave
           align="right"
           variant="ruled-twist"
           color="#11FEEE"
-          topPosition="top-24 sm:top-28"
+          topPosition="top-[60%] sm:top-[65%]"
           className="opacity-90"
         />
         <ScrollPopSection direction="left">
-          <div className="wireframe-container relative z-10">
-            <div className="wf-label text-center flex items-center justify-center gap-2">
+          <div className="wireframe-container relative z-10 pt-10 sm:pt-14 pb-14 sm:pb-16">
+            <div className="wf-label text-center flex items-center justify-center gap-2 !text-white">
               <ISBShape type="green-flower" size={15} />
-              <span>Student Life</span>
+              <span className="!text-white font-medium">Student Life</span>
             </div>
             <h2
-              className="wf-heading font-crayon text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-center break-words"
-              style={{ fontFamily: "'DK Crayon Crumble', 'Cabin Sketch', cursive, sans-serif" }}
+              className="wf-heading font-crayon text-3xl sm:text-4xl md:text-5xl font-normal tracking-wide text-center break-words !text-white"
+              style={{ fontFamily: "'DK Crayon Crumble', 'Cabin Sketch', cursive, sans-serif", color: '#ffffff' }}
             >
               Beyond the <ShadyHighlight color="turquoise">Classroom</ShadyHighlight>
             </h2>
-            <p className="max-w-2xl text-base text-[#666] text-center mx-auto break-words">
+            <p className="max-w-2xl text-base !text-white/90 text-center mx-auto break-words" style={{ color: 'rgba(255, 255, 255, 0.9)' }}>
               Character is forged as much on the pitch, stage, and easel as it is in the lecture hall.
             </p>
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-8">
               <ScrollPopBox direction="left" className="h-full">
-                <div className="p-4 border border-[#ccc] rounded text-center bg-white hover:border-[#FF3D37] hover:shadow-xs transition-all group h-full">
+                <div className="p-4 border border-white/20 rounded text-center bg-white hover:border-[#FF3D37] hover:shadow-lg transition-all group h-full">
                   <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-3 transition-transform duration-300 group-hover:scale-110">
                     <ISBShape type="red-triangle" size={26} />
                   </div>
@@ -883,7 +921,7 @@ export const WireframeSections: React.FC = () => {
                 </div>
               </ScrollPopBox>
               <ScrollPopBox direction="right" className="h-full">
-                <div className="p-4 border border-[#ccc] rounded text-center bg-white hover:border-[#00b273] hover:shadow-xs transition-all group h-full">
+                <div className="p-4 border border-white/20 rounded text-center bg-white hover:border-[#00b273] hover:shadow-lg transition-all group h-full">
                   <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-3 transition-transform duration-300 group-hover:scale-110">
                     <ISBShape type="green-flower" size={26} />
                   </div>
@@ -892,7 +930,7 @@ export const WireframeSections: React.FC = () => {
                 </div>
               </ScrollPopBox>
               <ScrollPopBox direction="left" className="h-full">
-                <div className="p-4 border border-[#ccc] rounded text-center bg-white hover:border-[#FFC548] hover:shadow-xs transition-all group h-full">
+                <div className="p-4 border border-white/20 rounded text-center bg-white hover:border-[#FFC548] hover:shadow-lg transition-all group h-full">
                   <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3 transition-transform duration-300 group-hover:scale-110">
                     <ISBShape type="yellow-bars" size={26} />
                   </div>
@@ -901,7 +939,7 @@ export const WireframeSections: React.FC = () => {
                 </div>
               </ScrollPopBox>
               <ScrollPopBox direction="right" className="h-full">
-                <div className="p-4 border border-[#ccc] rounded text-center bg-white hover:border-[#0064ec] hover:shadow-xs transition-all group h-full">
+                <div className="p-4 border border-white/20 rounded text-center bg-white hover:border-[#0064ec] hover:shadow-lg transition-all group h-full">
                   <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-3 transition-transform duration-300 group-hover:scale-110">
                     <ISBShape type="blue-hourglass" size={26} />
                   </div>
@@ -910,7 +948,7 @@ export const WireframeSections: React.FC = () => {
                 </div>
               </ScrollPopBox>
               <ScrollPopBox direction="left" className="col-span-2 sm:col-span-1 h-full">
-                <div className="p-4 border border-[#ccc] rounded text-center bg-white hover:border-[#861fce] hover:shadow-xs transition-all group h-full">
+                <div className="p-4 border border-white/20 rounded text-center bg-white hover:border-[#861fce] hover:shadow-lg transition-all group h-full">
                   <div className="w-12 h-12 rounded-full bg-purple-50 flex items-center justify-center mx-auto mb-3 transition-transform duration-300 group-hover:scale-110">
                     <ISBShape type="purple-stairs" size={26} />
                   </div>

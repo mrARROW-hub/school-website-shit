@@ -58,9 +58,9 @@ export const ScrollPopSection: React.FC<ScrollPopSectionProps> = ({
       className={`w-full will-change-transform ${className}`}
       initial={{
         opacity: 0,
-        x: isSmall ? 0 : (isLeft ? -90 : 90),
-        y: isSmall ? 15 : 0,
-        scale: isSmall ? 1 : 0.95,
+        x: isSmall ? (isLeft ? -40 : 40) : (isLeft ? -110 : 110),
+        y: isSmall ? 25 : 20,
+        scale: isSmall ? 0.97 : 0.94,
       }}
       whileInView={{
         opacity: 1,
@@ -70,14 +70,12 @@ export const ScrollPopSection: React.FC<ScrollPopSectionProps> = ({
       }}
       viewport={{
         once: false,
-        amount: isSmall ? 0.04 : 0.08,
-        margin: '0px 0px -30px 0px',
+        amount: isSmall ? 0.03 : 0.06,
+        margin: '0px 0px -40px 0px',
       }}
       transition={{
-        type: 'spring',
-        stiffness: 85,
-        damping: 18,
-        mass: 0.8,
+        duration: 1.3,
+        ease: [0.16, 1, 0.3, 1],
         delay,
       }}
     >
@@ -118,24 +116,24 @@ export const ScrollPopBox: React.FC<ScrollPopBoxProps> = ({
       className={`${widthClass} will-change-transform ${className}`.trim()}
       initial={{
         opacity: 0,
-        x: isLeft ? -45 : 45,
-        scale: 0.96,
+        x: isLeft ? -50 : 50,
+        y: 20,
+        scale: 0.95,
       }}
       whileInView={{
         opacity: 1,
         x: 0,
+        y: 0,
         scale: 1,
       }}
       viewport={{
         once: false,
-        amount: 0.12,
-        margin: '0px 0px -25px 0px',
+        amount: 0.08,
+        margin: '0px 0px -30px 0px',
       }}
       transition={{
-        type: 'spring',
-        stiffness: 95,
-        damping: 18,
-        mass: 0.75,
+        duration: 1.2,
+        ease: [0.16, 1, 0.3, 1],
         delay,
       }}
     >
